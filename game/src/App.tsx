@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import type { Choice, Drink, KnowledgeCard, PlayerSave, Stage, UpgradeId } from '../../contracts/types';
+import { ArtDefs, CafeScene, ViewDetail, ZoneArt } from './art';
 import { beans, getCard, getCharacterName, getDrink, getStage, knowledgeCards, stages } from './data/loader';
+import { cafeGallery, charImage, coverImage, drinkGallery, drinkImage, gearGallery, kbImage, sceneImage } from './pictures';
 import {
   UPGRADES,
   applyEffects,
@@ -32,8 +34,21 @@ const CLUE_TEXT: Record<string, string> = {
   grinder_repaired: '磨豆机的旧刀盘换掉了，出粉终于均匀。',
   old_menu_examined: '旧菜单背面有被刮掉的字迹。',
   chapter_01_cleared: '第一天营业撑过去了。',
+  chenshu_deal_signed: '陈叔留下的进货单，上面有他自己写的批号。',
+  origin_lesson_learned: '记了一页产地笔记：海拔、坡向、处理法各自管什么。',
+  chapter_02_cleared: '进货这条线走通了，仓库里换了新豆。',
+  brew_method_mastered: '一张手写的冲煮参数表，压在吧台玻璃下面。',
+  siphon_repaired: '柜子深处那把虹吸壶擦干净了，下座不再漏气。',
+  chapter_03_cleared: '出杯稳定下来，熟客回头了。',
+  old_menu_restored: '旧菜单被刮掉的那几行补回来了。',
+  linshu_past_known: '林叔当年为什么改菜单，现在说得通了。',
+  chapter_04_cleared: '顾言那篇专栏见报了。',
+  fake_bluemountain_exposed: '那批假蓝山的包装袋，留了一只作证。',
+  linshu_returned: '林叔回来了，围裙挂回原来那个钩子上。',
+  chapter_05_cleared: '店还开着。',
 };
 
+/** 分区牌子上挂哪张手绘插画，key 对应 art.tsx 里的 ZoneArt */
 const ZONES: { view: View; name: string; hint: string }[] = [
   { view: 'serve', name: '吧台', hint: '选豆、选饮品、出杯' },
   { view: 'stage', name: '门口', hint: '接待今天上门的客人' },
@@ -42,6 +57,7 @@ const ZONES: { view: View; name: string; hint: string }[] = [
   { view: 'clues', name: '桌面', hint: '摊着林叔留下的东西' },
   { view: 'map', name: '后门', hint: '进入章节地图' },
 ];
+
 
 export default function App() {
   const [save, setSave] = useState<PlayerSave | null>(() => loadSave());
@@ -98,21 +114,29 @@ export default function App() {
 
   function finishDay() {
     if (!save) return;
-    setSave({ ...closeDay(save), flags: { ...save.flags, chapter_01_cleared: true } });
+    // 收工时给当前章节打通关标记，章节号从存档取，不写死第一章
+    const cleared = `${save.current_chapter.replace('-', '_')}_cleared`;
+    setSave({ ...closeDay(save), flags: { ...save.flags, [cleared]: true } });
     setToast('新的一天，店门重新打开。');
     setView('cafe');
   }
 
   return (
     <div className="app">
+      <ArtDefs />
       <header className="topbar">
         <button className="brand" onClick={() => setView(save ? 'cafe' : 'home')}>余温咖啡馆</button>
         {save && (
           <ul className="stats">
-            {numericLabels.map(({ key, label }) => (
-              <li key={key}>
+            {numericLabels.map(({ key, label, max }) => (
+              <li key={key} className={max ? 'gauge' : 'counter'}>
                 <span>{label}</span>
-                <strong>{save[key]}</strong>
+                <strong>{save[key]}{max ? <em>/{max}</em> : null}</strong>
+                {max ? (
+                  <span className={`bar ${key}`}>
+                    <i style={{ width: `${Math.min(100, Math.round((save[key] / max) * 100))}%` }} />
+                  </span>
+                ) : null}
               </li>
             ))}
           </ul>
@@ -121,7 +145,11 @@ export default function App() {
 
       {toast && <p className="toast" role="status">{toast}</p>}
 
-      <main className="content">
+      {/* key 让每次换场重放入场动效；scene-* 决定这一屏的环境色 */}
+      <main className={`content scene-${view}`} key={`${view}${outcome ? '-result' : ''}`}>
+        {/* 这一屏的场景横幅。图缺了就不渲染，页面退回纯手绘 */}
+        {sceneImage(view) && <img className="scene-band" src={sceneImage(view)} alt="" aria-hidden="true" />}
+        <ViewDetail view={view} />
         {view === 'home' && <Home hasSave={!!save} onStart={start} onArchive={() => setView('archive')} />}
         {view === 'cafe' && save && <Cafe save={save} stage={stage} onGo={(v) => { setToast(''); setView(v); }} />}
         {view === 'map' && save && <ChapterMap save={save} />}
@@ -147,6 +175,9 @@ export default function App() {
             <div className="actions"><button onClick={() => setView('cafe')}>回到店里</button></div>
           </section>
         )}
+
+        {/* 内容底下的一道关卡图，居中当区隔：上面是这一屏的正事，下面是导航 */}
+        <SceneBreak chapter={save?.current_chapter} view={view} stage={stage} />
       </main>
 
       {save && view !== 'home' && view !== 'cafe' && (
@@ -158,6 +189,21 @@ export default function App() {
     </div>
   );
 }
+/**
+ * 页面下半部的区隔：一道横线中间嵌一张关卡图。
+ * 图优先用当前章节的扉页，没有就退回这一屏的场景图；两张都没有就只剩一条线。
+ */
+function SceneBreak({ chapter, view, stage }: { chapter?: string; view: string; stage?: Stage }) {
+  const src = (chapter && coverImage(chapter)) ?? sceneImage(view);
+  if (!src) return null;
+  return (
+    <div className="scene-break" aria-hidden="true">
+      <img src={src} alt="" loading="lazy" />
+      {stage && <span className="mark">{stage.chapter} · {stage.title}</span>}
+    </div>
+  );
+}
+
 function Home({ hasSave, onStart, onArchive }: { hasSave: boolean; onStart: (fresh: boolean) => void; onArchive: () => void }) {
   return (
     <section className="panel">
@@ -175,54 +221,113 @@ function Home({ hasSave, onStart, onArchive }: { hasSave: boolean; onStart: (fre
   );
 }
 
+/**
+ * 图鉴条：一排图 + 名字 + 一句话说明。
+ * items 由 pictures.ts 过滤过，没生成出图的条目根本不会进来；一条都没有就整块不渲染。
+ */
+function Plates({ title, items }: { title: string; items: { key: string; name: string; note: string; src: string }[] }) {
+  if (items.length === 0) return null;
+  return (
+    <>
+      <p className="crumb">{title} · {items.length} 张</p>
+      <div className="plates">
+        {items.map((p) => (
+          <figure key={p.key} className="plate">
+            <img src={p.src} alt={p.name} loading="lazy" />
+            <figcaption><strong>{p.name}</strong><span>{p.note}</span></figcaption>
+          </figure>
+        ))}
+      </div>
+    </>
+  );
+}
+
 function Cafe({ save, stage, onGo }: { save: PlayerSave; stage?: Stage; onGo: (v: View) => void }) {
   return (
     <section className="panel">
       <p className="crumb">{save.current_chapter}</p>
+
+      {/* 店里的那一格画面：墙上、吧台上都有各自的生活痕迹 */}
+      <CafeScene />
+
       <h2>店里</h2>
       <p className="goal">{stage ? `今日目标：${stage.goal}` : '今天的活儿干完了，去后门看看章节地图。'}</p>
 
       <div className="zones">
         {ZONES.map((z) => (
           <button key={z.name} onClick={() => onGo(z.view)}>
+            <ZoneArt kind={z.view} />
             <strong>{z.name}</strong>
             <span>{z.hint}</span>
           </button>
         ))}
       </div>
+
+      {/* 店里店外的样子。跟玩法无关，是这一屏的空气 */}
+      <Plates title="店里店外" items={cafeGallery()} />
     </section>
   );
 }
 
 function ChapterMap({ save }: { save: PlayerSave }) {
   const ordered = [...stages].sort((a, b) => a.id.localeCompare(b.id, 'en', { numeric: true }));
+  // 按章节分段，每段先摆一张扉页图，再列这一章的关卡
+  const chapters = [...new Set(ordered.map((s) => s.chapter))];
   return (
     <section className="panel">
       <h2>章节地图</h2>
-      <ol className="mapline">
-        {ordered.map((s) => {
-          const done = save.completed_stages.includes(s.id);
-          const current = save.current_stage === s.id;
-          const state = done ? 'done' : current ? 'current' : 'locked';
-          const label = done ? '已完成' : current ? '当前可玩' : '未解锁';
-          return (
-            <li key={s.id} className={state}>
-              <span className="node">{label}</span>
-              <span>{done || current ? s.title : '???'}</span>
-            </li>
-          );
-        })}
-      </ol>
-      <p className="meta">第一版是单线路线，后续章节由剧情轨道产出后自动出现在这里。</p>
+      {chapters.map((ch) => {
+        const own = ordered.filter((s) => s.chapter === ch);
+        const reached = own.some((s) => save.completed_stages.includes(s.id) || save.current_stage === s.id);
+        const cover = coverImage(ch);
+        return (
+          <div key={ch} className={`chapter-block ${reached ? '' : 'sealed'}`}>
+            {cover && <img className="chapter-cover" src={cover} alt="" aria-hidden="true" />}
+            <p className="crumb">{ch} · 共 {own.length} 关</p>
+            <ol className="mapline">
+              {own.map((s) => {
+                const done = save.completed_stages.includes(s.id);
+                const current = save.current_stage === s.id;
+                const state = done ? 'done' : current ? 'current' : 'locked';
+                const label = done ? '已完成' : current ? '当前可玩' : '未解锁';
+                return (
+                  <li key={s.id} className={state}>
+                    <span className="node">{label}</span>
+                    <span>{done || current ? s.title : '???'}</span>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
+        );
+      })}
+      <p className="meta">单线路线，走完一章自动接上下一章。没走到的章节封面是压暗的。</p>
     </section>
   );
 }
+/** 处理法 → 晒床/水槽配图。豆子数据里的处理法是中文，这里做一层映射 */
+const PROCESS_ART: Record<string, string> = { 日晒: 'natural', 水洗: 'washed', 蜜处理: 'honey' };
+
 function Storage({ save }: { save: PlayerSave }) {
   const owned = beans.filter((b) => (save.inventory[b.id] ?? 0) > 0);
+  // 库存里出现过的处理法，各配一张晒床/水槽的图，让仓库这屏不只是列表
+  const processes = [...new Set(owned.map((b) => b.process))].filter((p) => PROCESS_ART[p]);
   return (
     <section className="panel">
       <h2>仓库</h2>
       {owned.length === 0 && <p className="empty">豆子见底了。</p>}
+
+      {processes.length > 0 && (
+        <div className="figures">
+          {processes.map((p) => (
+            <figure key={p}>
+              <img src={kbImage(PROCESS_ART[p])} alt="" aria-hidden="true" />
+              <figcaption>{p}</figcaption>
+            </figure>
+          ))}
+        </div>
+      )}
+
       <ul className="beanlist">
         {owned.map((b) => (
           <li key={b.id}>
@@ -251,6 +356,9 @@ function Clues({ save }: { save: PlayerSave }) {
   );
 }
 
+/** 升级项 → 器具配图，只有画了图的才配 */
+const UPGRADE_ART: Record<string, string> = { grinder: 'grinder', brewer: 'siphon' };
+
 function Upgrades({ save, onBuy }: { save: PlayerSave; onBuy: (id: UpgradeId) => void }) {
   return (
     <section className="panel">
@@ -259,8 +367,10 @@ function Upgrades({ save, onBuy }: { save: PlayerSave; onBuy: (id: UpgradeId) =>
       <ul className="upgradelist">
         {UPGRADES.map((u) => {
           const owned = save.upgrades.includes(u.id);
+          const art = UPGRADE_ART[u.id] ? kbImage(UPGRADE_ART[u.id]) : undefined;
           return (
             <li key={u.id}>
+              {art && <img className="gear" src={art} alt="" aria-hidden="true" />}
               <div>
                 <strong>{u.name}</strong>
                 <span className="meta">{u.effect}</span>
@@ -272,6 +382,9 @@ function Upgrades({ save, onBuy }: { save: PlayerSave; onBuy: (id: UpgradeId) =>
           );
         })}
       </ul>
+
+      {/* 器具图鉴：能买的只有几样，但这一行让人知道行当里有多少家伙事 */}
+      <Plates title="器具图鉴" items={gearGallery()} />
     </section>
   );
 }
@@ -314,10 +427,12 @@ function ServeDesk({ save, onServe }: { save: PlayerSave; onServe: (drink: Drink
       {options.length === 0 ? (
         <p className="empty">{bean.name}现在做不出东西：菜单上没有它能做的饮品，或者库存不够一杯的用量。</p>
       ) : (
-        <div className="choices">
+        <div className="drinkcards">
           {options.map((d) => (
-            <button key={d.id} onClick={() => onServe(d, beanId)}>
-              {d.name}（{d.method} · 卖 {d.price} · 用 {d.bean_cost} 份 · {d.speed}）
+            <button key={d.id} className="drinkcard" onClick={() => onServe(d, beanId)}>
+              {drinkImage(d.id) && <img src={drinkImage(d.id)} alt="" aria-hidden="true" />}
+              <strong>{d.name}</strong>
+              <span className="meta">{d.method} · 卖 {d.price} · 用 {d.bean_cost} 份 · {d.speed}</span>
             </button>
           ))}
         </div>
@@ -348,27 +463,23 @@ function StageView({
       <p className="goal">今日目标：{stage.goal}</p>
 
       <ol className="dialogue">
-        {stage.dialogue.map((line, i) => (
-          <li key={i}>
-            <span className="speaker">{getCharacterName(line.speaker)}</span>
-            <p>{line.text}</p>
-          </li>
-        ))}
+        {stage.dialogue.map((line, i) => {
+          const name = getCharacterName(line.speaker);
+          const face = charImage(line.speaker);
+          return (
+            <li key={i}>
+              {/* 有画好的半身像就贴脸，没画的（比如玩家自己）退回陶土色块加姓氏 */}
+              {face ? (
+                <img className="avatar portrait" src={face} alt="" aria-hidden="true" />
+              ) : (
+                <span className="avatar" aria-hidden="true">{[...name][0]}</span>
+              )}
+              <span className="speaker">{name}</span>
+              <p>{line.text}</p>
+            </li>
+          );
+        })}
       </ol>
-
-      {!!stage.knowledge_brief?.length && (
-        <div className="briefs">
-          {stage.knowledge_brief.map((id) => {
-            const card = getCard(id);
-            return (
-              <article key={id} className="brief">
-                <h3>{card.title}</h3>
-                <p>{card.plain_explanation}</p>
-              </article>
-            );
-          })}
-        </div>
-      )}
 
       {needsCup && !served && <ServeDesk save={save} onServe={onServe} />}
 
@@ -381,7 +492,41 @@ function StageView({
           ))}
         </div>
       )}
+
+      {/* 讲解压在选项后面：客人提要求时先自己拿主意，往下才是这一关的知识 */}
+      {!!stage.knowledge_brief?.length && (
+        <>
+          <BriefBreak stageId={stage.id} />
+          <div className="briefs">
+            {stage.knowledge_brief.map((id) => {
+              const card = getCard(id);
+              return (
+                <article key={id} className="brief">
+                  <h3>{card.title}</h3>
+                  <p>{card.plain_explanation}</p>
+                </article>
+              );
+            })}
+          </div>
+        </>
+      )}
     </section>
+  );
+}
+
+/**
+ * 选项与讲解之间的图片区隔。图按关卡 id 定长挑一张器具/店景，
+ * 同一关每次进来都是同一张；一张图都没生成出来就只留下面的知识块。
+ */
+function BriefBreak({ stageId }: { stageId: string }) {
+  const pool = [...gearGallery(), ...cafeGallery()];
+  if (pool.length === 0) return null;
+  const seed = [...stageId].reduce((n, ch) => n + ch.codePointAt(0)!, 0);
+  return (
+    <div className="scene-break brief-break">
+      <img src={pool[seed % pool.length].src} alt="" loading="lazy" />
+      <span className="mark">这一关的知识</span>
+    </div>
   );
 }
 const RESULT_LABEL = { correct: '做对了', acceptable: '还行', wrong: '出了岔子' } as const;
@@ -414,7 +559,17 @@ function Result({ outcome, onNext }: { outcome: Outcome; onNext: () => void }) {
   );
 }
 
+/** 校验器规定占位卡的来源字段必须写成这个哨兵值，等于「还没有真来源」，不该给玩家看 */
+const NO_SOURCE = '示例内容，待替换';
+
 function KnowledgeCardView({ card }: { card: KnowledgeCard }) {
+  // 只留有真来源的行；一行都没有就整块不渲染，免得留个空的凹陷框
+  const rows = [
+    ['来源书籍', card.source_book],
+    ['来源章节', card.source_chapter],
+    ['原文依据', card.source_quote],
+  ].filter(([, value]) => value && value.trim() && value !== NO_SOURCE);
+
   return (
     <article className="card">
       <header>
@@ -423,11 +578,15 @@ function KnowledgeCardView({ card }: { card: KnowledgeCard }) {
       </header>
       <p>{card.plain_explanation}</p>
       {card.inference_note && <p className="note">{card.inference_note}</p>}
-      <dl className="source">
-        <dt>来源书籍</dt><dd>{card.source_book}</dd>
-        <dt>来源章节</dt><dd>{card.source_chapter}</dd>
-        <dt>原文依据</dt><dd>{card.source_quote}</dd>
-      </dl>
+      {rows.length > 0 && (
+        <dl className="source">
+          {rows.map(([label, value]) => (
+            <Fragment key={label}>
+              <dt>{label}</dt><dd>{value}</dd>
+            </Fragment>
+          ))}
+        </dl>
+      )}
     </article>
   );
 }
@@ -438,6 +597,10 @@ function Archive({ save }: { save: PlayerSave | null }) {
   return (
     <section className="panel">
       <h2>知识档案</h2>
+
+      {/* 咖啡类型图鉴：不受解锁进度影响，当一本随时能翻的图册 */}
+      <Plates title="咖啡类型图鉴" items={drinkGallery()} />
+
       {unlocked.length === 0 && <p className="empty">还没有解锁任何知识卡。先去营业。</p>}
       {categories.map((cat) => (
         <div key={cat}>

@@ -1,7 +1,7 @@
 // 经营数值与存档。数值键与边界全部取自 contracts/state-keys.json，不在代码里另写魔法数。
 import type { Choice, CoffeeBean, DailyLedger, Drink, Effects, PlayerSave, Stage, UpgradeId } from '../../contracts/types';
 import stateKeys from '../../contracts/state-keys.json';
-import { beans, drinks, firstStageId } from './data/loader';
+import { beans, drinks, firstStageId, getStage } from './data/loader';
 
 const SAVE_KEY = 'yuwen-cafe-save-v1';
 
@@ -12,6 +12,8 @@ const numeric = stateKeys.numeric as Record<NumericKey, { label: string; init: n
 export const numericLabels = Object.entries(numeric).map(([key, cfg]) => ({
   key: key as NumericKey,
   label: cfg.label,
+  // max 为 null 的数值（现金）没有上限，HUD 里显示成计数器而不是进度条
+  max: cfg.max,
 }));
 
 /** 可升级项（方案 §6.2）。第一版只做 4 类，磨豆机是第一章唯一必做的一项。 */
@@ -196,6 +198,9 @@ export function settleStage(save: PlayerSave, stage: Stage, choice: Choice) {
   }
 
   next.current_stage = choice.next_stage ?? stage.next_stage ?? '';
+  // 跨章推进时把章节号同步过来，否则店内面包屑会一直停在第一章
+  const nextChapter = next.current_stage ? getStage(next.current_stage)?.chapter : undefined;
+  if (nextChapter) next.current_chapter = nextChapter;
 
   return { save: next, changes };
 }

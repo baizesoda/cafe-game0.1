@@ -1,0 +1,564 @@
+[
+  {
+    "id": "stage-4-1",
+    "chapter": "chapter-04",
+    "title": "黑板上被刮掉的行",
+    "type": "tutorial",
+    "goal": "看清旧菜单上被刮掉的几行",
+    "scene": "blackboard",
+    "characters": ["player", "guyan"],
+    "dialogue": [
+      { "speaker": "guyan", "text": "我在这条街上写了六年专栏，这块黑板我记得。第三行到第六行原来有字，后来被人刮了。" },
+      { "speaker": "player", "text": "……刮痕还在，指头摸得出来。" },
+      { "speaker": "guyan", "text": "先别擦。你先说，最上面那行写「单品」，往下那行写「花式」，这两个词差在哪儿。" }
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "单品是单一产地，不加糖奶",
+        "result": "correct",
+        "effects": { "trust": { "guyan": 2 } },
+        "explanation": "单品指单一产地单一品种的豆子，一般不加糖奶，喝的是产地本身的味道；花式是加了牛奶、奶油、巧克力酱那一类。",
+        "knowledge_id": "knowledge-401",
+        "set_flags": ["old_menu_examined"]
+      },
+      {
+        "id": "choice-b",
+        "text": "单品贵，花式便宜",
+        "result": "wrong",
+        "effects": { "reputation": -1, "trust": { "guyan": -1 } },
+        "explanation": "按价钱分是店里的记账习惯，不是这两个词本身的意思。顾言在本子上划了一道。",
+        "knowledge_id": "knowledge-401"
+      },
+      {
+        "id": "choice-c",
+        "text": "先把浓缩换成大杯再说",
+        "result": "wrong",
+        "effects": { "reputation": -1 },
+        "explanation": "浓缩本来就是一百毫升以下的小杯，不加糖奶趁热快喝完；换成大杯等于把这一行做废了。",
+        "knowledge_id": "knowledge-402"
+      }
+    ],
+    "reward": {
+      "unlock_knowledge": ["knowledge-401", "knowledge-402", "knowledge-421", "knowledge-431"]
+    },
+    "next_stage": "stage-4-2",
+    "recovery": "林叔的字条压在黑板槽里：先弄清词，再动手擦。答错不扣豆子，顾言明天还会来问。"
+  },
+  {
+    "id": "stage-4-2",
+    "chapter": "chapter-04",
+    "title": "罐子里的陈豆",
+    "type": "knowledge_decision",
+    "goal": "决定这罐没写日期的散装豆怎么处理",
+    "scene": "storage",
+    "characters": ["player", "guyan", "xiaoman"],
+    "dialogue": [
+      { "speaker": "guyan", "text": "先问个具体的。柜子里这罐散装豆，标签上没写烘焙日期，是什么时候的？" },
+      { "speaker": "xiaoman", "text": "……上个月陈叔搭着送的，一直搁在那儿。" },
+      { "speaker": "guyan", "text": "波士顿有位烘豆师当年就是买不到新鲜豆，才索性自己开店。这罐我不写进稿子。" }
+    ],
+    "knowledge_brief": ["knowledge-387", "knowledge-419"],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "这罐下架，以后只买一周的量",
+        "result": "correct",
+        "effects": { "money": -6, "reputation": 2, "trust": { "guyan": 3 } },
+        "explanation": "豆子少量多次买、只备接下来一周要喝的量，是新鲜度的底线；已经放坏的下架，比端给客人省事。",
+        "knowledge_id": "knowledge-387"
+      },
+      {
+        "id": "choice-b",
+        "text": "磨成粉先卖掉",
+        "result": "wrong",
+        "effects": { "money": 8, "reputation": -3, "trust": { "guyan": -2 } },
+        "explanation": "咖啡粉接触空气的面积大，氧化更快还特别爱吸味；把陈豆磨成粉只是让它坏得更快。",
+        "knowledge_id": "knowledge-419"
+      },
+      {
+        "id": "choice-c",
+        "text": "留着自己练手冲",
+        "result": "acceptable",
+        "effects": { "energy": -1, "trust": { "xiaoman": 1 } },
+        "explanation": "不端给客人算守住了线，但练手也该用能对照的豆子；连烘焙日期都不知道，练不出准头。",
+        "knowledge_id": "knowledge-420"
+      }
+    ],
+    "reward": {
+      "money": 10,
+      "unlock_knowledge": ["knowledge-377", "knowledge-387", "knowledge-419", "knowledge-420"]
+    },
+    "next_stage": "stage-4-3",
+    "recovery": "林叔在账本背面写过：宁可少卖一天，也别拿放坏的豆子换现钱。卖出去的，补一杯回来还来得及。"
+  },
+  {
+    "id": "stage-4-3",
+    "chapter": "chapter-04",
+    "title": "两人份的手冲",
+    "type": "knowledge_decision",
+    "goal": "按客人要的量冲一壶手冲",
+    "scene": "bar",
+    "characters": ["player", "customer", "guyan"],
+    "dialogue": [
+      { "speaker": "customer", "text": "来一份手冲，两个人喝。你们这滤杯……看着挺小。" },
+      { "speaker": "guyan", "text": "我坐这儿看。你先说，一二人份的滤器冲两人份的量，行不行。" },
+      { "speaker": "player", "text": "……得先把器具和量对上。" }
+    ],
+    "knowledge_brief": ["knowledge-410", "knowledge-411", "knowledge-412"],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "换大滤杯，92度水先焖蒸",
+        "result": "correct",
+        "effects": { "money": 16, "satisfaction_today": 8, "reputation": 1, "trust": { "guyan": 2 } },
+        "explanation": "几人份的滤器就冲几人份；第一次注水只把粉打湿静置一会儿让它膨胀，水温压在九十二度上下，酸苦都不出头。",
+        "knowledge_id": "knowledge-410"
+      },
+      {
+        "id": "choice-b",
+        "text": "小滤杯硬冲两人份",
+        "result": "wrong",
+        "effects": { "money": 14, "satisfaction_today": -6, "reputation": -1 },
+        "explanation": "小滤器装多量，粉泡得太久，出来发苦。顾言尝了一口就放下了杯子。",
+        "knowledge_id": "knowledge-412"
+      },
+      {
+        "id": "choice-c",
+        "text": "水一开就冲，省时间",
+        "result": "wrong",
+        "effects": { "money": 14, "satisfaction_today": -4 },
+        "explanation": "刚沸的水会把粉烫伤，焦味压过香气；九十二度左右才是手冲的稳妥区间。",
+        "knowledge_id": "knowledge-411"
+      }
+    ],
+    "reward": {
+      "money": 16,
+      "unlock_knowledge": ["knowledge-410", "knowledge-411", "knowledge-412", "knowledge-429"]
+    },
+    "next_stage": "stage-4-4",
+    "recovery": "客人愿意等第二壶。林叔把滤纸型号写在盒盖上：101 一两人份、102 两到四人份，照号拿就不会错。"
+  },
+  {
+    "id": "stage-4-4",
+    "chapter": "chapter-04",
+    "title": "米兰的那个早晨",
+    "type": "knowledge_decision",
+    "goal": "回答顾言关于第二波的追问",
+    "scene": "table",
+    "characters": ["player", "guyan"],
+    "dialogue": [
+      { "speaker": "guyan", "text": "第二波我要写舒尔茨。一九八三年他在米兰看见了什么，回去才改了店？" },
+      { "speaker": "player", "text": "……说是看店员一个人磨豆、拉浓缩机把手、打奶泡，还顺手招呼客人。" },
+      { "speaker": "guyan", "text": "对，像看戏。那他把这套搬回美国，是照原样搬的吗？" }
+    ],
+    "knowledge_brief": ["knowledge-380", "knowledge-381"],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "照本地习惯改，加椅子换音乐",
+        "result": "correct",
+        "effects": { "reputation": 2, "trust": { "guyan": 3 } },
+        "explanation": "美国人不像意大利人站着喝完就走，于是加了座位；客人嫌歌剧吵就换成爵士。学的是形式，改的是本地习惯。",
+        "knowledge_id": "knowledge-381"
+      },
+      {
+        "id": "choice-b",
+        "text": "原样照搬，站着喝完就走",
+        "result": "wrong",
+        "effects": { "reputation": -1, "trust": { "guyan": -1 } },
+        "explanation": "照搬样板就没有后来那些店了。顾言合上本子，说这话不能写。",
+        "knowledge_id": "knowledge-381"
+      },
+      {
+        "id": "choice-c",
+        "text": "先把矮杯高杯的叫法定下来",
+        "result": "acceptable",
+        "effects": { "trust": { "guyan": 1 } },
+        "explanation": "矮杯、高杯、大杯这套自造的叫法确实能让客人觉得自己是内行，但那是后面的事，顺序说反了。",
+        "knowledge_id": "knowledge-382"
+      }
+    ],
+    "reward": {
+      "reputation": 1,
+      "unlock_knowledge": ["knowledge-380", "knowledge-381", "knowledge-382", "knowledge-383"]
+    },
+    "next_stage": "stage-4-5",
+    "recovery": "答偏了不要紧，顾言的稿子还要改三稿。林叔说过：讲来历要讲清楚哪一步是学的、哪一步是改的。"
+  },
+  {
+    "id": "stage-4-5",
+    "chapter": "chapter-04",
+    "title": "一杯卡布奇诺",
+    "type": "knowledge_decision",
+    "goal": "给客人做一杯不塌的卡布奇诺",
+    "scene": "bar",
+    "characters": ["player", "customer", "guyan"],
+    "dialogue": [
+      { "speaker": "customer", "text": "要一杯卡布奇诺。上次那杯，奶泡不到一分钟就塌平了。" },
+      { "speaker": "guyan", "text": "这个我也想看。你先说，这一杯里浓缩、牛奶、奶沫各占多少。" }
+    ],
+    "knowledge_brief": ["knowledge-400", "knowledge-403", "knowledge-408"],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "三样各六十毫升，用厚杯",
+        "result": "correct",
+        "effects": { "money": 18, "satisfaction_today": 9, "reputation": 2, "trust": { "guyan": 2 } },
+        "explanation": "浓缩、牛奶、奶沫各六十毫升，先倒三分之一浓缩、再加三分之一奶沫、最后补牛奶，用两百毫升以上的厚杯装。",
+        "knowledge_id": "knowledge-403"
+      },
+      {
+        "id": "choice-b",
+        "text": "牛奶烧到冒烟再打",
+        "result": "wrong",
+        "effects": { "money": 16, "satisfaction_today": -5, "reputation": -1 },
+        "explanation": "奶温过了七十度，打出来的沫又粗又散。边加热边晃、到七十度就停火，再上下抽动三十下才稳。",
+        "knowledge_id": "knowledge-408"
+      },
+      {
+        "id": "choice-c",
+        "text": "浓缩流够三十秒就端出去",
+        "result": "acceptable",
+        "effects": { "money": 16, "satisfaction_today": 4 },
+        "explanation": "三十毫升二十五到三十秒是对的，但你没看油沫；那层沫子占不到整杯的十分之一，这份浓缩就不算合格。",
+        "knowledge_id": "knowledge-400"
+      }
+    ],
+    "reward": {
+      "money": 18,
+      "unlock_knowledge": ["knowledge-400", "knowledge-403", "knowledge-404", "knowledge-408", "knowledge-409"]
+    },
+    "next_stage": "stage-4-6",
+    "recovery": "重做一杯只赔一份奶。林叔的话：奶壶摸着烫手就已经过头了，宁可早一点停火。"
+  },
+  {
+    "id": "stage-4-6",
+    "chapter": "chapter-04",
+    "title": "夏天的冰饮单",
+    "type": "business_decision",
+    "goal": "在预算内添冰饮要用的家伙",
+    "scene": "storage",
+    "characters": ["player", "xiaoman"],
+    "dialogue": [
+      { "speaker": "xiaoman", "text": "顾言说他这篇要写这条街的夏天。可我们的冰拿铁，客人喝到一半全是水。" },
+      { "speaker": "xiaoman", "text": "手动打奶壶四十，冰格十五。今天的流水不够全买。" }
+    ],
+    "knowledge_brief": ["knowledge-406", "knowledge-433"],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "买冰格，用浓缩冻冰块",
+        "result": "correct",
+        "effects": { "money": -15, "reputation": 2 },
+        "explanation": "冰块事先用浓缩咖啡冻好，化开也不会把味道冲淡；这是最便宜就能治住「喝到后面变水」的一步。",
+        "knowledge_id": "knowledge-406"
+      },
+      {
+        "id": "choice-b",
+        "text": "买打奶壶，手动打冰奶沫",
+        "result": "acceptable",
+        "effects": { "money": -40, "reputation": 1, "trust": { "xiaoman": 2 } },
+        "explanation": "机器打出来的奶沫都是热的，冰饮要的冷奶沫只能手动打。有用，但钱花在了后一位的问题上。",
+        "knowledge_id": "knowledge-433"
+      },
+      {
+        "id": "choice-c",
+        "text": "什么都不买，多加普通冰",
+        "result": "wrong",
+        "effects": { "reputation": -2, "satisfaction_today": -4 },
+        "explanation": "普通冰块越多越淡，客人喝到后半杯就是凉水。顾言在旁边记了一句。",
+        "knowledge_id": "knowledge-406"
+      }
+    ],
+    "reward": {
+      "unlock_knowledge": ["knowledge-405", "knowledge-406", "knowledge-407", "knowledge-423", "knowledge-433"]
+    },
+    "next_stage": "stage-4-7",
+    "recovery": "两样都不贵，下个月还能补齐。林叔的账本上写着：先修最影响入口那一步。"
+  },
+  {
+    "id": "stage-4-7",
+    "chapter": "chapter-04",
+    "title": "四十二个会员",
+    "type": "knowledge_decision",
+    "goal": "把第三波的来龙去脉说给顾言",
+    "scene": "table",
+    "characters": ["player", "guyan"],
+    "dialogue": [
+      { "speaker": "guyan", "text": "第三波这段最难写。一九八二年旧金山那间小旅馆，一群小烘焙商坐在客厅里，他们图什么？" },
+      { "speaker": "player", "text": "……图把「什么算好豆子」说成一句全国都认的话。" },
+      { "speaker": "guyan", "text": "四十二个会员起家。那换到你们店里——你凭什么说一支豆子好？" }
+    ],
+    "knowledge_brief": ["knowledge-376", "knowledge-435"],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "杯测：啜吸一口分辨香气",
+        "result": "correct",
+        "effects": { "energy": -1, "reputation": 2, "trust": { "guyan": 3 } },
+        "explanation": "杯测的关键就是那口快速啜吸，让空气和咖啡在嘴里混匀再用味蕾分辨；不会这一口，评豆只能靠听说。",
+        "knowledge_id": "knowledge-376"
+      },
+      {
+        "id": "choice-b",
+        "text": "看包装上印的产区",
+        "result": "wrong",
+        "effects": { "reputation": -1, "trust": { "guyan": -1 } },
+        "explanation": "产区只是起点。顾言反问：那这支肯尼亚为什么喝着像果酒？你答不上来。",
+        "knowledge_id": "knowledge-435"
+      },
+      {
+        "id": "choice-c",
+        "text": "讲产地故事，讲公平交易",
+        "result": "acceptable",
+        "effects": { "trust": { "guyan": 1 } },
+        "explanation": "把产地故事做成卖点确实有人做成了，标语从一杯咖啡改成一杯公平咖啡；但故事替不了嘴里那一口。",
+        "knowledge_id": "knowledge-378"
+      }
+    ],
+    "reward": {
+      "reputation": 1,
+      "unlock_knowledge": ["knowledge-376", "knowledge-378", "knowledge-379", "knowledge-384", "knowledge-435"]
+    },
+    "next_stage": "stage-4-8",
+    "recovery": "顾言不介意你答错，他介意你答得含糊。林叔留下的杯测勺还在抽屉里，先把那一口练熟。"
+  },
+  {
+    "id": "stage-4-8",
+    "chapter": "chapter-04",
+    "title": "街对面的争吵",
+    "type": "story_branch",
+    "goal": "在意式和北欧两种做法之间给个说法",
+    "scene": "street",
+    "characters": ["player", "guyan", "suhe"],
+    "dialogue": [
+      { "speaker": "suhe", "text": "深烘那套早过时了。我们店里全是浅烘，酸得亮，你们那杯黑糊糊的谁还喝。" },
+      { "speaker": "guyan", "text": "有意思。那你们两家到底在吵什么——吵烘焙度，还是吵别的？" },
+      { "speaker": "player", "text": "……吵的是这杯要用什么机器、给谁喝。" }
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "按器具分：意式机要深烘细粉",
+        "result": "correct",
+        "effects": { "reputation": 2, "trust": { "guyan": 2 } },
+        "explanation": "家用意式机吃的是深烘的极细粉，本来就偏苦涩；浅烘拿去做浓缩不是不行，是跟机器对不上。分歧一半在器具。",
+        "knowledge_id": "knowledge-417",
+        "next_stage": "stage-4-9"
+      },
+      {
+        "id": "choice-b",
+        "text": "按萃取时间定研磨粗细",
+        "result": "acceptable",
+        "effects": { "reputation": 1, "trust": { "suhe": 1 } },
+        "explanation": "接触时间越长磨越粗：法压美式用粗粉、虹吸滴滤中粉、摩卡细粉、浓缩细如粉末。说对一半，没说到烘焙。",
+        "knowledge_id": "knowledge-418",
+        "next_stage": "stage-4-9"
+      },
+      {
+        "id": "choice-c",
+        "text": "浅烘就是不好喝",
+        "result": "wrong",
+        "effects": { "reputation": -2, "trust": { "suhe": -2 } },
+        "explanation": "一句话把人堵回去，也把稿子里这一段废了。苏禾冷笑一声就走了。",
+        "knowledge_id": "knowledge-421",
+        "next_stage": "stage-4-9"
+      }
+    ],
+    "reward": {
+      "unlock_knowledge": ["knowledge-417", "knowledge-418", "knowledge-424", "knowledge-425"]
+    },
+    "next_stage": "stage-4-9",
+    "recovery": "顾言把这段留白了。林叔当年也和人吵过，他后来只说：把器具分清楚，就吵不起来。"
+  },
+  {
+    "id": "stage-4-9",
+    "chapter": "chapter-04",
+    "title": "柜子里的四把壶",
+    "type": "knowledge_decision",
+    "goal": "给顾言讲清四把壶各自的用法",
+    "scene": "storage",
+    "characters": ["player", "guyan", "xiaoman"],
+    "dialogue": [
+      { "speaker": "guyan", "text": "柜子里这四把：法压、摩卡、美式、还有个越南的。挑一把，说清它为什么这么用。" },
+      { "speaker": "xiaoman", "text": "摩卡壶我上次架酒精灯上煮，煮了半天不出咖啡。" }
+    ],
+    "knowledge_brief": ["knowledge-386", "knowledge-413", "knowledge-415"],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "法压：12克粉，95度泡三五分钟",
+        "result": "correct",
+        "effects": { "energy": -1, "reputation": 2, "trust": { "guyan": 2 } },
+        "explanation": "一杯约十二克粉，一百六十毫升九十五度的水慢慢浇透，静置三到五分钟再轻轻压下滤网；泡得久，所以磨得粗。",
+        "knowledge_id": "knowledge-413"
+      },
+      {
+        "id": "choice-b",
+        "text": "摩卡壶换到炉子上大火煮",
+        "result": "acceptable",
+        "effects": { "trust": { "xiaoman": 2 } },
+        "explanation": "摩卡壶每人份约七克粉，要大火催出足够蒸汽才冲得过粉层，酒精灯火力不够。答的是另一把壶。",
+        "knowledge_id": "knowledge-415"
+      },
+      {
+        "id": "choice-c",
+        "text": "美式壶把粉磨细一点补味道",
+        "result": "wrong",
+        "effects": { "satisfaction_today": -3 },
+        "explanation": "美式壶煮出来本来就淡，靠的是磨粗一点、粉多放一点；磨细只会把苦味泡出来。",
+        "knowledge_id": "knowledge-416"
+      }
+    ],
+    "reward": {
+      "unlock_knowledge": ["knowledge-386", "knowledge-413", "knowledge-415", "knowledge-416", "knowledge-428"]
+    },
+    "next_stage": "stage-4-10",
+    "recovery": "四把壶都在柜子里，随时能再试。林叔的规矩只有一句：泡得越久，粉磨得越粗。"
+  },
+  {
+    "id": "stage-4-10",
+    "chapter": "chapter-04",
+    "title": "虹吸壶差点炸了",
+    "type": "crisis",
+    "goal": "处理虹吸壶上火前的险情",
+    "scene": "bar",
+    "characters": ["player", "xiaoman", "guyan"],
+    "dialogue": [
+      { "speaker": "xiaoman", "text": "水刚接完就架上去了！下座外面还挂着水珠——" },
+      { "speaker": "guyan", "text": "……我往后坐一点。" },
+      { "speaker": "player", "text": "……先撤火。" }
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "立刻撤火，擦干下座再上",
+        "result": "correct",
+        "effects": { "money": -4, "reputation": 1, "trust": { "xiaoman": 3 } },
+        "explanation": "下座外壁带着水珠直接上火容易爆裂，擦干再来是唯一的做法。这一壶不要了，人和壶都还在。",
+        "knowledge_id": "knowledge-427"
+      },
+      {
+        "id": "choice-b",
+        "text": "先把上座硬拔下来",
+        "result": "wrong",
+        "effects": { "money": -30, "reputation": -2 },
+        "explanation": "拔上座要倾斜着来回晃，硬拔容易把它弄碎。上座碎在吧台上，玻璃渣扫了十分钟。",
+        "knowledge_id": "knowledge-427"
+      },
+      {
+        "id": "choice-c",
+        "text": "水上得慢，多搅几下催一催",
+        "result": "wrong",
+        "effects": { "money": -6, "satisfaction_today": -4 },
+        "explanation": "上水慢是滤布被细渣堵死了，搅也没用；刮到滤布只会更糟，该换新的。",
+        "knowledge_id": "knowledge-430"
+      }
+    ],
+    "reward": {
+      "unlock_knowledge": ["knowledge-414", "knowledge-426", "knowledge-427", "knowledge-430"]
+    },
+    "next_stage": "stage-4-11",
+    "recovery": "壶碎了柜子里还有一把备用。林叔在柜门内侧写着：下座擦干，滤布用一次洗一次，堵了就换。"
+  },
+  {
+    "id": "stage-4-11",
+    "chapter": "chapter-04",
+    "title": "刮掉那几行的理由",
+    "type": "knowledge_decision",
+    "goal": "问出林叔当年刮掉菜单的原因",
+    "scene": "backdoor",
+    "characters": ["player", "guyan", "xiaoman"],
+    "dialogue": [
+      { "speaker": "guyan", "text": "我查到了。十一年前你们换过一次菜单，刮掉的那四行里有越南滴漏和挂耳。" },
+      { "speaker": "xiaoman", "text": "……林叔提过一句，那阵子店里水不对，做什么都不对。" },
+      { "speaker": "player", "text": "水？" },
+      { "speaker": "guyan", "text": "他刮掉的不是那几样东西，是他当时做不好的那几样东西。" }
+    ],
+    "knowledge_brief": ["knowledge-385", "knowledge-422"],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "从水查起，用纯净水重做一杯",
+        "result": "correct",
+        "effects": { "money": -8, "reputation": 2, "trust": { "linshu": 3, "guyan": 2 } },
+        "explanation": "水本身就是一味原料，带水垢就别指望味道稳；用纯净水按最简的比例重做一杯，才知道当年问题出在哪。",
+        "knowledge_id": "knowledge-422",
+        "set_flags": ["linshu_past_known"]
+      },
+      {
+        "id": "choice-b",
+        "text": "直接把四行抄回黑板",
+        "result": "wrong",
+        "effects": { "reputation": -1, "trust": { "guyan": -1 } },
+        "explanation": "抄回去也做不出来，等于把当年的窘境再挂一遍。顾言说：先弄清他为什么刮，再谈补。",
+        "knowledge_id": "knowledge-385"
+      },
+      {
+        "id": "choice-c",
+        "text": "翻账本找当年的进货单",
+        "result": "acceptable",
+        "effects": { "energy": -1, "trust": { "guyan": 1 } },
+        "explanation": "账本能证明那阵子进的豆子没问题，却证明不了水。线索只对了一半。",
+        "knowledge_id": "knowledge-385"
+      }
+    ],
+    "reward": {
+      "unlock_knowledge": ["knowledge-385", "knowledge-422"]
+    },
+    "next_stage": "stage-4-12",
+    "recovery": "林叔的旧笔记压在后门柜子里。他写过：味道不对先查水，再查豆，最后才怀疑自己的手。"
+  },
+  {
+    "id": "stage-4-12",
+    "chapter": "chapter-04",
+    "title": "把四行补回去",
+    "type": "business_decision",
+    "goal": "把菜单上被刮掉的四行补回来",
+    "scene": "blackboard",
+    "characters": ["player", "guyan", "xiaoman"],
+    "dialogue": [
+      { "speaker": "xiaoman", "text": "水换了，同一支豆子出来的味道稳住了。那四行补哪几样？" },
+      { "speaker": "guyan", "text": "稿子明天见报。你补什么，我就照着写什么——写错了是我的事，做不出来是你的事。" },
+      { "speaker": "player", "text": "……补能站住的。" }
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "补越南滴漏和挂耳，注明做法",
+        "result": "correct",
+        "effects": { "money": -12, "reputation": 4, "trust": { "guyan": 4, "linshu": 3 } },
+        "explanation": "滴漏壶像沙漏一滴滴滤出一人一杯，挂耳是滤包挂在杯口的滴滤；两样都做得出、说得清，写清做法客人就不会点错。",
+        "knowledge_id": "knowledge-434",
+        "set_flags": ["old_menu_restored", "chapter_04_cleared"]
+      },
+      {
+        "id": "choice-b",
+        "text": "只补两行，剩下先留空",
+        "result": "acceptable",
+        "effects": { "money": -6, "reputation": 1, "trust": { "guyan": 1 } },
+        "explanation": "挂耳这类冲完就扔的懒人方案先上，口感偏酸清淡但比速溶好；补一半也算补，顾言的稿子里就少一段。",
+        "knowledge_id": "knowledge-432",
+        "set_flags": ["old_menu_restored", "chapter_04_cleared"]
+      },
+      {
+        "id": "choice-c",
+        "text": "照当年原样抄，做法不写",
+        "result": "wrong",
+        "effects": { "reputation": -2, "satisfaction_today": -3 },
+        "explanation": "行是补上了，客人点了才发现出不来，跟十一年前一模一样。",
+        "knowledge_id": "knowledge-434",
+        "set_flags": ["chapter_04_cleared"]
+      }
+    ],
+    "reward": {
+      "money": 30,
+      "reputation": 3,
+      "unlock_knowledge": ["knowledge-432", "knowledge-434"],
+      "unlock_upgrade": ["blackboard"]
+    },
+    "next_stage": "stage-5-1",
+    "recovery": "黑板可以擦，报纸下周还有一期。林叔的规矩：菜单上写的每一行，都得当场做得出来。"
+  }
+]

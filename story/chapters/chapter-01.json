@@ -97,7 +97,7 @@
           "satisfaction_today": -3
         },
         "explanation": "调粗会让萃取更不足，味道更淡。浪费了一份豆子。",
-        "knowledge_id": "knowledge-001"
+        "knowledge_id": "knowledge-343"
       },
       {
         "id": "choice-c",
@@ -107,7 +107,7 @@
           "money": -8
         },
         "explanation": "浓度上去了，但萃取率没变，尾韵还是短。成本也更高。",
-        "knowledge_id": "knowledge-001"
+        "knowledge_id": "knowledge-247"
       }
     ],
     "reward": {
@@ -326,7 +326,7 @@
           "reputation": -2
         },
         "explanation": "又往萃取更多的方向走了，第二杯比上一杯还苦。",
-        "knowledge_id": "knowledge-002"
+        "knowledge_id": "knowledge-386"
       },
       {
         "id": "choice-c",
@@ -337,7 +337,7 @@
           "satisfaction_today": 6
         },
         "explanation": "浓度降下来了，但过度萃取带来的涩感还在，只是被冲淡。",
-        "knowledge_id": "knowledge-002"
+        "knowledge_id": "knowledge-246"
       }
     ],
     "reward": {
@@ -398,7 +398,7 @@
           "reputation": -1
         },
         "explanation": "现金留住了，但接下来每杯咖啡的稳定性都要打折。",
-        "knowledge_id": "knowledge-003"
+        "knowledge_id": "knowledge-339"
       }
     ],
     "reward": {
@@ -410,7 +410,7 @@
         "grinder"
       ]
     },
-    "next_stage": null,
+    "next_stage": "stage-2-1",
     "recovery": "没修也不影响推进，后续章节仍可补修。"
   }
 ]

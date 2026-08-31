@@ -1,0 +1,1005 @@
+[
+  {
+    "id": "stage-3-1",
+    "chapter": "chapter-03",
+    "title": "对街的新招牌",
+    "type": "tutorial",
+    "goal": "看清连锁店抢走了什么",
+    "scene": "street",
+    "characters": [
+      "player",
+      "xiaoman",
+      "suhe"
+    ],
+    "dialogue": [
+      {
+        "speaker": "xiaoman",
+        "text": "对面昨晚通宵装修，今早就开门了。九块九一杯，出杯四十秒。"
+      },
+      {
+        "speaker": "suhe",
+        "text": "我是苏禾。数据我摆在门口：早高峰一小时八十杯，每杯误差不超过两秒。"
+      },
+      {
+        "speaker": "suhe",
+        "text": "老店的手艺我尊重。但客人赶时间，你要拼，得先知道自己拼的是什么。"
+      },
+      {
+        "speaker": "player",
+        "text": "……那就拼手上的活儿。"
+      }
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "先站门口数她的客流",
+        "result": "correct",
+        "effects": {
+          "energy": -1
+        },
+        "explanation": "先看清对手的节奏再动手，比空喊守传统有用。一小时八十杯的量你抢不来，只能去抢别的东西。",
+        "knowledge_id": "knowledge-372"
+      },
+      {
+        "id": "choice-b",
+        "text": "回店里把老菜单挂出来",
+        "result": "acceptable",
+        "effects": {
+          "reputation": 1
+        },
+        "explanation": "亮自家招牌不算错，但还没弄清对手强在哪里，后面只能凭感觉调整。",
+        "knowledge_id": "knowledge-325"
+      }
+    ],
+    "reward": {
+      "unlock_knowledge": [
+        "knowledge-325",
+        "knowledge-330",
+        "knowledge-372",
+        "knowledge-373"
+      ]
+    },
+    "next_stage": "stage-3-2"
+  },
+  {
+    "id": "stage-3-2",
+    "chapter": "chapter-03",
+    "title": "磨盘上的粒径",
+    "type": "knowledge_decision",
+    "goal": "把研磨刻度定回能复现的一档",
+    "scene": "bar",
+    "characters": [
+      "player",
+      "xiaoman"
+    ],
+    "dialogue": [
+      {
+        "speaker": "xiaoman",
+        "text": "昨天两拨客人喝的是同一支豆子，一个说酸，一个说苦。"
+      },
+      {
+        "speaker": "player",
+        "text": "……刻度昨天被我来回动了六次。"
+      },
+      {
+        "speaker": "xiaoman",
+        "text": "那就先把粒径定死，再谈水温和时间。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-344",
+      "knowledge-362",
+      "knowledge-323"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "定一档，连冲三杯校对",
+        "result": "correct",
+        "effects": {
+          "money": -6,
+          "satisfaction_today": 6,
+          "energy": -1
+        },
+        "explanation": "粒径先固定，才有基准去调别的变量。连着三杯能看出偏差出在手上还是磨盘上。",
+        "knowledge_id": "knowledge-386"
+      },
+      {
+        "id": "choice-b",
+        "text": "每杯按口味临时改刻度",
+        "result": "wrong",
+        "effects": {
+          "money": -8,
+          "satisfaction_today": -4
+        },
+        "explanation": "变量太多，出了问题分不清是哪一步。熟客要的是每次都一样，不是每次都新鲜。",
+        "knowledge_id": "knowledge-003"
+      },
+      {
+        "id": "choice-c",
+        "text": "先把开封两周的豆用完",
+        "result": "wrong",
+        "effects": {
+          "money": 4,
+          "reputation": -2,
+          "satisfaction_today": -5
+        },
+        "explanation": "豆子讲现烘现磨、阴凉存放，放久了香气先跑掉。省下的成本会从口碑里扣回去。",
+        "knowledge_id": "knowledge-344"
+      }
+    ],
+    "reward": {
+      "unlock_knowledge": [
+        "knowledge-323",
+        "knowledge-340",
+        "knowledge-344",
+        "knowledge-362"
+      ]
+    },
+    "next_stage": "stage-3-3",
+    "recovery": "林叔的笔记里夹着一张刻度表。照着重新定一档，损失的只是几杯豆子。"
+  },
+  {
+    "id": "stage-3-3",
+    "chapter": "chapter-03",
+    "title": "水温差了十度",
+    "type": "knowledge_decision",
+    "goal": "给客人冲一杯不发苦的手冲",
+    "scene": "bar",
+    "characters": [
+      "player",
+      "customer",
+      "xiaoman"
+    ],
+    "dialogue": [
+      {
+        "speaker": "customer",
+        "text": "对面那杯我喝了三天，今天想换换。别给我上苦的。"
+      },
+      {
+        "speaker": "xiaoman",
+        "text": "水刚烧开就搁在那儿了，你自己摸摸壶壁。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-367",
+      "knowledge-328"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "水凉几度再冲，掐着时间",
+        "result": "correct",
+        "effects": {
+          "money": 16,
+          "satisfaction_today": 8,
+          "reputation": 2
+        },
+        "explanation": "刚沸的水会把焦苦一起带出来。水温和冲泡时间一起管住，滴滤这一路才谈得上好喝。",
+        "knowledge_id": "knowledge-367"
+      },
+      {
+        "id": "choice-b",
+        "text": "直接用沸水，冲快一点",
+        "result": "wrong",
+        "effects": {
+          "money": -6,
+          "satisfaction_today": -6,
+          "reputation": -1
+        },
+        "explanation": "水太烫、时间又乱，苦味压过一切。方便和好喝从来不是一回事。",
+        "knowledge_id": "knowledge-367"
+      },
+      {
+        "id": "choice-c",
+        "text": "把冲过的咖啡回锅热一遍",
+        "result": "wrong",
+        "effects": {
+          "money": -4,
+          "satisfaction_today": -8,
+          "reputation": -2
+        },
+        "explanation": "回煮等于把已经萃过的渣再榨一遍，只会更苦更涩。老式渗滤壶就是这么毁掉好豆子的。",
+        "knowledge_id": "knowledge-328"
+      }
+    ],
+    "reward": {
+      "money": 10,
+      "unlock_knowledge": [
+        "knowledge-328",
+        "knowledge-353",
+        "knowledge-360",
+        "knowledge-367"
+      ]
+    },
+    "next_stage": "stage-3-4",
+    "recovery": "小满把水壶挪到窗边晾着。凉两分钟再冲，客人还坐在那儿等第二杯。"
+  },
+  {
+    "id": "stage-3-4",
+    "chapter": "chapter-03",
+    "title": "顾言的四个词",
+    "type": "knowledge_decision",
+    "goal": "学会说清一杯豆子的味道",
+    "scene": "table",
+    "characters": [
+      "player",
+      "guyan"
+    ],
+    "dialogue": [
+      {
+        "speaker": "guyan",
+        "text": "我在专栏里写过对面那家。他们的咖啡说不出错，也说不出话。"
+      },
+      {
+        "speaker": "guyan",
+        "text": "你这杯呢？酸度、醇厚度、香味、风味，四个词，一个一个说给我听。"
+      },
+      {
+        "speaker": "player",
+        "text": "……我只说得出一句好喝。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-375",
+      "knowledge-331"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "两支豆子对着杯测，逐项记",
+        "result": "correct",
+        "effects": {
+          "satisfaction_today": 5,
+          "energy": -1,
+          "trust": {
+            "guyan": 3
+          }
+        },
+        "explanation": "四项尺子摆出来，味道才成了能讨论的东西。反复试杯是笨办法，也是唯一的办法。",
+        "knowledge_id": "knowledge-375"
+      },
+      {
+        "id": "choice-b",
+        "text": "照豆袋上的介绍念一遍",
+        "result": "acceptable",
+        "effects": {
+          "trust": {
+            "guyan": 1
+          }
+        },
+        "explanation": "词说得出来，味道没喝出来。顾言听得出区别，只是当场没说。",
+        "knowledge_id": "knowledge-331"
+      },
+      {
+        "id": "choice-c",
+        "text": "说一句看心情，别太讲究",
+        "result": "wrong",
+        "effects": {
+          "reputation": -2,
+          "trust": {
+            "guyan": -2
+          }
+        },
+        "explanation": "描述不清就没法跟讲品质的人做生意，也没法把改进落到具体某一项上。",
+        "knowledge_id": "knowledge-361"
+      }
+    ],
+    "reward": {
+      "reputation": 2,
+      "unlock_knowledge": [
+        "knowledge-331",
+        "knowledge-361",
+        "knowledge-374",
+        "knowledge-375"
+      ]
+    },
+    "next_stage": "stage-3-5",
+    "recovery": "顾言把杯子推回来：明天再来一次，先只练酸度这一项。"
+  },
+  {
+    "id": "stage-3-5",
+    "chapter": "chapter-03",
+    "title": "闷蒸那半分钟",
+    "type": "knowledge_decision",
+    "goal": "用闷蒸救回一支带土味的豆子",
+    "scene": "bar",
+    "characters": [
+      "player",
+      "customer"
+    ],
+    "dialogue": [
+      {
+        "speaker": "customer",
+        "text": "这支豆子我上回喝出一股土味，你们是不是进错货了。"
+      },
+      {
+        "speaker": "player",
+        "text": "……不是货错了，是这批处理得糙。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-316",
+      "knowledge-319"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "先注一小股水闷三十秒",
+        "result": "correct",
+        "effects": {
+          "money": 18,
+          "satisfaction_today": 7,
+          "reputation": 1
+        },
+        "explanation": "让粉吃透水、把气排掉，后面萃取才均匀。处理留下的杂味压不掉，但至少不再叠上一层乱味。",
+        "knowledge_id": "knowledge-411"
+      },
+      {
+        "id": "choice-b",
+        "text": "一次把水全倒进去",
+        "result": "wrong",
+        "effects": {
+          "money": -6,
+          "satisfaction_today": -5
+        },
+        "explanation": "粉层还在冒气就被水冲开，通道一乱，一杯里又淡又涩。",
+        "knowledge_id": "knowledge-001"
+      },
+      {
+        "id": "choice-c",
+        "text": "换一支水洗豆重冲",
+        "result": "acceptable",
+        "effects": {
+          "money": 12,
+          "satisfaction_today": 4
+        },
+        "explanation": "只摘熟果、下槽水洗的豆子杂味本来就少，换掉最省事，但这支的毛病还搁在那儿。",
+        "knowledge_id": "knowledge-319"
+      }
+    ],
+    "reward": {
+      "money": 12,
+      "unlock_knowledge": [
+        "knowledge-315",
+        "knowledge-316",
+        "knowledge-319",
+        "knowledge-355"
+      ]
+    },
+    "next_stage": "stage-3-6",
+    "recovery": "客人是好奇不是来吵架。第二杯换水洗豆，闷蒸慢一点，照样端得出去。"
+  },
+  {
+    "id": "stage-3-6",
+    "chapter": "chapter-03",
+    "title": "柜子深处的虹吸壶",
+    "type": "crisis",
+    "goal": "修好下座漏气，让虹吸壶能用",
+    "scene": "storage",
+    "characters": [
+      "player",
+      "xiaoman"
+    ],
+    "dialogue": [
+      {
+        "speaker": "xiaoman",
+        "text": "最里面那个箱子，林叔从来不让人碰。是把虹吸壶。"
+      },
+      {
+        "speaker": "player",
+        "text": "……下座有条细缝，胶圈也硬了。"
+      },
+      {
+        "speaker": "xiaoman",
+        "text": "今晚有个熟客说要来。修不好就只能空着摆样子。"
+      }
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "换胶圈，冷水试压再上火",
+        "result": "correct",
+        "effects": {
+          "money": -30,
+          "satisfaction_today": 6,
+          "trust": {
+            "linshu": 3
+          }
+        },
+        "explanation": "虹吸靠下壶蒸汽把水顶上去，半真空一漏就全废。先冷试密封再点火，是最稳的顺序。",
+        "knowledge_id": "knowledge-342",
+        "set_flags": [
+          "siphon_repaired"
+        ]
+      },
+      {
+        "id": "choice-b",
+        "text": "先点火看看还漏不漏",
+        "result": "wrong",
+        "effects": {
+          "money": -20,
+          "reputation": -1,
+          "satisfaction_today": -4
+        },
+        "explanation": "带着漏气直接加热，水推不上去还溅了一台，玻璃也险些炸裂。",
+        "knowledge_id": "knowledge-348"
+      },
+      {
+        "id": "choice-c",
+        "text": "拿胶带缠上先应付今晚",
+        "result": "wrong",
+        "effects": {
+          "money": -6,
+          "reputation": -2,
+          "satisfaction_today": -6
+        },
+        "explanation": "一受热就化开，中途漏气，客人看着咖啡半路停在上壶里下不来。",
+        "knowledge_id": "knowledge-347"
+      }
+    ],
+    "reward": {
+      "unlock_knowledge": [
+        "knowledge-342",
+        "knowledge-347",
+        "knowledge-348",
+        "knowledge-349"
+      ],
+      "unlock_upgrade": [
+        "brewer"
+      ]
+    },
+    "next_stage": "stage-3-7",
+    "recovery": "五金店的胶圈三十块。今晚先用手冲顶上，虹吸壶明天再摆到吧台。"
+  },
+  {
+    "id": "stage-3-7",
+    "chapter": "chapter-03",
+    "title": "法压壶的脾气",
+    "type": "knowledge_decision",
+    "goal": "决定用哪支豆子配法压壶",
+    "scene": "bar",
+    "characters": [
+      "player",
+      "chenshu"
+    ],
+    "dialogue": [
+      {
+        "speaker": "chenshu",
+        "text": "这袋掺了罗布斯塔，便宜三成。抗病高产，第二年就结果，种的人当然爱它。"
+      },
+      {
+        "speaker": "chenshu",
+        "text": "喝起来苦、平。你自己掂量。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-321",
+      "knowledge-335"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "纯阿拉比卡，粗磨四分钟",
+        "result": "correct",
+        "effects": {
+          "money": -12,
+          "satisfaction_today": 7,
+          "trust": {
+            "chenshu": 2
+          }
+        },
+        "explanation": "法压是整杯浸泡，豆子的底子藏不住。粗磨加计时四分钟，才不会把细粉那股涩一起压出来。",
+        "knowledge_id": "knowledge-321"
+      },
+      {
+        "id": "choice-b",
+        "text": "掺三成罗布斯塔压成本",
+        "result": "acceptable",
+        "effects": {
+          "money": 8,
+          "satisfaction_today": -2
+        },
+        "explanation": "成本是降了，可苦涩会把整杯拖下去。深烘配方里还能藏一藏，法压里藏不住。",
+        "knowledge_id": "knowledge-335"
+      },
+      {
+        "id": "choice-c",
+        "text": "细磨，压满六分钟出浓的",
+        "result": "wrong",
+        "effects": {
+          "money": -10,
+          "satisfaction_today": -7,
+          "reputation": -1
+        },
+        "explanation": "细粉泡太久就是过度萃取，满口渣加干涩，越浓越难喝。",
+        "knowledge_id": "knowledge-364"
+      }
+    ],
+    "reward": {
+      "unlock_knowledge": [
+        "knowledge-321",
+        "knowledge-334",
+        "knowledge-335",
+        "knowledge-364"
+      ]
+    },
+    "next_stage": "stage-3-8",
+    "recovery": "陈叔把两杯并排放着让你尝。差在哪儿一口就知道，豆子还剩半袋。"
+  },
+  {
+    "id": "stage-3-8",
+    "chapter": "chapter-03",
+    "title": "要不要跟着降价",
+    "type": "business_decision",
+    "goal": "在对面降价时定下自己的价",
+    "scene": "blackboard",
+    "characters": [
+      "player",
+      "xiaoman",
+      "suhe"
+    ],
+    "dialogue": [
+      {
+        "speaker": "suhe",
+        "text": "我们今天开始买一送一。这条街的均价我压到七块，你们撑不过两周。"
+      },
+      {
+        "speaker": "xiaoman",
+        "text": "跟不跟？跟了就得换便宜豆子，这账我算过。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-345",
+      "knowledge-352"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "价不动，把出杯标准写上黑板",
+        "result": "correct",
+        "effects": {
+          "money": -4,
+          "reputation": 3,
+          "satisfaction_today": 5,
+          "trust": {
+            "xiaoman": 2
+          }
+        },
+        "explanation": "同行往咖啡里兑水保价钱的时候，敢守住品质的人反倒做出了招牌。价格战里你唯一的差别就是那杯东西。",
+        "knowledge_id": "knowledge-352"
+      },
+      {
+        "id": "choice-b",
+        "text": "跟着降到七块，换低价豆",
+        "result": "wrong",
+        "effects": {
+          "money": 10,
+          "reputation": -3,
+          "satisfaction_today": -6
+        },
+        "explanation": "降价必然逼你在原料上让步——掺次豆、甚至把咖啡皮磨进去凑重量，这条路走过的人都翻了车。",
+        "knowledge_id": "knowledge-345"
+      },
+      {
+        "id": "choice-c",
+        "text": "下午做一档小杯优惠",
+        "result": "acceptable",
+        "effects": {
+          "money": 6,
+          "reputation": 1
+        },
+        "explanation": "价签保住了，也接了一点客流，但黑板上还是没写清你凭什么贵。",
+        "knowledge_id": "knowledge-341"
+      }
+    ],
+    "reward": {
+      "money": 15,
+      "unlock_knowledge": [
+        "knowledge-341",
+        "knowledge-345",
+        "knowledge-352",
+        "knowledge-356"
+      ]
+    },
+    "next_stage": "stage-3-9",
+    "recovery": "小满把黑板擦了重写。价钱可以先不动，先把每杯都一样这五个字写清楚。"
+  },
+  {
+    "id": "stage-3-9",
+    "chapter": "chapter-03",
+    "title": "摩卡壶上灶",
+    "type": "knowledge_decision",
+    "goal": "用摩卡壶顶住早高峰的出杯",
+    "scene": "bar",
+    "characters": [
+      "player",
+      "xiaoman"
+    ],
+    "dialogue": [
+      {
+        "speaker": "xiaoman",
+        "text": "早高峰七个人排着，手冲一杯三分钟，你要冲到中午。"
+      },
+      {
+        "speaker": "player",
+        "text": "……把摩卡壶架上，先出浓的，再按人兑。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-350",
+      "knowledge-324"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "中深烘、中细粉、小火听声",
+        "result": "correct",
+        "effects": {
+          "money": 20,
+          "satisfaction_today": 8,
+          "energy": -1
+        },
+        "explanation": "摩卡壶靠蒸汽压力把水顶过粉层，火大就焦。烘得深一点本来就是南欧压苦涩的老办法，配这壶正合。",
+        "knowledge_id": "knowledge-350",
+        "set_flags": [
+          "brew_method_mastered"
+        ]
+      },
+      {
+        "id": "choice-b",
+        "text": "大火催，越快越好",
+        "result": "wrong",
+        "effects": {
+          "money": 6,
+          "satisfaction_today": -6,
+          "reputation": -1
+        },
+        "explanation": "烘豆讲大火快炒是烘焙机上的事，摩卡壶开大火只会把粉烫焦，一壶全是焦味。",
+        "knowledge_id": "knowledge-324"
+      },
+      {
+        "id": "choice-c",
+        "text": "还是一杯杯手冲",
+        "result": "acceptable",
+        "effects": {
+          "money": 12,
+          "satisfaction_today": -2,
+          "energy": -1
+        },
+        "explanation": "杯子没做坏，可队伍散了一半，人转身去了对面。",
+        "knowledge_id": "knowledge-332"
+      }
+    ],
+    "reward": {
+      "money": 18,
+      "unlock_knowledge": [
+        "knowledge-324",
+        "knowledge-332",
+        "knowledge-350",
+        "knowledge-351"
+      ]
+    },
+    "next_stage": "stage-3-10",
+    "recovery": "焦掉那壶倒了就是。壶洗干净，火调到最小重来一次，队还在门口。"
+  },
+  {
+    "id": "stage-3-10",
+    "chapter": "chapter-03",
+    "title": "苏禾坐下来",
+    "type": "story_branch",
+    "goal": "听完对手的算法再决定怎么走",
+    "scene": "table",
+    "characters": [
+      "player",
+      "suhe"
+    ],
+    "dialogue": [
+      {
+        "speaker": "suhe",
+        "text": "我不讨厌你们。我是被派来做数字的：客单价、翻台率、单店坪效，我都背得出。"
+      },
+      {
+        "speaker": "suhe",
+        "text": "豆价这两年翻了一倍。我的采购靠配额协议锁价，可涨价周期里那机制根本不管用。"
+      },
+      {
+        "speaker": "player",
+        "text": "……所以你也在赌。"
+      },
+      {
+        "speaker": "suhe",
+        "text": "都在赌。区别是我赌规模，你赌手艺。"
+      }
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "问清她的采购成本怎么算",
+        "result": "correct",
+        "effects": {
+          "energy": -1,
+          "trust": {
+            "suhe": 3
+          }
+        },
+        "explanation": "把对手的账本听明白，才知道她的低价能撑多久。制度只在跌价时压得住行情，她也被上游按着走。",
+        "knowledge_id": "knowledge-370",
+        "next_stage": "stage-3-11"
+      },
+      {
+        "id": "choice-b",
+        "text": "请她尝一杯虹吸",
+        "result": "acceptable",
+        "effects": {
+          "money": -6,
+          "satisfaction_today": 3,
+          "trust": {
+            "suhe": 2
+          }
+        },
+        "explanation": "她喝完只说了一句稳定性差。但杯子放下时，她又多坐了十分钟。",
+        "next_stage": "stage-3-11",
+        "knowledge_id": "knowledge-326"
+      }
+    ],
+    "reward": {
+      "unlock_knowledge": [
+        "knowledge-326",
+        "knowledge-363",
+        "knowledge-370",
+        "knowledge-371"
+      ]
+    },
+    "next_stage": "stage-3-11"
+  },
+  {
+    "id": "stage-3-11",
+    "chapter": "chapter-03",
+    "title": "爱乐压顶一阵",
+    "type": "knowledge_decision",
+    "goal": "豆子紧张时给客人上一杯稳的",
+    "scene": "bar",
+    "characters": [
+      "player",
+      "customer",
+      "xiaoman"
+    ],
+    "dialogue": [
+      {
+        "speaker": "xiaoman",
+        "text": "陈叔说巴西那边受了灾，下一批要涨价，还得等。"
+      },
+      {
+        "speaker": "customer",
+        "text": "我不管这些。给我一杯跟上回一样的。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-369",
+      "knowledge-357"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "爱乐压短时加压，省粉出杯",
+        "result": "correct",
+        "effects": {
+          "money": 16,
+          "satisfaction_today": 7,
+          "reputation": 1
+        },
+        "explanation": "加压短时萃取，粉量省、变量少，豆子紧的时候最好控。这种日子里稳定比花样值钱。",
+        "knowledge_id": "knowledge-357"
+      },
+      {
+        "id": "choice-b",
+        "text": "把粉量加倍冲浓的",
+        "result": "wrong",
+        "effects": {
+          "money": -8,
+          "satisfaction_today": -5
+        },
+        "explanation": "浓度上去了，库存也下去了。树冻死了补种也要四年才结果，这么用撑不到月底。",
+        "knowledge_id": "knowledge-369"
+      },
+      {
+        "id": "choice-c",
+        "text": "跟客人说缺货，改天再来",
+        "result": "acceptable",
+        "effects": {
+          "reputation": -1,
+          "satisfaction_today": -2
+        },
+        "explanation": "老实，可客人转身就去了对面。缺货是你的事，不是他的事。",
+        "knowledge_id": "knowledge-368"
+      }
+    ],
+    "reward": {
+      "money": 12,
+      "unlock_knowledge": [
+        "knowledge-357",
+        "knowledge-368",
+        "knowledge-369"
+      ]
+    },
+    "next_stage": "stage-3-12",
+    "recovery": "小满从后柜翻出半袋去年的备货。省着用，配爱乐压还能出十几杯。"
+  },
+  {
+    "id": "stage-3-12",
+    "chapter": "chapter-03",
+    "title": "黑板上的产地",
+    "type": "business_decision",
+    "goal": "决定黑板怎么写产地和价钱",
+    "scene": "blackboard",
+    "characters": [
+      "player",
+      "xiaoman",
+      "guyan"
+    ],
+    "dialogue": [
+      {
+        "speaker": "guyan",
+        "text": "你写精品咖啡四个字，对面也写。写了等于没写。"
+      },
+      {
+        "speaker": "xiaoman",
+        "text": "那写什么？"
+      },
+      {
+        "speaker": "player",
+        "text": "……写这支豆子长在什么地方，怎么摘的。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-354",
+      "knowledge-318"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "写清产地、海拔和处理方式",
+        "result": "correct",
+        "effects": {
+          "reputation": 3,
+          "satisfaction_today": 5,
+          "trust": {
+            "guyan": 2
+          }
+        },
+        "explanation": "讲清豆子从哪儿来本身就能加价。一个立得住的产地形象，比黑板上任何形容词都值钱。",
+        "knowledge_id": "knowledge-354"
+      },
+      {
+        "id": "choice-b",
+        "text": "写全街最低价",
+        "result": "wrong",
+        "effects": {
+          "money": 6,
+          "reputation": -3
+        },
+        "explanation": "把自己拖进对面的赛道，而那条赛道上你的成本永远更高。",
+        "knowledge_id": "knowledge-320"
+      },
+      {
+        "id": "choice-c",
+        "text": "只写豆名和价钱",
+        "result": "acceptable",
+        "effects": {
+          "reputation": 1
+        },
+        "explanation": "干净，可客人还是不知道这一杯贵在哪儿。",
+        "knowledge_id": "knowledge-318"
+      }
+    ],
+    "reward": {
+      "reputation": 2,
+      "unlock_knowledge": [
+        "knowledge-318",
+        "knowledge-320",
+        "knowledge-327",
+        "knowledge-354"
+      ],
+      "unlock_upgrade": [
+        "blackboard"
+      ]
+    },
+    "next_stage": "stage-3-13",
+    "recovery": "顾言掏出笔：黑板重写一遍，先把这支豆子的山名写上去。"
+  },
+  {
+    "id": "stage-3-13",
+    "chapter": "chapter-03",
+    "title": "熟客回来了",
+    "type": "knowledge_decision",
+    "goal": "把稳定的出杯变成留客的理由",
+    "scene": "door",
+    "characters": [
+      "player",
+      "xiaoman",
+      "guyan"
+    ],
+    "dialogue": [
+      {
+        "speaker": "guyan",
+        "text": "这半个月我每天路过。今天进来，是因为你门口那股味道跟三年前一样。"
+      },
+      {
+        "speaker": "xiaoman",
+        "text": "早上八点开始烘一小锅，香味自己会往街上跑。"
+      },
+      {
+        "speaker": "player",
+        "text": "……那就每天八点。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-332",
+      "knowledge-333"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "每天现烘一锅，配一份点心",
+        "result": "correct",
+        "effects": {
+          "money": -8,
+          "reputation": 4,
+          "satisfaction_today": 8,
+          "trust": {
+            "guyan": 3,
+            "xiaoman": 2
+          }
+        },
+        "explanation": "现煮的香气把人拉进门，一份搭着卖的点心让他坐下来。留客靠的是这两件小事，不是喊口号。",
+        "knowledge_id": "knowledge-332",
+        "set_flags": [
+          "brew_method_mastered",
+          "chapter_03_cleared"
+        ]
+      },
+      {
+        "id": "choice-b",
+        "text": "香气就够了，点心先不做",
+        "result": "acceptable",
+        "effects": {
+          "reputation": 2,
+          "satisfaction_today": 4,
+          "trust": {
+            "guyan": 1
+          }
+        },
+        "explanation": "人是进来了，拿了杯子就走。连带那一口没做上，客单价还是老样子。",
+        "knowledge_id": "knowledge-333",
+        "set_flags": [
+          "chapter_03_cleared"
+        ]
+      },
+      {
+        "id": "choice-c",
+        "text": "把半个月的出杯记录贴门口",
+        "result": "acceptable",
+        "effects": {
+          "reputation": 3,
+          "satisfaction_today": 3
+        },
+        "explanation": "顾言看得懂，路人看不懂。诚意有了，可把人拉进门还是得靠那股香味。",
+        "set_flags": [
+          "chapter_03_cleared"
+        ],
+        "knowledge_id": "knowledge-366"
+      }
+    ],
+    "reward": {
+      "money": 20,
+      "reputation": 3,
+      "unlock_knowledge": [
+        "knowledge-333",
+        "knowledge-365",
+        "knowledge-366"
+      ]
+    },
+    "next_stage": "stage-4-1"
+  }
+]

@@ -32,16 +32,18 @@ describe('第一天营业闭环', () => {
     expect(save.money).toBe(200);
     expect(save.current_stage).toBe('stage-1-1');
 
+    // 第一章末尾已经接到第二章，所以走到章节号变化就停，别把后面几章也走完
     let guard = 0;
-    while (save.current_stage && guard++ < 20) {
+    while (save.current_stage && getStage(save.current_stage)?.chapter === 'chapter-01' && guard++ < 20) {
       const stage = getStage(save.current_stage)!;
       const choice = goodChoice(stage.id);
       save = applyEffects(save, choice.effects).save;
       save = settleStage(save, stage, choice).save;
     }
 
-    // 走完第一章全部关卡，没有死循环
-    expect(save.current_stage).toBe('');
+    // 走完第一章全部关卡，没有死循环，且顺势推进到第二章开头
+    expect(save.current_stage).toBe('stage-2-1');
+    expect(save.current_chapter).toBe('chapter-02');
     expect(save.completed_stages).toEqual([
       'stage-1-1',
       'stage-1-2',

@@ -1,0 +1,644 @@
+[
+  {
+    "id": "stage-5-1",
+    "chapter": "chapter-05",
+    "title": "后门的便宜蓝山",
+    "type": "tutorial",
+    "goal": "先弄清这批豆的来路",
+    "scene": "backdoor",
+    "characters": [
+      "player",
+      "xiaoman"
+    ],
+    "dialogue": [
+      {
+        "speaker": "xiaoman",
+        "text": "后门堆了六袋豆，说是牙买加蓝山。一斤的价钱，比陈叔那支巴西还便宜。"
+      },
+      {
+        "speaker": "player",
+        "text": "……蓝山一年就那么点产量。"
+      },
+      {
+        "speaker": "xiaoman",
+        "text": "送货的人留了张名片，说明天来收钱。"
+      }
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "按老规矩先验豆再谈钱",
+        "result": "correct",
+        "effects": {
+          "trust": {
+            "xiaoman": 2
+          }
+        },
+        "explanation": "蓝山靠的是地形也靠名气，价里有一大半是名声。便宜得反常先当疑点，验完再谈钱。",
+        "knowledge_id": "knowledge-241"
+      },
+      {
+        "id": "choice-b",
+        "text": "留一袋做样品，其余不收",
+        "result": "acceptable",
+        "effects": {
+          "money": -30
+        },
+        "explanation": "样品钱花得不多，风险也压住了，只是来历还没弄清，账先记着。",
+        "knowledge_id": "knowledge-438"
+      },
+      {
+        "id": "choice-c",
+        "text": "趁便宜六袋全收下",
+        "result": "wrong",
+        "effects": {
+          "money": -60,
+          "reputation": -2
+        },
+        "explanation": "咖啡馆里卖的蓝山绝大多数是假的，六袋一起进门，等于把整店的招牌押在一张名片上。",
+        "knowledge_id": "knowledge-439"
+      }
+    ],
+    "reward": {
+      "unlock_knowledge": [
+        "knowledge-240",
+        "knowledge-241",
+        "knowledge-438",
+        "knowledge-439"
+      ]
+    },
+    "next_stage": "stage-5-2",
+    "recovery": "林叔信里写过：拿不准的豆别付全款。留一袋做样品，其余的还能推回去。"
+  },
+  {
+    "id": "stage-5-2",
+    "chapter": "chapter-05",
+    "title": "包装袋上的产区",
+    "type": "knowledge_decision",
+    "goal": "核对袋子上的产区与海拔",
+    "scene": "storage",
+    "characters": [
+      "player",
+      "xiaoman"
+    ],
+    "dialogue": [
+      {
+        "speaker": "xiaoman",
+        "text": "袋子上印着「牙买加蓝山产区·海拔2000米」，下面还压了个我没见过的认证章。"
+      },
+      {
+        "speaker": "player",
+        "text": "蓝山那片山够不到两千米。批号还是手写的。"
+      },
+      {
+        "speaker": "xiaoman",
+        "text": "章的边缘糊了一圈，像复印上去的。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-258",
+      "knowledge-446",
+      "knowledge-240"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "逐条核产区名、海拔、批号",
+        "result": "correct",
+        "effects": {
+          "energy": -1,
+          "trust": {
+            "xiaoman": 2
+          }
+        },
+        "explanation": "被正式认可的风土产区名字是有数的，海拔也要配得上纬度和临海条件。三项里两项对不上，袋子就是编的。",
+        "knowledge_id": "knowledge-258"
+      },
+      {
+        "id": "choice-b",
+        "text": "海拔标得高就算好豆",
+        "result": "wrong",
+        "effects": {
+          "reputation": -1
+        },
+        "explanation": "海拔不是万灵药。同一个高度换个地方咖啡树根本熟不了，光看数字最容易被牵着走。",
+        "knowledge_id": "knowledge-256"
+      },
+      {
+        "id": "choice-c",
+        "text": "先拍下袋子存证再查章",
+        "result": "acceptable",
+        "effects": {
+          "energy": -1
+        },
+        "explanation": "留证是对的，只是没当场比对产区名，明天谈的时候手里少一条硬的。",
+        "knowledge_id": "knowledge-257"
+      }
+    ],
+    "reward": {
+      "unlock_knowledge": [
+        "knowledge-256",
+        "knowledge-257",
+        "knowledge-258",
+        "knowledge-446"
+      ]
+    },
+    "next_stage": "stage-5-3",
+    "recovery": "林叔的话：数字最会唬人。问他这豆种在哪面坡、几月采的，答不上来就不必再看袋子。"
+  },
+  {
+    "id": "stage-5-3",
+    "chapter": "chapter-05",
+    "title": "这批豆的价钱",
+    "type": "business_decision",
+    "goal": "判断这批豆的价钱合不合理",
+    "scene": "table",
+    "characters": [
+      "player",
+      "chenshu"
+    ],
+    "dialogue": [
+      {
+        "speaker": "chenshu",
+        "text": "蓝山的进价我记得住。他给你的数，连哥伦比亚特选都拿不下来。"
+      },
+      {
+        "speaker": "chenshu",
+        "text": "有机、公平贸易的章一贴，每磅还要往上加钱。他倒往下减。"
+      },
+      {
+        "speaker": "player",
+        "text": "……价钱本身就是个破口。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-251",
+      "knowledge-252"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "按产地行情算一遍成本",
+        "result": "correct",
+        "effects": {
+          "trust": {
+            "chenshu": 3
+          }
+        },
+        "explanation": "生豆按产国的平均品质分档定价，认证还要再加溢价。这个价连普通豆都不够，反过来说明标签是假的。",
+        "knowledge_id": "knowledge-251"
+      },
+      {
+        "id": "choice-b",
+        "text": "便宜就是渠道优势，先囤",
+        "result": "wrong",
+        "effects": {
+          "money": -40,
+          "reputation": -2
+        },
+        "explanation": "把低价当渠道优势，等于替对方的假标签买单，钱和口碑都要赔进去。",
+        "knowledge_id": "knowledge-336"
+      },
+      {
+        "id": "choice-c",
+        "text": "请陈叔抄一份真实价单",
+        "result": "acceptable",
+        "effects": {
+          "money": -10,
+          "trust": {
+            "chenshu": 2
+          }
+        },
+        "explanation": "拿到对照价单是硬证据，只是多花一点跑腿钱，结论要等明天才齐。",
+        "knowledge_id": "knowledge-252"
+      }
+    ],
+    "reward": {
+      "reputation": 1,
+      "unlock_knowledge": [
+        "knowledge-251",
+        "knowledge-252",
+        "knowledge-336"
+      ]
+    },
+    "next_stage": "stage-5-4",
+    "recovery": "陈叔留了话：钱先别打过去。豆放我这儿存两天，价单我给你抄一份。"
+  },
+  {
+    "id": "stage-5-4",
+    "chapter": "chapter-05",
+    "title": "剥一颗看看",
+    "type": "knowledge_decision",
+    "goal": "用手上的办法验豆的新鲜度",
+    "scene": "storage",
+    "characters": [
+      "player",
+      "xiaoman"
+    ],
+    "dialogue": [
+      {
+        "speaker": "xiaoman",
+        "text": "抓一把出来，大小差得挺远，还有几颗发暗。"
+      },
+      {
+        "speaker": "player",
+        "text": "剥一颗试试。新鲜的一掰就松。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-447",
+      "knowledge-436",
+      "knowledge-440"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "闻、看、剥、尝挨着做一遍",
+        "result": "correct",
+        "effects": {
+          "energy": -1,
+          "satisfaction_today": 2
+        },
+        "explanation": "验新鲜有一套顺序：闻香气、看形状颜色、剥开试松脆、咬一口试脆度。陈豆要很费力才剥得开。",
+        "knowledge_id": "knowledge-447"
+      },
+      {
+        "id": "choice-b",
+        "text": "豆子大就算好，直接下锅烘",
+        "result": "wrong",
+        "effects": {
+          "money": -6,
+          "satisfaction_today": -4
+        },
+        "explanation": "大小只是分级里的一项，肯尼亚那套七级还要看形状和硬度。光看大就下手，烘出来一锅生熟不匀。",
+        "knowledge_id": "knowledge-436"
+      },
+      {
+        "id": "choice-c",
+        "text": "只挑掉发暗的，其余照用",
+        "result": "acceptable",
+        "effects": {
+          "energy": -1
+        },
+        "explanation": "挑瑕疵豆有用，但没验新鲜度，陈豆混在里头照样喝得出来。",
+        "knowledge_id": "knowledge-440"
+      }
+    ],
+    "reward": {
+      "unlock_knowledge": [
+        "knowledge-436",
+        "knowledge-440",
+        "knowledge-447"
+      ]
+    },
+    "next_stage": "stage-5-5",
+    "recovery": "废掉的那一锅记在损耗里。林叔说过：验豆这四步谁都会，缺的只是耐心。"
+  },
+  {
+    "id": "stage-5-5",
+    "chapter": "chapter-05",
+    "title": "客人点了蓝山",
+    "type": "knowledge_decision",
+    "goal": "决定给点蓝山的客人上哪一杯",
+    "scene": "bar",
+    "characters": [
+      "player",
+      "customer",
+      "xiaoman"
+    ],
+    "dialogue": [
+      {
+        "speaker": "customer",
+        "text": "听说你们进了蓝山？给我来一杯。"
+      },
+      {
+        "speaker": "xiaoman",
+        "text": "……袋子还在仓库里，验没验完你自己清楚。"
+      },
+      {
+        "speaker": "player",
+        "text": "先说清这杯是什么，再冲。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-438",
+      "knowledge-439",
+      "knowledge-437"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "说明来历，改推危地马拉",
+        "result": "correct",
+        "effects": {
+          "money": 16,
+          "satisfaction_today": 8,
+          "reputation": 2,
+          "trust": {
+            "xiaoman": 2
+          }
+        },
+        "explanation": "咖啡馆里的蓝山九成九是假货。与其顶着名字卖，不如端上烟丝味清楚的危地马拉，客人喝到的是真的。",
+        "knowledge_id": "knowledge-439"
+      },
+      {
+        "id": "choice-b",
+        "text": "就当蓝山卖，价钱翻一倍",
+        "result": "wrong",
+        "effects": {
+          "money": 30,
+          "reputation": -3,
+          "satisfaction_today": -6
+        },
+        "explanation": "赚了一杯的钱，押进去的是店的名声。蓝山那种酸苦甘均衡装不出来，喝得出的人不止一个。",
+        "knowledge_id": "knowledge-438"
+      },
+      {
+        "id": "choice-c",
+        "text": "拿曼特宁深烘顶上不解释",
+        "result": "acceptable",
+        "effects": {
+          "money": 14,
+          "satisfaction_today": 3
+        },
+        "explanation": "曼特宁苦味厚、酸度低，和蓝山的均衡差得远。客人没喝出来，但你心里知道换了。",
+        "knowledge_id": "knowledge-437"
+      }
+    ],
+    "reward": {
+      "money": 10,
+      "unlock_knowledge": [
+        "knowledge-437",
+        "knowledge-441",
+        "knowledge-442",
+        "knowledge-443"
+      ]
+    },
+    "next_stage": "stage-5-6",
+    "recovery": "这杯钱不要了，重做一杯说清楚。林叔的规矩：菜单上写什么，杯子里就得是什么。"
+  },
+  {
+    "id": "stage-5-6",
+    "chapter": "chapter-05",
+    "title": "当面拆这批豆",
+    "type": "crisis",
+    "goal": "当着送货的人拆穿假蓝山",
+    "scene": "door",
+    "characters": [
+      "player",
+      "xiaoman",
+      "guyan"
+    ],
+    "dialogue": [
+      {
+        "speaker": "guyan",
+        "text": "我今天带了笔。你要拆，就当着我拆。"
+      },
+      {
+        "speaker": "xiaoman",
+        "text": "人来了，站在门口不肯进来。"
+      },
+      {
+        "speaker": "player",
+        "text": "袋子上写着蓝山，杯子里是另一回事。产区、批号、认证章，一条条对。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-337",
+      "knowledge-444",
+      "knowledge-445"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "逐条对完，留一只袋子作证",
+        "result": "correct",
+        "effects": {
+          "reputation": 4,
+          "trust": {
+            "guyan": 3,
+            "xiaoman": 2
+          }
+        },
+        "explanation": "蓝山以浓稠醇厚立名，杯子里这股轻飘的浆果酸更像中美洲的中烘豆。三处标记全对不上，话就说得住。",
+        "knowledge_id": "knowledge-337",
+        "set_flags": [
+          "fake_bluemountain_exposed"
+        ]
+      },
+      {
+        "id": "choice-b",
+        "text": "只说不像蓝山，不留证据",
+        "result": "acceptable",
+        "effects": {
+          "reputation": 1,
+          "trust": {
+            "guyan": 1
+          }
+        },
+        "explanation": "人是退了货，可空口无凭。换个袋子再送来，还是同一套说法。",
+        "set_flags": [
+          "fake_bluemountain_exposed"
+        ],
+        "knowledge_id": "knowledge-445"
+      },
+      {
+        "id": "choice-c",
+        "text": "先收下，回头私下退掉",
+        "result": "wrong",
+        "effects": {
+          "money": -20,
+          "reputation": -3
+        },
+        "explanation": "私下退最省事，也等于把这批豆放去下一家。街上还有别的店会接。",
+        "knowledge_id": "knowledge-444"
+      }
+    ],
+    "reward": {
+      "reputation": 2,
+      "unlock_knowledge": [
+        "knowledge-337",
+        "knowledge-338",
+        "knowledge-444",
+        "knowledge-445"
+      ]
+    },
+    "next_stage": "stage-5-7",
+    "recovery": "顾言把那只空袋子折好收起来：留着。他明天要是还来，这袋子比嘴管用。"
+  },
+  {
+    "id": "stage-5-7",
+    "chapter": "chapter-05",
+    "title": "名字与来处",
+    "type": "story_branch",
+    "goal": "决定黑板和专栏怎么写",
+    "scene": "blackboard",
+    "characters": [
+      "player",
+      "xiaoman",
+      "guyan"
+    ],
+    "dialogue": [
+      {
+        "speaker": "guyan",
+        "text": "这事我写不写？写了，对店里未必全是好话。"
+      },
+      {
+        "speaker": "xiaoman",
+        "text": "黑板上要不要把产地都标出来？"
+      },
+      {
+        "speaker": "player",
+        "text": "标。哪个国家、哪面坡、什么土。"
+      }
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "黑板按产国和庄园重写",
+        "result": "correct",
+        "effects": {
+          "reputation": 3,
+          "trust": {
+            "guyan": 2
+          }
+        },
+        "explanation": "摩卡这名字原本只是也门那个出口港，跟风味没关系。把国别、坡向、土壤写明白，客人才不靠名字买单。",
+        "knowledge_id": "knowledge-301",
+        "next_stage": "stage-5-8"
+      },
+      {
+        "id": "choice-b",
+        "text": "让顾言写，店里不多说",
+        "result": "acceptable",
+        "effects": {
+          "reputation": 2,
+          "trust": {
+            "guyan": 3
+          }
+        },
+        "explanation": "借他的专栏把事说清也行，只是黑板照旧，进门的客人还是只认那几个名字。",
+        "next_stage": "stage-5-8",
+        "knowledge_id": "knowledge-250"
+      },
+      {
+        "id": "choice-c",
+        "text": "只标国家，不写庄园",
+        "result": "acceptable",
+        "effects": {
+          "reputation": 1,
+          "trust": {
+            "xiaoman": 1
+          }
+        },
+        "explanation": "写到国别已经比大多数店细了，但同一国里坡向和土壤差出去的那一截，还是说不清。",
+        "knowledge_id": "knowledge-259",
+        "next_stage": "stage-5-8"
+      }
+    ],
+    "reward": {
+      "unlock_knowledge": [
+        "knowledge-250",
+        "knowledge-259",
+        "knowledge-301"
+      ]
+    },
+    "next_stage": "stage-5-8"
+  },
+  {
+    "id": "stage-5-8",
+    "chapter": "chapter-05",
+    "title": "围裙挂回钩子",
+    "type": "business_decision",
+    "goal": "定下以后的豆单方向",
+    "scene": "bar",
+    "characters": [
+      "player",
+      "linshu",
+      "xiaoman"
+    ],
+    "dialogue": [
+      {
+        "speaker": "linshu",
+        "text": "门后那只空袋子我看见了。留着是对的。"
+      },
+      {
+        "speaker": "linshu",
+        "text": "围裙还在原来那个钩子上。我先挂回去，明天的单子你排。"
+      },
+      {
+        "speaker": "player",
+        "text": "……菜单要重排。以后按产地写。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-242",
+      "knowledge-243"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "留三支单品，按产地讲清",
+        "result": "correct",
+        "effects": {
+          "reputation": 3,
+          "trust": {
+            "linshu": 4
+          }
+        },
+        "explanation": "口味是被市场教出来的，法国人先喝惯了苦才爱上罗布斯塔。想让客人认产地，就得先把产地摆到菜单上。",
+        "knowledge_id": "knowledge-248",
+        "set_flags": [
+          "linshu_returned",
+          "chapter_05_cleared"
+        ]
+      },
+      {
+        "id": "choice-b",
+        "text": "学对面上罗布斯塔拼配",
+        "result": "acceptable",
+        "effects": {
+          "money": 20,
+          "reputation": -1,
+          "trust": {
+            "linshu": 1
+          }
+        },
+        "explanation": "那不勒斯那路浓烈甘甜靠罗布斯塔加大量糖，成本低来钱快，只是和这间店攒下的信誉不是一条路。",
+        "knowledge_id": "knowledge-242",
+        "set_flags": [
+          "linshu_returned",
+          "chapter_05_cleared"
+        ]
+      },
+      {
+        "id": "choice-c",
+        "text": "单品和拼配各留一半",
+        "result": "acceptable",
+        "effects": {
+          "money": 10,
+          "reputation": 1,
+          "trust": {
+            "linshu": 2
+          }
+        },
+        "explanation": "拼配不是不能做，但配比要自己定。一半罗布斯塔的浓缩，卡布奇诺再好也救不回那一口。",
+        "knowledge_id": "knowledge-243",
+        "set_flags": [
+          "linshu_returned",
+          "chapter_05_cleared"
+        ]
+      }
+    ],
+    "reward": {
+      "money": 20,
+      "reputation": 2,
+      "unlock_knowledge": [
+        "knowledge-242",
+        "knowledge-243",
+        "knowledge-248"
+      ]
+    },
+    "next_stage": null
+  }
+]

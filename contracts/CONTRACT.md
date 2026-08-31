@@ -74,3 +74,13 @@ npm run validate
   跨轨引用规则的例外：咖啡豆 `usable_drinks` 与关卡 `choices[].drink_id` 指向不存在的饮品报 **error**，
   不像知识卡那样降级成占位——出不了的饮品会让营业流程卡死。
   饮品 ID 用 `drink-<英文名>` 形式，不参与按书分配的三位数号段。
+- 2026-08-31 为第 2~5 章开工，`state-keys.json` 的 `flags.known` 从 4 个扩到 16 个，
+  新增：`chenshu_deal_signed`、`origin_lesson_learned`、`chapter_02_cleared`、
+  `brew_method_mastered`、`siphon_repaired`、`chapter_03_cleared`、
+  `old_menu_restored`、`linshu_past_known`、`chapter_04_cleared`、
+  `fake_bluemountain_exposed`、`linshu_returned`、`chapter_05_cleared`。
+  每章各自只用分配给它的那几个 flag，`chapter_0N_cleared` 由轨道 3 在收工结算时按当前章节号自动置位。
+  轨道 3 的线索面板需要为每个新 flag 配一句文案，缺文案不影响运行，只是线索页少一行。
+- 2026-08-31 `story/characters.json` 补齐 3 个角色：`chenshu`（豆商）、`suhe`（对街连锁店长）、`guyan`（写专栏的熟客）。
+  这三个 ID 早已在 `character.schema.json` 与 `state-keys.json` 的 `trust.characters` 白名单里，
+  但角色文件一直没落地，第一章又已经在写 `trust.chenshu`——补上前校验器抓不到这个洞。

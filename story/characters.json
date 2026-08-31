@@ -28,6 +28,36 @@
     "one_line": "店员兼邻居，总想上新菜单"
   },
   {
+    "id": "chenshu",
+    "name": "陈叔",
+    "role": "supplier",
+    "personality": ["精明", "话少", "认豆不认人"],
+    "trust_level": 10,
+    "unlockable_stories": ["story-chenshu-01"],
+    "avatar": null,
+    "one_line": "给林叔供了二十年生豆的老豆商"
+  },
+  {
+    "id": "suhe",
+    "name": "苏禾",
+    "role": "rival",
+    "personality": ["自信", "讲效率", "看不上老做法"],
+    "trust_level": 10,
+    "unlockable_stories": ["story-suhe-01"],
+    "avatar": null,
+    "one_line": "街对面新开连锁店的年轻店长"
+  },
+  {
+    "id": "guyan",
+    "name": "顾言",
+    "role": "regular",
+    "personality": ["挑剔", "记性好", "会写字"],
+    "trust_level": 10,
+    "unlockable_stories": ["story-guyan-01"],
+    "avatar": null,
+    "one_line": "在本地专栏写咖啡的老熟客"
+  },
+  {
     "id": "customer",
     "name": "客人",
     "role": "customer",

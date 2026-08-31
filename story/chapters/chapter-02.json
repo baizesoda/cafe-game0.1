@@ -1,0 +1,858 @@
+[
+  {
+    "id": "stage-2-1",
+    "chapter": "chapter-02",
+    "title": "清一遍豆罐底",
+    "type": "tutorial",
+    "goal": "盘清仓库还剩多少豆",
+    "scene": "storage",
+    "characters": [
+      "player",
+      "xiaoman"
+    ],
+    "dialogue": [
+      {
+        "speaker": "xiaoman",
+        "text": "深烘那罐只够三天了。浅烘的更少。"
+      },
+      {
+        "speaker": "xiaoman",
+        "text": "袋子上印着百分百阿拉比卡，可林叔从来不看标签。"
+      },
+      {
+        "speaker": "player",
+        "text": "……那就靠嘴，不靠字。"
+      }
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "逐罐试烘度和新鲜度",
+        "result": "correct",
+        "effects": {
+          "energy": -1
+        },
+        "explanation": "标称百分百阿拉比卡的意式豆也可能掺了一成罗布斯塔。手里摸、鼻子闻，杯子里的味道才算数。",
+        "knowledge_id": "knowledge-244"
+      },
+      {
+        "id": "choice-b",
+        "text": "照标签抄个清单",
+        "result": "acceptable",
+        "effects": {},
+        "explanation": "数字对上了，风味没人知道。清单能交差，谈进货时容易吃亏。",
+        "knowledge_id": "knowledge-447"
+      }
+    ],
+    "reward": {
+      "unlock_knowledge": [
+        "knowledge-244",
+        "knowledge-245",
+        "knowledge-247",
+        "knowledge-300"
+      ]
+    },
+    "next_stage": "stage-2-2"
+  },
+  {
+    "id": "stage-2-2",
+    "chapter": "chapter-02",
+    "title": "陈叔的一车样品",
+    "type": "knowledge_decision",
+    "goal": "从两袋样品里认出硬豆",
+    "scene": "backdoor",
+    "characters": [
+      "player",
+      "chenshu"
+    ],
+    "dialogue": [
+      {
+        "speaker": "chenshu",
+        "text": "两袋样品。一袋硬豆，一袋软豆。分得出来，价钱好谈。"
+      },
+      {
+        "speaker": "chenshu",
+        "text": "看密度，看颗粒。别看袋子。"
+      },
+      {
+        "speaker": "player",
+        "text": "……高的那块地，昼夜温差压着树慢慢长。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-313",
+      "knowledge-314",
+      "knowledge-255"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "挑密度高、颗粒紧的那袋",
+        "result": "correct",
+        "effects": {
+          "energy": -1,
+          "reputation": 1,
+          "trust": {
+            "chenshu": 3
+          }
+        },
+        "explanation": "高海拔的树长得慢，密度高、口感扎实，行里叫硬豆；低海拔长得快、酸味淡、密度低，是软豆。",
+        "knowledge_id": "knowledge-314",
+        "set_flags": [
+          "origin_lesson_learned"
+        ]
+      },
+      {
+        "id": "choice-b",
+        "text": "挑个头大、颜色亮的那袋",
+        "result": "wrong",
+        "effects": {
+          "energy": -1,
+          "trust": {
+            "chenshu": -1
+          }
+        },
+        "explanation": "个头和光泽跟海拔没关系。软豆挑得再漂亮，杯子里还是薄。",
+        "knowledge_id": "knowledge-314"
+      },
+      {
+        "id": "choice-c",
+        "text": "让陈叔直接报哪袋好",
+        "result": "acceptable",
+        "effects": {},
+        "explanation": "他会给答案，也记住了你不会自己看。阿拉比卡挑地方，海拔那条线得你自己盯。",
+        "knowledge_id": "knowledge-313"
+      }
+    ],
+    "reward": {
+      "unlock_knowledge": [
+        "knowledge-313",
+        "knowledge-314",
+        "knowledge-255",
+        "knowledge-254"
+      ]
+    },
+    "next_stage": "stage-2-3",
+    "recovery": "陈叔没收袋子：两袋都留下，你自己烘一遍再说。看错一次不丢单子，丢的是议价的底气。"
+  },
+  {
+    "id": "stage-2-3",
+    "chapter": "chapter-02",
+    "title": "坡向和雨水",
+    "type": "knowledge_decision",
+    "goal": "判断产区光照雨水怎么改风味",
+    "scene": "backdoor",
+    "characters": [
+      "player",
+      "chenshu",
+      "xiaoman"
+    ],
+    "dialogue": [
+      {
+        "speaker": "chenshu",
+        "text": "这批向阳坡。园子里留了遮阴树，没砍。"
+      },
+      {
+        "speaker": "xiaoman",
+        "text": "遮阴树不抢光照吗？"
+      },
+      {
+        "speaker": "player",
+        "text": "……全遮不结果，全晒也长不好。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-264",
+      "knowledge-265",
+      "knowledge-253"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "认下留遮阴树的那块地",
+        "result": "correct",
+        "effects": {
+          "reputation": 2,
+          "trust": {
+            "chenshu": 2
+          }
+        },
+        "explanation": "有树荫的园子果子更重更大，香气、酸质和醇厚度都更好。遮阴管理本身就是品质工程。",
+        "knowledge_id": "knowledge-265"
+      },
+      {
+        "id": "choice-b",
+        "text": "只要全日照那块地",
+        "result": "wrong",
+        "effects": {
+          "reputation": -1,
+          "trust": {
+            "chenshu": -1
+          }
+        },
+        "explanation": "光照得调控，全遮全晒都不行。种进密林只长叶不结果，一公顷收不到五十千克。",
+        "knowledge_id": "knowledge-264"
+      },
+      {
+        "id": "choice-c",
+        "text": "先问这块地年降雨多少",
+        "result": "acceptable",
+        "effects": {},
+        "explanation": "问得对，年灌溉量一千六到两千毫升最舒服，太干太湿风味都变——只是你没接住遮阴这条。",
+        "knowledge_id": "knowledge-253"
+      }
+    ],
+    "reward": {
+      "unlock_knowledge": [
+        "knowledge-253",
+        "knowledge-264",
+        "knowledge-265"
+      ]
+    },
+    "next_stage": "stage-2-4",
+    "recovery": "林叔的旧笔记里夹着这块地的照片：树冠是特意留出来的，不是忘了砍。看清了再挑批次。"
+  },
+  {
+    "id": "stage-2-4",
+    "chapter": "chapter-02",
+    "title": "树几岁了",
+    "type": "knowledge_decision",
+    "goal": "按树龄给招牌豆定批次",
+    "scene": "backdoor",
+    "characters": [
+      "player",
+      "chenshu"
+    ],
+    "dialogue": [
+      {
+        "speaker": "chenshu",
+        "text": "一支幼树瑰夏，一支十年壮树。都能卖，价不一样。"
+      },
+      {
+        "speaker": "chenshu",
+        "text": "你店里要清爽还是要层次？"
+      },
+      {
+        "speaker": "player",
+        "text": "……招牌得撑得住回头客。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-260",
+      "knowledge-261",
+      "knowledge-262"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "选十年壮树那支做招牌",
+        "result": "correct",
+        "effects": {
+          "money": -30,
+          "reputation": 2,
+          "trust": {
+            "chenshu": 3
+          }
+        },
+        "explanation": "一棵树结果二十年上下，其中十七年适合做商品豆。壮年树糖分酸度稳，层次比幼树厚。",
+        "knowledge_id": "knowledge-260"
+      },
+      {
+        "id": "choice-b",
+        "text": "追新，选幼树瑰夏",
+        "result": "acceptable",
+        "effects": {
+          "money": -40,
+          "reputation": 1
+        },
+        "explanation": "两三岁幼树的瑰夏清爽细致，卖点足，可层次少。当限量款行，当招牌撑不久。",
+        "knowledge_id": "knowledge-261"
+      },
+      {
+        "id": "choice-c",
+        "text": "谁便宜就要谁",
+        "result": "wrong",
+        "effects": {
+          "money": -15,
+          "reputation": -2
+        },
+        "explanation": "不问树龄也不问采期，进回来可能是产量末期的老树豆，喝完不留香。",
+        "knowledge_id": "knowledge-262"
+      }
+    ],
+    "reward": {
+      "unlock_knowledge": [
+        "knowledge-260",
+        "knowledge-261",
+        "knowledge-262",
+        "knowledge-263"
+      ]
+    },
+    "next_stage": "stage-2-5",
+    "recovery": "陈叔把两支豆摊开：花开到采收要两百四到三百天，早采晚采我都记着。下次先问采期。"
+  },
+  {
+    "id": "stage-2-5",
+    "chapter": "chapter-02",
+    "title": "凭什么算熟",
+    "type": "knowledge_decision",
+    "goal": "给这批果子定下采摘标准",
+    "scene": "storage",
+    "characters": [
+      "player",
+      "chenshu"
+    ],
+    "dialogue": [
+      {
+        "speaker": "chenshu",
+        "text": "采摘标准你定。我按你的话去催农户。"
+      },
+      {
+        "speaker": "chenshu",
+        "text": "手采一小时五公斤果子，工钱记你账上。"
+      },
+      {
+        "speaker": "player",
+        "text": "……好豆贵就贵在这条换算链上。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-266",
+      "knowledge-267",
+      "knowledge-268"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "测糖度，不到二十不采",
+        "result": "correct",
+        "effects": {
+          "money": -20,
+          "reputation": 3,
+          "trust": {
+            "chenshu": 3
+          }
+        },
+        "explanation": "用折光仪把白利糖度二十卡成硬线，天然处理还要更高。仪器比看颜色靠得住。",
+        "knowledge_id": "knowledge-266"
+      },
+      {
+        "id": "choice-b",
+        "text": "整枝捋下来，快又便宜",
+        "result": "wrong",
+        "effects": {
+          "money": -5,
+          "reputation": -2
+        },
+        "explanation": "青果生果一起进，风味被摊薄。省下的工钱要在杯子里还回去。",
+        "knowledge_id": "knowledge-267"
+      },
+      {
+        "id": "choice-c",
+        "text": "只挑红果，人工慢一点",
+        "result": "acceptable",
+        "effects": {
+          "money": -15,
+          "reputation": 1
+        },
+        "explanation": "手采红果方向对，但没有糖度线，不同人手里的红不是一个红。",
+        "knowledge_id": "knowledge-266"
+      }
+    ],
+    "reward": {
+      "unlock_knowledge": [
+        "knowledge-266",
+        "knowledge-267",
+        "knowledge-268"
+      ]
+    },
+    "next_stage": "stage-2-6",
+    "recovery": "陈叔不恼，只把这批降级卖给别家：下次开口先说糖度线，我才好去跟农户压价。"
+  },
+  {
+    "id": "stage-2-6",
+    "chapter": "chapter-02",
+    "title": "发酵槽出事了",
+    "type": "crisis",
+    "goal": "在整槽发酵变质前止损",
+    "scene": "storage",
+    "characters": [
+      "player",
+      "chenshu",
+      "xiaoman"
+    ],
+    "dialogue": [
+      {
+        "speaker": "chenshu",
+        "text": "产地来电话。昨夜那槽温度冲到三十四度。"
+      },
+      {
+        "speaker": "xiaoman",
+        "text": "那这批还能要吗？"
+      },
+      {
+        "speaker": "chenshu",
+        "text": "看你怎么说。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-271",
+      "knowledge-273"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "立刻降温停槽并彻底冲洗",
+        "result": "correct",
+        "effects": {
+          "money": -10,
+          "reputation": 2,
+          "energy": -1,
+          "trust": {
+            "chenshu": 3
+          }
+        },
+        "explanation": "有益菌的舒适区是十八到二十六度，过三十就要变质。一颗坏豆能污染七千克，槽子必须冲干净。",
+        "knowledge_id": "knowledge-273"
+      },
+      {
+        "id": "choice-b",
+        "text": "等发酵完再看结果",
+        "result": "wrong",
+        "effects": {
+          "money": -30,
+          "reputation": -2
+        },
+        "explanation": "闻到栗子糕味、豆子在手里摩擦作响就该停。再拖整槽发酸，等来的是废货。",
+        "knowledge_id": "knowledge-271"
+      },
+      {
+        "id": "choice-c",
+        "text": "整槽弃掉，改要下一批",
+        "result": "acceptable",
+        "effects": {
+          "money": -25,
+          "reputation": 1
+        },
+        "explanation": "止损干净，但白丢一批钱。其实降温加冲洗还能救回一部分。",
+        "knowledge_id": "knowledge-272"
+      }
+    ],
+    "reward": {
+      "unlock_knowledge": [
+        "knowledge-271",
+        "knowledge-272",
+        "knowledge-273"
+      ]
+    },
+    "next_stage": "stage-2-7",
+    "recovery": "林叔旧账本上记着同样一夜：坏掉那槽他冲了三遍清水，剩下的豆照样出杯。别急着全扔。"
+  },
+  {
+    "id": "stage-2-7",
+    "chapter": "chapter-02",
+    "title": "日晒还是水洗",
+    "type": "knowledge_decision",
+    "goal": "按客人的要求上对处理法",
+    "scene": "bar",
+    "characters": [
+      "player",
+      "customer",
+      "chenshu"
+    ],
+    "dialogue": [
+      {
+        "speaker": "customer",
+        "text": "我不爱那种发酵味，有干净点的吗？"
+      },
+      {
+        "speaker": "chenshu",
+        "text": "水洗那支。柜子第二格。"
+      },
+      {
+        "speaker": "player",
+        "text": "……日晒赌的是甜和果香，赌输就是醋味。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-269",
+      "knowledge-270",
+      "knowledge-274"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "上水洗那支",
+        "result": "correct",
+        "effects": {
+          "money": 16,
+          "satisfaction_today": 10,
+          "reputation": 1
+        },
+        "explanation": "水洗是潮湿产区晒不干才发展出来的路子，杯子干净、发酵感低，正对客人这句要求。",
+        "knowledge_id": "knowledge-270"
+      },
+      {
+        "id": "choice-b",
+        "text": "上日晒那支劝她试试",
+        "result": "wrong",
+        "effects": {
+          "money": -6,
+          "satisfaction_today": -8,
+          "reputation": -1
+        },
+        "explanation": "日晒顺的时候醇厚甜润带果香，处理差就是腐败气和刺鼻醋酸。客人明说不爱，这个赌不得。",
+        "knowledge_id": "knowledge-269"
+      },
+      {
+        "id": "choice-c",
+        "text": "问清她平时喝什么再定",
+        "result": "acceptable",
+        "effects": {
+          "money": 12,
+          "satisfaction_today": 4
+        },
+        "explanation": "问清楚是对的，可她只想快点拿到干净的一杯。",
+        "knowledge_id": "knowledge-274"
+      }
+    ],
+    "reward": {
+      "money": 10,
+      "unlock_knowledge": [
+        "knowledge-269",
+        "knowledge-270",
+        "knowledge-274"
+      ]
+    },
+    "next_stage": "stage-2-8",
+    "recovery": "客人愿意让你换一杯。日晒那支收起来，留给爱果香的人，不算浪费。"
+  },
+  {
+    "id": "stage-2-8",
+    "chapter": "chapter-02",
+    "title": "蜜处理上不上",
+    "type": "knowledge_decision",
+    "goal": "为手冲招牌挑一支处理法",
+    "scene": "bar",
+    "characters": [
+      "player",
+      "customer",
+      "xiaoman"
+    ],
+    "dialogue": [
+      {
+        "speaker": "xiaoman",
+        "text": "手冲牌子空了好几天。这支蜜处理要不要上？"
+      },
+      {
+        "speaker": "customer",
+        "text": "我常点手冲，酸甜一点、带花香最好。"
+      },
+      {
+        "speaker": "player",
+        "text": "……那就不能拿浓缩基底来凑。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-275",
+      "knowledge-276",
+      "knowledge-277"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "把蜜处理挂成手冲招牌",
+        "result": "correct",
+        "effects": {
+          "money": 18,
+          "satisfaction_today": 10,
+          "reputation": 2,
+          "trust": {
+            "xiaoman": 2
+          }
+        },
+        "explanation": "蜜处理能把酸度、甜度和花香一起做上去，正是手冲客人最买账的三样。",
+        "knowledge_id": "knowledge-275"
+      },
+      {
+        "id": "choice-b",
+        "text": "用半日晒那支做手冲",
+        "result": "acceptable",
+        "effects": {
+          "money": 12,
+          "satisfaction_today": 3
+        },
+        "explanation": "带黏膜晒出来的半日晒口感饱满干净，可香气层次有限，更适合当浓缩基底。",
+        "knowledge_id": "knowledge-276"
+      },
+      {
+        "id": "choice-c",
+        "text": "随手拿那袋没干透的豆",
+        "result": "wrong",
+        "effects": {
+          "money": -8,
+          "satisfaction_today": -8,
+          "reputation": -2
+        },
+        "explanation": "晾晒要把水分从六成压到一成二，没干透的豆子会长菌，前面所有工序全白做。",
+        "knowledge_id": "knowledge-277"
+      }
+    ],
+    "reward": {
+      "money": 10,
+      "unlock_knowledge": [
+        "knowledge-275",
+        "knowledge-276",
+        "knowledge-277"
+      ]
+    },
+    "next_stage": "stage-2-9",
+    "recovery": "小满把那袋没干透的豆挪回阴凉处摊开：牌子晚挂一天没事，出一杯坏的要还三天口碑。"
+  },
+  {
+    "id": "stage-2-9",
+    "chapter": "chapter-02",
+    "title": "陈叔的旧账",
+    "type": "story_branch",
+    "goal": "听陈叔说豆子怎么走到这条街",
+    "scene": "table",
+    "characters": [
+      "player",
+      "chenshu"
+    ],
+    "dialogue": [
+      {
+        "speaker": "chenshu",
+        "text": "生豆是活的，熟豆是死的。当年有人靠烫熟豆子锁住货源。"
+      },
+      {
+        "speaker": "chenshu",
+        "text": "锁得住吗？七颗种子贴在肚皮上就带走了。"
+      },
+      {
+        "speaker": "player",
+        "text": "……林叔当年也是这样从你手里学的？"
+      },
+      {
+        "speaker": "chenshu",
+        "text": "他问得比你细。"
+      }
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "接着听豆种的来路",
+        "result": "correct",
+        "effects": {
+          "energy": -1,
+          "trust": {
+            "chenshu": 3
+          }
+        },
+        "explanation": "波旁、瑰夏这些名字背后是几粒种子和几株苗的迁徙。听懂来路，才知道一支豆的血统值什么。",
+        "knowledge_id": "knowledge-306",
+        "next_stage": "stage-2-10"
+      },
+      {
+        "id": "choice-b",
+        "text": "打断他，直接谈价",
+        "result": "acceptable",
+        "effects": {},
+        "explanation": "价是谈成了，故事没听完。陈叔嘴上不说，报的批次会保守一档。",
+        "knowledge_id": "knowledge-302",
+        "next_stage": "stage-2-10"
+      }
+    ],
+    "reward": {
+      "unlock_knowledge": [
+        "knowledge-302",
+        "knowledge-303",
+        "knowledge-304",
+        "knowledge-305",
+        "knowledge-306"
+      ]
+    },
+    "next_stage": "stage-2-10"
+  },
+  {
+    "id": "stage-2-10",
+    "chapter": "chapter-02",
+    "title": "菜单跟着谁改",
+    "type": "knowledge_decision",
+    "goal": "定下这条街该卖哪种咖啡",
+    "scene": "blackboard",
+    "characters": [
+      "player",
+      "xiaoman",
+      "guyan"
+    ],
+    "dialogue": [
+      {
+        "speaker": "guyan",
+        "text": "我写过这条街三家店。活下来的都改过菜单。"
+      },
+      {
+        "speaker": "xiaoman",
+        "text": "那我们照对面连锁的抄一版？"
+      },
+      {
+        "speaker": "player",
+        "text": "……改是为自家客人，不是为对面。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-307",
+      "knowledge-308"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "按本店客人的口味调配方",
+        "result": "correct",
+        "effects": {
+          "reputation": 3,
+          "trust": {
+            "guyan": 2
+          }
+        },
+        "explanation": "维也纳那位老板滤掉渣、兑上牛奶，才把当地人喝不惯的做法卖出去。迎合客人比守着原样更能开店。",
+        "knowledge_id": "knowledge-307"
+      },
+      {
+        "id": "choice-b",
+        "text": "照搬对面连锁的菜单",
+        "result": "wrong",
+        "effects": {
+          "reputation": -2,
+          "trust": {
+            "guyan": -1
+          }
+        },
+        "explanation": "南欧爱加压的浓缩，北欧爱过滤的滴滤，口味是地方长出来的。抄别人的单子只能招来别人的客人。",
+        "knowledge_id": "knowledge-308"
+      },
+      {
+        "id": "choice-c",
+        "text": "只挂手冲，走窄路",
+        "result": "acceptable",
+        "effects": {
+          "reputation": 1
+        },
+        "explanation": "定位清楚，但一条街的客人被筛掉一大半，现金流会紧。",
+        "knowledge_id": "knowledge-308"
+      }
+    ],
+    "reward": {
+      "reputation": 1,
+      "unlock_knowledge": [
+        "knowledge-307",
+        "knowledge-308",
+        "knowledge-309",
+        "knowledge-310"
+      ]
+    },
+    "next_stage": "stage-2-11",
+    "recovery": "顾言把抄来的那张纸折好收走：坐你店里的是熟客，不是对面排队的人。菜单重写一版还来得及。"
+  },
+  {
+    "id": "stage-2-11",
+    "chapter": "chapter-02",
+    "title": "量大还是精品",
+    "type": "business_decision",
+    "goal": "定下这次进货的批次和钱",
+    "scene": "backdoor",
+    "characters": [
+      "player",
+      "chenshu",
+      "xiaoman"
+    ],
+    "dialogue": [
+      {
+        "speaker": "chenshu",
+        "text": "两个批次。量大的便宜三成，精品那支贵一倍。"
+      },
+      {
+        "speaker": "chenshu",
+        "text": "你店里一天出多少杯？"
+      },
+      {
+        "speaker": "xiaoman",
+        "text": "手冲牌子刚挂上，浓缩天天都得出。"
+      },
+      {
+        "speaker": "player",
+        "text": "……不看价，看店。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-249",
+      "knowledge-314"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "大批次打底，精品少量做招牌",
+        "result": "correct",
+        "effects": {
+          "money": -60,
+          "reputation": 3,
+          "trust": {
+            "chenshu": 4
+          }
+        },
+        "explanation": "按店的定位配货：日常杯量靠量大批次压住成本，精品少量顶手冲招牌，两头都不耽误。",
+        "set_flags": [
+          "chenshu_deal_signed",
+          "chapter_02_cleared"
+        ],
+        "knowledge_id": "knowledge-314"
+      },
+      {
+        "id": "choice-b",
+        "text": "全进精品批次",
+        "result": "wrong",
+        "effects": {
+          "money": -80,
+          "reputation": -1,
+          "trust": {
+            "chenshu": 1
+          }
+        },
+        "explanation": "一味挑贵的，现金全压在库存里，日常出杯还得另外凑豆。豆好不等于生意好。",
+        "set_flags": [
+          "chenshu_deal_signed",
+          "chapter_02_cleared"
+        ],
+        "knowledge_id": "knowledge-249"
+      },
+      {
+        "id": "choice-c",
+        "text": "全进便宜的量大批次",
+        "result": "acceptable",
+        "effects": {
+          "money": -40,
+          "reputation": -1,
+          "trust": {
+            "chenshu": 1
+          }
+        },
+        "explanation": "成本最稳，可手冲牌子上没有能撑场的豆，招牌立不起来。",
+        "set_flags": [
+          "chenshu_deal_signed",
+          "chapter_02_cleared"
+        ],
+        "knowledge_id": "knowledge-312"
+      }
+    ],
+    "reward": {
+      "reputation": 2,
+      "unlock_knowledge": [
+        "knowledge-249",
+        "knowledge-311",
+        "knowledge-312"
+      ]
+    },
+    "next_stage": "stage-3-1",
+    "recovery": "陈叔留了余地：钱先付一半，剩下的等你卖动了再说。批次押错一次，不至于关门。"
+  }
+]
