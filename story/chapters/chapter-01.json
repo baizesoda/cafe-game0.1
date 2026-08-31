@@ -1,0 +1,416 @@
+[
+  {
+    "id": "stage-1-1",
+    "chapter": "chapter-01",
+    "title": "清点店内设备",
+    "type": "tutorial",
+    "goal": "认识店里现有的家当",
+    "scene": "storage",
+    "characters": [
+      "player",
+      "xiaoman"
+    ],
+    "dialogue": [
+      {
+        "speaker": "xiaoman",
+        "text": "你就是林叔说的那个人？他昨天走的，只留了一封信在吧台上。"
+      },
+      {
+        "speaker": "xiaoman",
+        "text": "先看看仓库吧。磨豆机很旧了，豆子也快到期。"
+      },
+      {
+        "speaker": "player",
+        "text": "……先把能用的东西数清楚。"
+      }
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "拆开信先读",
+        "result": "correct",
+        "effects": {},
+        "explanation": "信里交代了今天的营业目标，也留下第一条线索。",
+        "set_flags": [
+          "read_linshu_letter_1"
+        ]
+      },
+      {
+        "id": "choice-b",
+        "text": "先清点豆子和设备",
+        "result": "acceptable",
+        "effects": {},
+        "explanation": "务实的顺序，信稍后也会读到。"
+      }
+    ],
+    "reward": {},
+    "next_stage": "stage-1-2"
+  },
+  {
+    "id": "stage-1-2",
+    "chapter": "chapter-01",
+    "title": "研磨与萃取",
+    "type": "knowledge_decision",
+    "goal": "搞清研磨粗细和味道的关系",
+    "scene": "bar",
+    "characters": [
+      "player",
+      "xiaoman"
+    ],
+    "dialogue": [
+      {
+        "speaker": "xiaoman",
+        "text": "开店前先试一杯吧。磨盘刻度林叔从来不让人动。"
+      },
+      {
+        "speaker": "player",
+        "text": "……先按现在的刻度冲一杯看看。"
+      },
+      {
+        "speaker": "xiaoman",
+        "text": "怎么样？我尝着有点像水。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-001",
+      "knowledge-002",
+      "knowledge-343"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "调细一点再冲",
+        "result": "correct",
+        "effects": {
+          "money": -5,
+          "satisfaction_today": 5
+        },
+        "explanation": "偏酸偏淡指向萃取不足，调细能增加萃取。",
+        "knowledge_id": "knowledge-001"
+      },
+      {
+        "id": "choice-b",
+        "text": "调粗一点再冲",
+        "result": "wrong",
+        "effects": {
+          "money": -5,
+          "satisfaction_today": -3
+        },
+        "explanation": "调粗会让萃取更不足，味道更淡。浪费了一份豆子。",
+        "knowledge_id": "knowledge-001"
+      },
+      {
+        "id": "choice-c",
+        "text": "刻度不动，多加豆量",
+        "result": "acceptable",
+        "effects": {
+          "money": -8
+        },
+        "explanation": "浓度上去了，但萃取率没变，尾韵还是短。成本也更高。",
+        "knowledge_id": "knowledge-001"
+      }
+    ],
+    "reward": {
+      "unlock_knowledge": [
+        "knowledge-001",
+        "knowledge-343"
+      ]
+    },
+    "next_stage": "stage-1-3",
+    "recovery": "试冲阶段还没开门，做坏了可以重来一杯，只是多耗一点豆子。"
+  },
+  {
+    "id": "stage-1-3",
+    "chapter": "chapter-01",
+    "title": "第一位客人的投诉",
+    "type": "knowledge_decision",
+    "goal": "解决客人反馈的咖啡口感问题",
+    "scene": "bar",
+    "characters": [
+      "player",
+      "xiaoman",
+      "customer"
+    ],
+    "dialogue": [
+      {
+        "speaker": "customer",
+        "text": "这杯……又酸又淡，跟以前完全不是一个味儿。"
+      },
+      {
+        "speaker": "xiaoman",
+        "text": "别慌。你先想清楚是哪一步出的问题，再重做。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-001",
+      "knowledge-002",
+      "knowledge-322"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "调细研磨，重做一杯",
+        "result": "correct",
+        "effects": {
+          "money": -5,
+          "reputation": 2,
+          "satisfaction_today": 10,
+          "trust": {
+            "xiaoman": 3
+          }
+        },
+        "explanation": "又酸又淡是萃取不足的典型描述，调细研磨提高萃取。",
+        "knowledge_id": "knowledge-001"
+      },
+      {
+        "id": "choice-b",
+        "text": "调粗研磨，重做一杯",
+        "result": "wrong",
+        "effects": {
+          "money": -10,
+          "reputation": -1,
+          "satisfaction_today": -5
+        },
+        "explanation": "方向反了，第二杯更淡，客人当场皱了眉。",
+        "knowledge_id": "knowledge-001"
+      },
+      {
+        "id": "choice-c",
+        "text": "加糖盖过酸味",
+        "result": "wrong",
+        "effects": {
+          "money": -2,
+          "reputation": -2,
+          "satisfaction_today": -3
+        },
+        "explanation": "掩盖不是解决，客人下次不会再来。",
+        "knowledge_id": "knowledge-002"
+      }
+    ],
+    "reward": {
+      "money": 20,
+      "reputation": 1,
+      "unlock_knowledge": [
+        "knowledge-002",
+        "knowledge-322"
+      ]
+    },
+    "next_stage": "stage-1-5",
+    "recovery": "客人愿意等第二杯。做坏了损失一份原料和一点口碑，不会直接失去这位客人。"
+  },
+  {
+    "id": "stage-1-5",
+    "chapter": "chapter-01",
+    "title": "赶时间的上班族",
+    "type": "knowledge_decision",
+    "goal": "在客人赶时间的前提下端出一杯能喝的",
+    "scene": "door",
+    "characters": [
+      "player",
+      "customer",
+      "xiaoman"
+    ],
+    "dialogue": [
+      {
+        "speaker": "customer",
+        "text": "五分钟后要开会，随便给我一杯，别太酸就行。"
+      },
+      {
+        "speaker": "xiaoman",
+        "text": "浅烘那支现在别上，他没时间等你慢慢冲。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-001",
+      "knowledge-002",
+      "knowledge-346"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "用中深烘做一杯浓的",
+        "result": "correct",
+        "effects": {
+          "money": 18,
+          "satisfaction_today": 12,
+          "reputation": 1
+        },
+        "explanation": "烘焙度深一些酸感低，客人的要求和出杯速度都照顾到了。",
+        "knowledge_id": "knowledge-002"
+      },
+      {
+        "id": "choice-b",
+        "text": "上浅烘手冲，慢慢来",
+        "result": "wrong",
+        "effects": {
+          "money": -6,
+          "satisfaction_today": -8,
+          "reputation": -1
+        },
+        "explanation": "花了时间，做出来还偏酸，正好撞在客人两条要求上。",
+        "knowledge_id": "knowledge-001"
+      },
+      {
+        "id": "choice-c",
+        "text": "问清他平时喝什么",
+        "result": "acceptable",
+        "effects": {
+          "money": 12,
+          "satisfaction_today": 4,
+          "trust": {
+            "xiaoman": 2
+          }
+        },
+        "explanation": "问得对，但耽误了一分钟，客人拿了杯子就走。",
+        "knowledge_id": "knowledge-002"
+      }
+    ],
+    "reward": {
+      "money": 10,
+      "unlock_knowledge": [
+        "knowledge-346"
+      ]
+    },
+    "next_stage": "stage-1-6",
+    "recovery": "客人赶时间不会回头骂人，损失的是这一单的口碑和一份原料。"
+  },
+  {
+    "id": "stage-1-6",
+    "chapter": "chapter-01",
+    "title": "尝味道的老太太",
+    "type": "knowledge_decision",
+    "goal": "让一位对苦味敏感的客人喝得下去",
+    "scene": "bar",
+    "characters": [
+      "player",
+      "customer"
+    ],
+    "dialogue": [
+      {
+        "speaker": "customer",
+        "text": "上回那杯太苦了，喝完嘴里干得发涩。我还想试试。"
+      },
+      {
+        "speaker": "player",
+        "text": "……苦和涩，是萃过头了。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-002",
+      "knowledge-003",
+      "knowledge-246"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "研磨调粗，缩短接触时间",
+        "result": "correct",
+        "effects": {
+          "money": 16,
+          "satisfaction_today": 14,
+          "reputation": 2,
+          "trust": {
+            "chenshu": 2
+          }
+        },
+        "explanation": "发苦发涩指向萃取过度，往回调粗、缩短时间正是减少萃取的方向。",
+        "knowledge_id": "knowledge-002"
+      },
+      {
+        "id": "choice-b",
+        "text": "研磨再调细一点",
+        "result": "wrong",
+        "effects": {
+          "money": -6,
+          "satisfaction_today": -10,
+          "reputation": -2
+        },
+        "explanation": "又往萃取更多的方向走了，第二杯比上一杯还苦。",
+        "knowledge_id": "knowledge-002"
+      },
+      {
+        "id": "choice-c",
+        "text": "兑水稀释一下",
+        "result": "acceptable",
+        "effects": {
+          "money": 14,
+          "satisfaction_today": 6
+        },
+        "explanation": "浓度降下来了，但过度萃取带来的涩感还在，只是被冲淡。",
+        "knowledge_id": "knowledge-002"
+      }
+    ],
+    "reward": {
+      "money": 10,
+      "reputation": 1,
+      "unlock_knowledge": [
+        "knowledge-246"
+      ]
+    },
+    "next_stage": "stage-1-4",
+    "recovery": "老太太是熟客，愿意再等一杯。做坏了只是今天少赚一点。"
+  },
+  {
+    "id": "stage-1-4",
+    "chapter": "chapter-01",
+    "title": "修不修磨豆机",
+    "type": "business_decision",
+    "goal": "在预算内决定是否维修磨豆机",
+    "scene": "storage",
+    "characters": [
+      "player",
+      "xiaoman"
+    ],
+    "dialogue": [
+      {
+        "speaker": "xiaoman",
+        "text": "刀盘磨平了，同一刻度出来的粉粗细都不一样。"
+      },
+      {
+        "speaker": "xiaoman",
+        "text": "修一次八十。今天的流水……大概刚够。"
+      }
+    ],
+    "knowledge_brief": [
+      "knowledge-003",
+      "knowledge-339"
+    ],
+    "choices": [
+      {
+        "id": "choice-a",
+        "text": "花 80 修磨豆机",
+        "result": "correct",
+        "effects": {
+          "money": -80,
+          "reputation": 3
+        },
+        "explanation": "刀盘磨损导致颗粒不均，味道无法复现。修好后出错的负面影响降低。",
+        "knowledge_id": "knowledge-003",
+        "set_flags": [
+          "grinder_repaired"
+        ]
+      },
+      {
+        "id": "choice-b",
+        "text": "先撑着，攒钱进豆子",
+        "result": "acceptable",
+        "effects": {
+          "reputation": -1
+        },
+        "explanation": "现金留住了，但接下来每杯咖啡的稳定性都要打折。",
+        "knowledge_id": "knowledge-003"
+      }
+    ],
+    "reward": {
+      "unlock_knowledge": [
+        "knowledge-003",
+        "knowledge-339"
+      ],
+      "unlock_upgrade": [
+        "grinder"
+      ]
+    },
+    "next_stage": null,
+    "recovery": "没修也不影响推进，后续章节仍可补修。"
+  }
+]

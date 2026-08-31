@@ -1,0 +1,28 @@
+{
+  "$comment": "经营数值与剧情标记的键白名单。轨道 2 写 effects/flags、轨道 3 实现数值逻辑，都以此为准。新增键必须先改这里。",
+  "numeric": {
+    "money": { "label": "现金", "init": 200, "min": 0, "max": null },
+    "reputation": { "label": "口碑", "init": 30, "min": 0, "max": 100 },
+    "satisfaction_today": { "label": "满意度（单日）", "init": 0, "min": 0, "max": 100 },
+    "energy": { "label": "体力", "init": 5, "min": 0, "max": 5 }
+  },
+  "trust": {
+    "$comment": "角色信任度，0~100，effects 中写作 trust.<characterId>",
+    "range": [0, 100],
+    "init": 10,
+    "characters": ["linshu", "xiaoman", "chenshu", "suhe", "guyan"]
+  },
+  "inventory": {
+    "$comment": "库存按豆子 ID 计数，effects 中写作 inventory.<beanId>",
+    "min": 0
+  },
+  "flags": {
+    "$comment": "剧情布尔标记。轨道 2 新增 flag 需登记在此，轨道 3 才能在条件判断里用。",
+    "known": [
+      "read_linshu_letter_1",
+      "grinder_repaired",
+      "old_menu_examined",
+      "chapter_01_cleared"
+    ]
+  }
+}

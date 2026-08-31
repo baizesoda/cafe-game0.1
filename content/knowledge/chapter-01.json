@@ -1,0 +1,35 @@
+[
+  {
+    "id": "knowledge-001",
+    "title": "萃取不足",
+    "category": "冲煮",
+    "plain_explanation": "研磨过粗或水与咖啡接触时间过短，可溶物没出来，喝起来偏酸、偏淡、尾韵短。",
+    "source_book": "示例内容，待替换",
+    "source_chapter": "示例内容，待替换",
+    "source_quote": "示例内容，待替换",
+    "confidence": "placeholder",
+    "related_stages": ["stage-1-2", "stage-1-3"]
+  },
+  {
+    "id": "knowledge-002",
+    "title": "萃取过度",
+    "category": "冲煮",
+    "plain_explanation": "研磨过细或接触时间过长，把不该出来的东西也带出来了，喝起来发苦、发涩、口腔干。",
+    "source_book": "示例内容，待替换",
+    "source_chapter": "示例内容，待替换",
+    "source_quote": "示例内容，待替换",
+    "confidence": "placeholder",
+    "related_stages": ["stage-1-3"]
+  },
+  {
+    "id": "knowledge-003",
+    "title": "磨豆机与均匀度",
+    "category": "器具",
+    "plain_explanation": "刀盘磨损会让颗粒粗细不齐，同一杯里既有萃取不足也有萃取过度，味道混乱且难以复现。",
+    "source_book": "示例内容，待替换",
+    "source_chapter": "示例内容，待替换",
+    "source_quote": "示例内容，待替换",
+    "confidence": "placeholder",
+    "related_stages": ["stage-1-4"]
+  }
+]

@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "KnowledgeCard",
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "category",
+    "plain_explanation",
+    "source_book",
+    "source_chapter",
+    "source_quote",
+    "confidence",
+    "related_stages"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^knowledge-[0-9]{3,}$",
+      "description": "knowledge-001 起顺序编号，全局唯一"
+    },
+    "title": { "type": "string", "minLength": 2, "maxLength": 20 },
+    "category": {
+      "type": "string",
+      "enum": ["冲煮", "咖啡豆", "器具", "产地", "人物", "故事线索"],
+      "description": "对应知识档案页面的六个分类，不得新增"
+    },
+    "plain_explanation": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 120,
+      "description": "给玩家看的白话解释，一两句话，不要术语堆砌"
+    },
+    "source_book": {
+      "type": "string",
+      "minLength": 1,
+      "description": "真实书名；尚未核对时填「示例内容，待替换」"
+    },
+    "source_chapter": { "type": "string", "minLength": 1 },
+    "source_quote": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "逐字原文摘录，禁止编造。摘录宜短，避免大段搬运原书正文"
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["high", "medium", "placeholder"],
+      "description": "high=原文直述 / medium=基于书中原理推断 / placeholder=示例内容尚无书籍依据"
+    },
+    "related_stages": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^stage-[0-9]+-[0-9]+$" },
+      "description": "可留空，由轨道 2 反向补齐"
+    },
+    "inference_note": {
+      "type": "string",
+      "description": "confidence=medium 时必填，注明「基于书中原理推断，非原文直述」"
+    },
+    "source_locator": {
+      "type": "string",
+      "description": "便于人工复核的定位信息，如 p.88 / 第3章第2节"
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "confidence": { "const": "medium" } }, "required": ["confidence"] },
+      "then": { "required": ["inference_note"] }
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Character",
+  "type": "object",
+  "required": ["id", "name", "role", "personality", "trust_level"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "enum": ["player", "linshu", "xiaoman", "chenshu", "suhe", "guyan", "customer"] },
+    "name": { "type": "string", "minLength": 1 },
+    "role": {
+      "type": "string",
+      "enum": ["player", "mentor", "staff", "regular", "supplier", "rival", "customer"]
+    },
+    "personality": { "type": "array", "minItems": 1, "maxItems": 5, "items": { "type": "string" } },
+    "trust_level": { "type": "integer", "minimum": 0, "maximum": 100, "description": "初始信任度" },
+    "unlockable_stories": { "type": "array", "items": { "type": "string" } },
+    "avatar": { "type": ["string", "null"], "description": "资源路径，未就绪填 null，轨道 3 用文字头像兜底" },
+    "one_line": { "type": "string", "maxLength": 40, "description": "角色资料卡一句话介绍" }
+  }
+}

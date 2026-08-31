@@ -1,0 +1,41 @@
+[
+  {
+    "id": "drink-espresso",
+    "name": "浓缩",
+    "method": "浓缩",
+    "price": 16,
+    "bean_cost": 1,
+    "speed": "快",
+    "taste_tags": ["醇厚", "油脂感"],
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》",
+    "source_chapter": "第11章 大萧条时期，演艺场卖咖啡",
+    "source_quote": "浓缩咖啡是⽤很⾼的压⼒使热⽔透过细研磨的咖啡粉，在 30 秒内萃取⽽成的，其⾊深、有光泽、味浓、⼝感丰富醇厚。",
+    "confidence": "high"
+  },
+  {
+    "id": "drink-pourover",
+    "name": "手冲",
+    "method": "手冲",
+    "price": 22,
+    "bean_cost": 2,
+    "speed": "慢",
+    "taste_tags": ["细腻", "层次感", "干净"],
+    "source_book": "咖啡全书",
+    "source_chapter": "遗忘·关于咖啡的成见",
+    "source_quote": "如果您喜欢醇厚感 ， 那就请选择浓缩咖啡； 如果您偏爱细腻和层次感， 那么就请选择浸泡 咖啡。",
+    "confidence": "high"
+  },
+  {
+    "id": "drink-latte",
+    "name": "拿铁",
+    "method": "奶咖",
+    "price": 20,
+    "bean_cost": 1,
+    "speed": "中",
+    "taste_tags": ["顺口", "奶香", "低酸"],
+    "source_book": "示例内容，待替换",
+    "source_chapter": "示例内容，待替换",
+    "source_quote": "示例内容，待替换",
+    "confidence": "placeholder"
+  }
+]

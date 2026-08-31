@@ -1,0 +1,39 @@
+[
+  {
+    "id": "player",
+    "name": "学徒",
+    "role": "player",
+    "personality": ["好奇", "手生"],
+    "trust_level": 0,
+    "avatar": null,
+    "one_line": "对咖啡有兴趣但经验不足的新来学徒"
+  },
+  {
+    "id": "linshu",
+    "name": "林叔",
+    "role": "mentor",
+    "personality": ["严格", "固执", "重视品质"],
+    "trust_level": 10,
+    "unlockable_stories": ["story-linshu-01", "story-linshu-02"],
+    "avatar": null,
+    "one_line": "留下一封信就走的咖啡馆创始人"
+  },
+  {
+    "id": "xiaoman",
+    "name": "小满",
+    "role": "staff",
+    "personality": ["外向", "麻利", "爱尝试"],
+    "trust_level": 10,
+    "avatar": null,
+    "one_line": "店员兼邻居，总想上新菜单"
+  },
+  {
+    "id": "customer",
+    "name": "客人",
+    "role": "customer",
+    "personality": ["直白"],
+    "trust_level": 0,
+    "avatar": null,
+    "one_line": "今天进店的客人"
+  }
+]

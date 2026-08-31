@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Drink",
+  "type": "object",
+  "required": ["id", "name", "method", "price", "bean_cost", "speed", "taste_tags", "source_chapter", "source_quote"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^drink-[a-z0-9-]+$", "description": "必须与咖啡豆 usable_drinks 里引用的 ID 一致" },
+    "name": { "type": "string", "minLength": 1 },
+    "method": {
+      "type": "string",
+      "enum": ["浓缩", "手冲", "滴滤", "奶咖"]
+    },
+    "price": { "type": "integer", "minimum": 1, "description": "售价，与 money 同单位" },
+    "bean_cost": { "type": "integer", "minimum": 1, "description": "出一杯消耗几份豆" },
+    "speed": {
+      "type": "string",
+      "enum": ["快", "中", "慢"],
+      "description": "出杯速度，赶时间的客人只接受「快」"
+    },
+    "taste_tags": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": { "type": "string" }
+    },
+    "requires_upgrade": {
+      "type": "string",
+      "enum": ["grinder", "brewer", "seats", "blackboard"],
+      "description": "需要先完成的设备升级，对应方案 §6.2"
+    },
+    "source_chapter": { "type": "string", "minLength": 1 },
+    "source_quote": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "source_book": { "type": "string" },
+    "confidence": { "type": "string", "enum": ["high", "medium", "placeholder"] }
+  }
+}

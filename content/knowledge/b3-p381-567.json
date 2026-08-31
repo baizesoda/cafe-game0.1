@@ -1,0 +1,198 @@
+[
+  {
+    "id": "knowledge-360", "title": "皮特痛斥渗滤壶", "category": "人物",
+    "plain_explanation": "旧金山的阿尔弗雷德·皮特认为好豆配错冲煮法就是浪费钱，客人说要用老式渗滤壶煮，他宁愿不卖。选豆和选冲煮方式必须配套。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "第15章 咖啡狂热者蔓延", "source_locator": "p.381",
+    "source_quote": "如果有顾客买了阿尔弗雷德的咖啡，说要⽤传统渗滤壶来煮，他肯定会⼤发雷霆，⽣⽓地喊： “ 花这么多钱买了好咖啡，却胡乱煮，这是何必呢？你别买了吧。 ”",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-361", "title": "扎巴一年变专家", "category": "人物",
+    "plain_explanation": "纽约食品店老板索尔·扎巴决定卖整豆咖啡后，整整一年每天上两小时烘焙与品评课，从外行变成咖啡专家。想开店，先补课。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "第15章 咖啡狂热者蔓延", "source_locator": "p.381",
+    "source_quote": "整整⼀年时间，索尔 · 扎巴每天都参加两个⼩时的咖啡烘焙和品评课程。就这样，扎巴从⼀个外⾏变成了咖啡专家。",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-362", "title": "浅烘焙留住果酸", "category": "咖啡豆",
+    "plain_explanation": "同一批豆子烘得浅一些，香醇和果酸会更突出；烘得深则厚重。当年东海岸的顾客就更吃浅烘这一套。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "第15章 咖啡狂热者蔓延", "source_locator": "p.382",
+    "source_quote": "扎巴咖啡采⽤较浅的烘焙⽅式，正好可以把咖啡⾖的⾹醇和果酸味发挥出来，喝起来更可⼝。",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-363", "title": "周游咖啡", "category": "故事线索",
+    "plain_explanation": "配额协议造成两套价格，商人从低价市场买生豆再高价倒卖回欧美，这种绕了地球一圈的咖啡被叫作「周游咖啡」。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "第15章 咖啡狂热者蔓延", "source_locator": "p.383",
+    "source_quote": "德国的贸易专家给这些咖啡起了个名字，叫作 “ 周游咖啡 ” （ Tourist Coffee ）。",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-364", "title": "高产杂交豆不好喝", "category": "咖啡豆",
+    "plain_explanation": "为增产培育的杂交品种能全天暴晒、不需遮阴树，但要靠大量肥料，而且味道并不好——产量和风味常常是反着走的。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "第15章 咖啡狂热者蔓延", "source_locator": "p.384",
+    "source_quote": "不过，这种杂交咖啡⾖的味道并不好，但是却没⼈关注。这种杂交新品种可以抵御⼀整⽇的太阳暴晒，不需要遮阴树，但是却需要⼤量肥料才能⻓得旺盛，增加产量。",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-365", "title": "反战大兵咖啡馆", "category": "故事线索",
+    "plain_explanation": "1967年美军基地旁开出叫UFO的咖啡馆，配商用浓缩机、Chemex手冲壶和上等豆子，吸引大批反战士兵，成了那个年代的据点。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "第15章 咖啡狂热者蔓延", "source_locator": "p.386",
+    "source_quote": "加德纳跟合伙⼈买了⼀台商⽤浓缩咖啡机，⼀个凯梅克斯（ Chemex ）美式⼿冲咖啡壶，还准备了很多品质上等的咖啡⾖。不久， UFO 咖啡馆开张，吸引了众多反战美国⼠兵。",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-366", "title": "咖啡有害论被推翻", "category": "故事线索",
+    "plain_explanation": "六七十年代大量「咖啡致病」报道后来都无法通过实验重现，指控被逐一澄清，但媒体已经把恐慌种进了顾客心里。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "第15章 咖啡狂热者蔓延", "source_locator": "p.389",
+    "source_quote": "不久，所有丑化咖啡的论点都得以澄清，因为新的实验发现，之前丑化咖啡的各种指控都⽆法通过实验重现，以前的报告都需要修改。",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-367", "title": "电动滴滤壶的毛病", "category": "器具",
+    "plain_explanation": "1972年起电动滴滤壶席卷家庭，但常见毛病是水温不够高、冲泡时间不对、保温盘过热——方便和好喝不是一回事。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "第15章 咖啡狂热者蔓延", "source_locator": "p.404",
+    "source_quote": "这种新式的家⽤咖啡壶确实有⼀些缺点，例如⽔温不够⾼、冲泡时间不⾜或者过⻓、咖啡盘过热等",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-368", "title": "1975年黑霜冻", "category": "故事线索",
+    "plain_explanation": "以往霜冻只打掉叶子和花，只影响次年产量；1975年巴西那场「黑霜冻」直接让整棵树死掉，产区一片焦黑。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "第16章 霜冻降，咖啡殃", "source_locator": "p.411",
+    "source_quote": "巴⻄以往遭受到的霜冻⾄多破坏咖啡树的叶⼦和花朵，只影响到第⼆年的产量，⽽这次的⿊霜冻能让树叶变⿊，然后整棵树都会死去",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-369", "title": "新树要等四年", "category": "故事线索",
+    "plain_explanation": "咖啡树被毁后即刻补种，也要四年才能收获，所以一场灾害会拖出好几年的缺货和涨价。备料要提前判断。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "第16章 霜冻降，咖啡殃", "source_locator": "p.411",
+    "source_quote": "即便巴⻄⽴刻种植新树，也需要 4 年时间才能收获，所以未来⼏年咖啡都将⾯临供货紧张的局⾯。",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-370", "title": "配额只能压价", "category": "故事线索",
+    "plain_explanation": "国际咖啡配额协议只在豆价下跌时管得住局面，一旦涨价机制就失灵——想靠制度锁住成本，涨价周期里靠不住。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "第16章 霜冻降，咖啡殃", "source_locator": "p.412",
+    "source_quote": "经验证明，出⼝配额机制只有在咖啡价格下跌之时起作⽤，⾖价上涨时，该机制并不起作⽤",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-371", "title": "1977年抵制咖啡", "category": "故事线索",
+    "plain_explanation": "豆价冲上每磅3美元，美国爆发抵制咖啡运动，连超市都劝顾客别买。原料暴涨会直接引发消费者反弹。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "第16章 霜冻降，咖啡殃", "source_locator": "p.413",
+    "source_quote": "1977 年，咖啡价格超过每磅 3 美元，美国爆发抵制咖啡运动。超市连锁店也加⼊抵制运动，呼吁消费者不要买咖啡。",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-372", "title": "星巴克开张", "category": "人物",
+    "plain_explanation": "1971年5月30日，三个西雅图年轻人开出星巴克，主打新鲜烘焙整豆和牛奶等搭配品，一炮而红。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "第15章 咖啡狂热者蔓延", "source_locator": "p.398",
+    "source_quote": "1971 年 5 ⽉ 30 ⽇，星巴克开张，主售新鲜烘焙的整⾖咖啡和⽜奶等咖啡搭配品，⼀炮⽽红。",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-373", "title": "该自己烘豆了", "category": "人物",
+    "plain_explanation": "星巴克开到第二家店时，供豆的皮特直接劝他们买台烘焙机自己烘——规模到了一定程度，核心工序不能一直外包。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "第15章 咖啡狂热者蔓延", "source_locator": "p.398",
+    "source_quote": "这时候，阿尔弗雷德 · ⽪特对他们 3 个说： “ 你们成⻓得太快了，该买个烘焙机⾃⼰烘⾖⼦了。 ”",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-374", "title": "精品咖啡一词诞生", "category": "人物",
+    "plain_explanation": "1974年厄娜·克努森在受访时造出「精品咖啡」这个词，指在最合适的微气候与水土里长出、带产地特色的独特风味豆。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "第15章 咖啡狂热者蔓延", "source_locator": "p.401",
+    "source_quote": "厄娜 · 克努森创造出了 “ 精品咖啡 ” （ specialty coffees ）这个术语，专指在最有利的微型⽓候与⽔⼟下栽培出的⻛味独特、带有地域特⾊的咖啡。",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-375", "title": "四项风味描述", "category": "咖啡豆",
+    "plain_explanation": "跟讲究品质的烘焙商做生意，必须能说清每批豆子的酸度、醇厚度、香味和风味——这四项就是评豆的基本尺子。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "第15章 咖啡狂热者蔓延", "source_locator": "p.400",
+    "source_quote": "因为这些⼩烘焙商都很重品质，她要想和这些⼈做⽣意，就得能说出每批咖啡⾖的酸度、醇厚度、⾹味和⻛味",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-376", "title": "杯测的啜吸", "category": "冲煮",
+    "plain_explanation": "杯测的关键动作是快速啜吸，让空气和咖啡在嘴里混匀，再用味蕾分辨香气。练会这一口，才谈得上评豆。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "第15章 咖啡狂热者蔓延", "source_locator": "p.400",
+    "source_quote": "但是，没多久，她就学会了快速啜吸的动作，让空⽓和咖啡在嘴⾥充分融合，⽤味蕾鉴别咖啡的芳⾹。",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-377", "title": "罐子里的陈豆", "category": "人物",
+    "plain_explanation": "乔治·豪厄尔搬到波士顿后只能买到散装豆，全因在罐子里放太久而不新鲜甚至变质，于是他索性自己开店。散装豆最怕久放。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "第15章 咖啡狂热者蔓延", "source_locator": "p.402",
+    "source_quote": "最终，他在⾼级芝⼠店⾥找到⼀些散装咖啡⾖，但皆因在罐⼦⾥放置太久，不新鲜或者变质了。",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-378", "title": "一杯公平咖啡", "category": "人物",
+    "plain_explanation": "保罗·卡策夫去尼加拉瓜看过咖啡园后，把自家咖啡的标语改成「不仅是一杯咖啡，而且是一杯公平咖啡」，把产地故事变成卖点。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "第17章 精品咖啡革命", "source_locator": "p.451",
+    "source_quote": "回到美国以后，卡策夫把感恩节咖啡的标语改成： “ 不仅是⼀杯咖啡，⽽且是⼀杯公平咖啡。 ”",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-379", "title": "美国精品咖啡协会", "category": "故事线索",
+    "plain_explanation": "1982年一群小烘焙商在旧金山小旅馆客厅盘腿而坐，拟出全国性咖啡宣言，美国精品咖啡协会就此成立，起家只有42名会员。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "第17章 精品咖啡革命", "source_locator": "p.434",
+    "source_quote": "于 1982 年在旧⾦⼭路易莎⼩旅馆的会客厅盘腿席地⽽坐，互相讨论，拟定⼀份全国性的咖啡宣⾔，⾃此，美国精品咖啡协会（ Specialty Coffee Association of America ， SCAA ）成⽴，注册会员 42 ⼈。",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-380", "title": "舒尔茨的米兰早晨", "category": "人物",
+    "plain_explanation": "1983年舒尔茨在米兰看到店员一边磨豆、一边拉浓缩机把手、一边打奶泡还招呼客人，像看戏一样，从此认定咖啡馆要卖的是这场表演。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "第18章 星巴克传奇", "source_locator": "p.470",
+    "source_quote": "服务员⼀边磨咖啡⾖，⼀边拉动浓缩咖啡机把⼿，⼀边打奶泡，⼀切有条不紊地进⾏，动作看上去格外优雅，同时他还愉快地和顾客打招呼问好。这⼀切就像在⼤剧场看戏⼀般有趣。",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-381", "title": "照客人习惯改店", "category": "故事线索",
+    "plain_explanation": "美国人不像意大利人站着喝完就走，舒尔茨就加椅子；客人嫌歌剧太吵，他就换成爵士乐。照本地客人的习惯改，而不是照搬样板。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "第18章 星巴克传奇", "source_locator": "p.472",
+    "source_quote": "⽽美国⼈则希望逗留得更久⼀些，于是舒尔茨在店内增加了椅⼦。店⾥的顾客抱怨店内不停播放的意⼤利歌剧太过聒噪，于是舒尔茨便将背景⾳乐改成了爵⼠乐。",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-382", "title": "矮杯高杯大杯", "category": "故事线索",
+    "plain_explanation": "星巴克前身的店员自己发明了一套点单术语，不叫小中大杯，而叫矮杯、高杯、大杯。一套专属叫法能让顾客觉得自己是内行。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "第18章 星巴克传奇", "source_locator": "p.472",
+    "source_quote": "他们不叫 “ ⼩杯 ”“ 中杯 ”“ ⼤杯 ” ，⽽叫 “ 矮杯 ” （ short ）、 “ ⾼杯 ” （ tall ）和 “ ⼤杯 ” （ grande ）。",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-383", "title": "深烘水土不服", "category": "故事线索",
+    "plain_explanation": "星巴克进芝加哥时，当地人喝惯淡咖啡，接受不了厚重的深烘；反倒是卡布奇诺和拿铁打开了局面。新市场先用奶咖破冰。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "第18章 星巴克传奇", "source_locator": "p.474",
+    "source_quote": "芝加哥⼈刚刚摆脱希尔斯兄弟和福尔杰咖啡，⽆法⽴即适应⼝味厚重的星巴克深度烘焙咖啡。但是，卡布奇诺和拿铁⼝味独特，⼤受欢迎",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-384", "title": "遮阴树的作用", "category": "产地",
+    "plain_explanation": "哥斯达黎加拉米妮塔庄园靠咖啡树周围的遮阴树提供稳定氮浓度，落叶还能保养树根，再配定期施肥。砍掉遮阴树等于砍掉地力。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "第19章 最后的战场", "source_locator": "p.489",
+    "source_quote": "除此之外，咖啡周围栽种的遮阴树可以提供稳定的氮浓度，落叶还能保养咖啡树根，定期施肥也必不可少。",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-385", "title": "一杯咖啡的基本比例", "category": "冲煮",
+    "plain_explanation": "作者给的最简配方：新鲜烘焙的阿拉比卡整豆现磨，水烧到快开，两餐匙粉兑6盎司水，萃取四五分钟。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "附录 完美咖啡冲煮之道", "source_locator": "p.538",
+    "source_quote": "对刚刚烘焙好的⾼品质阿拉⽐卡拼配整⾖咖啡进⾏研磨，将纯净⽔烧到快开，以两餐匙咖啡粉兑 6 盎司⽔的合适⽐例，冲泡研磨好的咖啡粉，萃取四五分钟",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-386", "title": "研磨度看接触时间", "category": "冲煮",
+    "plain_explanation": "粉水接触时间越长，研磨就该越粗。滴滤用中度研磨，五分钟内把风味溶出；泡太久就会发苦。法压更粗，意式和虹吸要细。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "附录 完美咖啡冲煮之道", "source_locator": "p.540",
+    "source_quote": "研磨细度取决于冲泡时咖啡粉和热⽔接触的时间。采⽤滴滤法，中度研磨可以让咖啡粉在 5 分钟之内，⻛味完全溶解于热⽔中，冲泡时间过⻓则会产⽣苦味。",
+    "confidence": "high", "related_stages": []
+  },
+  {
+    "id": "knowledge-387", "title": "只买一周的量", "category": "冲煮",
+    "plain_explanation": "不管选哪个产地、烘到多深，一定要新鲜烘焙的豆子，少量多次买，只买接下来一周要喝的量；放到不新鲜，前面的讲究全白费。",
+    "source_book": "《左手咖啡，右手世界：一部咖啡的商业史》", "source_chapter": "附录 完美咖啡冲煮之道", "source_locator": "p.540",
+    "source_quote": "最重要的是，⽆论你选择的咖啡原产地和烘焙深度是什么，⼀定要新鲜烘焙的咖啡，多买少量，只买接下来⼀个星期要喝的量就够了。",
+    "confidence": "high", "related_stages": []
+  }
+]

@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.DS_Store
+*.log
+
+# IDE 的插件与 skill 配置，属于本地工具环境，不是项目代码
+.comate/
+
+# 书籍原文与抽取的全文属于版权材料，不入库。仓库里只留蒸馏后的知识卡。
+books/
+content/raw/
