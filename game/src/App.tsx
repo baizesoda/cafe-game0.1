@@ -5,17 +5,22 @@ import { beans, getCard, getCharacterName, getDrink, getStage, knowledgeCards, s
 import { cafeGallery, charImage, coverImage, drinkGallery, drinkImage, gearGallery, kbImage, sceneImage } from './pictures';
 import {
   UPGRADES,
+  activeProfileId,
   applyEffects,
   availableDrinks,
   brewableWith,
   buyUpgrade,
-  clearSave,
   closeDay,
+  createProfile,
   createSave,
+  deleteProfile,
+  listProfiles,
   loadSave,
+  migrateLegacySave,
   numericLabels,
   persistSave,
   serveDrink,
+  setActiveProfile,
   settleStage,
 } from './state';
 import './styles.css';
@@ -60,7 +65,13 @@ const ZONES: { view: View; name: string; hint: string }[] = [
 
 
 export default function App() {
-  const [save, setSave] = useState<PlayerSave | null>(() => loadSave());
+  // 开局先把 v1 时代的单一存档搬进档位系统，再决定进哪一档
+  const [profileId, setProfileId] = useState(() => {
+    migrateLegacySave();
+    const active = activeProfileId();
+    return active && loadSave(active) ? active : '';
+  });
+  const [save, setSave] = useState<PlayerSave | null>(() => (profileId ? loadSave(profileId) : null));
   const [view, setView] = useState<View>('home');
   const [outcome, setOutcome] = useState<Outcome | null>(null);
   const [toast, setToast] = useState('');
@@ -68,14 +79,45 @@ export default function App() {
   const [servedStage, setServedStage] = useState<string | null>(null);
 
   useEffect(() => {
-    if (save) persistSave(save);
-  }, [save]);
+    if (save && profileId) persistSave(profileId, save);
+  }, [save, profileId]);
 
   const stage = save ? getStage(save.current_stage) : undefined;
 
-  function start(fresh: boolean) {
-    setSave(fresh || !save ? createSave() : save);
+  /** 进入某一档：切当前档位，读它自己的存档 */
+  function open(id: string) {
+    setActiveProfile(id);
+    setProfileId(id);
+    setSave(loadSave(id));
     setToast('');
+    setView('cafe');
+  }
+
+  function newProfile(name: string) {
+    open(createProfile(name).id);
+  }
+
+  /** 回到档位列表，不动任何存档 */
+  function switchProfile() {
+    setProfileId('');
+    setSave(null);
+    setOutcome(null);
+    setView('home');
+  }
+
+  function removeProfile(id: string) {
+    deleteProfile(id);
+    if (id === profileId) switchProfile();
+    else setToast('存档已删除。');
+  }
+
+  /** 同一个档从头再来，名字保留 */
+  function restart() {
+    if (!save) return;
+    setSave(createSave(save.player_name));
+    setOutcome(null);
+    setServedStage(null);
+    setToast('店重新开张了。');
     setView('cafe');
   }
 
@@ -141,6 +183,11 @@ export default function App() {
             ))}
           </ul>
         )}
+        {save && (
+          <button className="who" onClick={switchProfile} title="回到存档列表，换一个人玩">
+            {save.player_name} · 换档
+          </button>
+        )}
       </header>
 
       {toast && <p className="toast" role="status">{toast}</p>}
@@ -150,14 +197,14 @@ export default function App() {
         {/* 这一屏的场景横幅。图缺了就不渲染，页面退回纯手绘 */}
         {sceneImage(view) && <img className="scene-band" src={sceneImage(view)} alt="" aria-hidden="true" />}
         <ViewDetail view={view} />
-        {view === 'home' && <Home hasSave={!!save} onStart={start} onArchive={() => setView('archive')} />}
+        {view === 'home' && <Home onOpen={open} onCreate={newProfile} onDelete={removeProfile} onArchive={() => setView('archive')} />}
         {view === 'cafe' && save && <Cafe save={save} stage={stage} onGo={(v) => { setToast(''); setView(v); }} />}
         {view === 'map' && save && <ChapterMap save={save} />}
         {view === 'storage' && save && <Storage save={save} />}
         {view === 'clues' && save && <Clues save={save} />}
         {view === 'upgrade' && save && <Upgrades save={save} onBuy={purchase} />}
         {view === 'archive' && <Archive save={save} />}
-        {view === 'settlement' && save && <Settlement save={save} onFinish={finishDay} onRestart={() => { clearSave(); setSave(null); setView('home'); }} />}
+        {view === 'settlement' && save && <Settlement save={save} onFinish={finishDay} onRestart={restart} />}
         {view === 'serve' && save && <ServeDesk save={save} onServe={serve} />}
         {view === 'stage' && stage && save && !outcome && (
           <StageView
@@ -204,19 +251,84 @@ function SceneBreak({ chapter, view, stage }: { chapter?: string; view: string; 
   );
 }
 
-function Home({ hasSave, onStart, onArchive }: { hasSave: boolean; onStart: (fresh: boolean) => void; onArchive: () => void }) {
+/**
+ * 首页 = 存档位列表。每个档一行，点进去接着玩，也能删。
+ * 档位只存在这台浏览器的 localStorage 里，换设备带不走——这一点在页面上明说，
+ * 免得玩家以为是在线账号。
+ */
+function Home({
+  onOpen,
+  onCreate,
+  onDelete,
+  onArchive,
+}: {
+  onOpen: (id: string) => void;
+  onCreate: (name: string) => void;
+  onDelete: (id: string) => void;
+  onArchive: () => void;
+}) {
+  const [name, setName] = useState('');
+  /** 删档要二次确认，记住待确认的是哪一个 */
+  const [confirming, setConfirming] = useState('');
+  // 列表在本组件内自己重算：删档/建档都会让 App 换 view 或重渲染
+  const profiles = listProfiles();
+
   return (
     <section className="panel">
       <h1>余温咖啡馆</h1>
       <p className="lead">老街上的店，昨天还有师傅。今天只剩一封信和一台旧磨豆机。</p>
+
+      <p className="crumb">选一个存档</p>
+      {profiles.length === 0 && <p className="empty">还没有存档。在下面起个名字，就能开店。</p>}
+      <ul className="profiles">
+        {profiles.map((p) => {
+          const s = loadSave(p.id);
+          return (
+            <li key={p.id}>
+              <button className="slot" onClick={() => onOpen(p.id)}>
+                <strong>{p.name}</strong>
+                <span>
+                  {s ? `${getStage(s.current_stage)?.chapter.replace('chapter-0', '第') ?? '第'}章 · 现金 ${s.money} · 知识卡 ${s.unlocked_knowledge.length} 张` : '存档读不出来'}
+                </span>
+              </button>
+              {confirming === p.id ? (
+                <span className="slot-danger">
+                  <button className="danger" onClick={() => { onDelete(p.id); setConfirming(''); }}>确认删除</button>
+                  <button onClick={() => setConfirming('')}>算了</button>
+                </span>
+              ) : (
+                <button className="slot-del" onClick={() => setConfirming(p.id)} aria-label={`删除存档 ${p.name}`}>删除</button>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+
+      <form
+        className="new-profile"
+        onSubmit={(e) => {
+          e.preventDefault();
+          onCreate(name);
+          setName('');
+        }}
+      >
+        <input
+          value={name}
+          maxLength={12}
+          placeholder="给自己起个名字"
+          aria-label="新存档的名字"
+          onChange={(e) => setName(e.target.value)}
+        />
+        <button className="primary" type="submit">开一家新店</button>
+      </form>
+
       <div className="actions">
-        {hasSave && <button className="primary" onClick={() => onStart(false)}>继续营业</button>}
-        <button className={hasSave ? '' : 'primary'} onClick={() => onStart(true)}>{hasSave ? '重新开始' : '开始营业'}</button>
         <button onClick={onArchive}>知识档案</button>
       </div>
       <p className="meta">
         已接入：关卡 {stages.length} 个 · 知识卡 {knowledgeCards.length} 张 · 咖啡豆 {beans.length} 种
       </p>
+      <p className="meta">存档只留在这台设备的浏览器里，换电脑或清缓存都会没。</p>
     </section>
   );
 }

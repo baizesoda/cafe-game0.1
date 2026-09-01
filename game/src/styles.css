@@ -147,6 +147,44 @@ body::after {
 .stats .bar.satisfaction_today i { background: linear-gradient(176deg, var(--leaf-l), var(--leaf)); }
 .stats .bar.energy i { background: linear-gradient(176deg, var(--clay-l), var(--clay)); }
 
+/* 顶栏最右的「谁在玩」，点一下回存档列表 */
+.who {
+  min-height: auto; margin-left: 4px; padding: 5px 12px;
+  font-size: 12.5px; color: var(--ink-soft);
+  border-radius: 999px;
+  box-shadow: var(--sh1);
+}
+
+/* 存档位列表：一行一张纸签 */
+.profiles { display: grid; gap: 10px; margin: 10px 0 20px; padding: 0; list-style: none; }
+.profiles li { display: flex; align-items: stretch; gap: 8px; }
+.profiles .slot { flex: 1; display: grid; gap: 3px; }
+.profiles .slot strong {
+  font-family: 'Songti SC', 'STSong', Georgia, serif;
+  font-size: 16px; color: var(--coffee-d);
+}
+.profiles .slot span { font-size: 12.5px; color: var(--muted); }
+.slot-del { min-height: auto; padding: 8px 12px; font-size: 12.5px; color: var(--muted); }
+.slot-danger { display: flex; gap: 6px; }
+.slot-danger button { min-height: auto; padding: 8px 12px; font-size: 12.5px; }
+button.danger {
+  color: #fdf6e6;
+  background-image: var(--grain), linear-gradient(174deg, var(--clay-l), var(--clay-d));
+  border-color: var(--clay-d);
+}
+
+/* 起名字开新店 */
+.new-profile { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; }
+.new-profile input {
+  flex: 1; min-width: 180px; min-height: 46px; padding: 13px 16px;
+  font: inherit; color: var(--ink);
+  background-image: linear-gradient(176deg, #fffaf0, var(--paper-l));
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  box-shadow: inset 0 2px 3px rgba(107, 74, 50, .12);
+}
+.new-profile input:focus-visible { outline: 2px dashed var(--brass-d); outline-offset: 2px; }
+
 /* 一屏内容：整张纸飘进来 */
 .content { position: relative; animation: drift-in .34s var(--ease-soft) both; }
 

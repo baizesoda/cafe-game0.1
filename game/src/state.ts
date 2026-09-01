@@ -3,8 +3,6 @@ import type { Choice, CoffeeBean, DailyLedger, Drink, Effects, PlayerSave, Stage
 import stateKeys from '../../contracts/state-keys.json';
 import { beans, drinks, firstStageId, getStage } from './data/loader';
 
-const SAVE_KEY = 'yuwen-cafe-save-v1';
-
 type NumericKey = 'money' | 'reputation' | 'satisfaction_today' | 'energy';
 
 const numeric = stateKeys.numeric as Record<NumericKey, { label: string; init: number; min: number; max: number | null }>;
@@ -214,33 +212,134 @@ export function settleStage(save: PlayerSave, stage: Stage, choice: Choice) {
   return { save: next, changes };
 }
 
-export function loadSave(): PlayerSave | null {
+/* ---------- 存档位 ----------
+ * 同一台浏览器可以开多个档，各自独立进度。档位清单存在 PROFILE_KEY，
+ * 每个档的存档体另存一份，键是 saveKey(id)。全部走 localStorage，没有后端，
+ * 所以换设备/换浏览器带不走——这一层要跨设备就得另外接服务端。
+ * 所有读写都包 try/catch：隐私模式下 localStorage 可能不可用，
+ * 测试环境（node）里干脆不存在，此时降级成「玩得动但存不下」。
+ */
+export interface Profile {
+  id: string;
+  name: string;
+  /** 最后一次写盘的时间戳，用来在档位列表里排序和显示 */
+  updated_at: number;
+}
+
+const saveKey = (id: string) => `yuwen-cafe-save-v2:${id}`;
+const PROFILE_KEY = 'yuwen-cafe-profiles-v1';
+const ACTIVE_KEY = 'yuwen-cafe-active-v1';
+
+const store = (): Storage | null => {
   try {
-    const raw = localStorage.getItem(SAVE_KEY);
-    if (!raw) return null;
-    const save = JSON.parse(raw) as PlayerSave;
-    // 旧存档没有饮品相关字段，补上默认值，避免刷新后白屏
-    save.menu ??= [];
-    save.today ??= emptyLedger();
-    save.today.drinks_served ??= {};
-    return save;
+    // 探一下真的能写，Safari 隐私模式下 localStorage 存在但 setItem 抛异常
+    localStorage.setItem(ACTIVE_KEY, localStorage.getItem(ACTIVE_KEY) ?? '');
+    return localStorage;
   } catch {
     return null;
   }
-}
+};
 
-export function persistSave(save: PlayerSave) {
+const readJson = <T>(key: string, fallback: T): T => {
   try {
-    localStorage.setItem(SAVE_KEY, JSON.stringify(save));
+    const raw = store()?.getItem(key);
+    return raw ? (JSON.parse(raw) as T) : fallback;
   } catch {
-    // 隐私模式下 localStorage 可能不可写，游戏仍可继续，只是刷新后丢进度
+    return fallback;
   }
+};
+
+const writeJson = (key: string, value: unknown) => {
+  try {
+    store()?.setItem(key, JSON.stringify(value));
+  } catch {
+    // 存不下就算了，本局还能继续玩
+  }
+};
+
+/** 档位清单，最近玩过的排在前面 */
+export function listProfiles(): Profile[] {
+  return readJson<Profile[]>(PROFILE_KEY, []).sort((a, b) => b.updated_at - a.updated_at);
 }
 
-export function clearSave() {
+/** 新建一个档并落盘初始存档。名字重复不拦，靠 id 区分。 */
+export function createProfile(name: string, now = Date.now()): Profile {
+  const clean = name.trim() || '学徒';
+  const id = `p${now.toString(36)}${Math.floor(Math.random() * 1e6).toString(36)}`;
+  const profile: Profile = { id, name: clean, updated_at: now };
+  writeJson(PROFILE_KEY, [...readJson<Profile[]>(PROFILE_KEY, []), profile]);
+  persistSave(id, createSave(clean));
+  setActiveProfile(id);
+  return profile;
+}
+
+export function deleteProfile(id: string) {
+  writeJson(PROFILE_KEY, readJson<Profile[]>(PROFILE_KEY, []).filter((p) => p.id !== id));
   try {
-    localStorage.removeItem(SAVE_KEY);
+    store()?.removeItem(saveKey(id));
   } catch {
     // 同上
   }
+  if (activeProfileId() === id) setActiveProfile('');
+}
+
+export function activeProfileId(): string {
+  try {
+    return store()?.getItem(ACTIVE_KEY) ?? '';
+  } catch {
+    return '';
+  }
+}
+
+export function setActiveProfile(id: string) {
+  try {
+    store()?.setItem(ACTIVE_KEY, id);
+  } catch {
+    // 同上
+  }
+}
+
+export function loadSave(id: string): PlayerSave | null {
+  if (!id) return null;
+  const save = readJson<PlayerSave | null>(saveKey(id), null);
+  if (!save) return null;
+  // 老存档没有饮品相关字段，补上默认值，避免刷新后白屏
+  save.menu ??= [];
+  save.today ??= emptyLedger();
+  save.today.drinks_served ??= {};
+  return save;
+}
+
+export function persistSave(id: string, save: PlayerSave, now = Date.now()) {
+  if (!id) return;
+  writeJson(saveKey(id), save);
+  const list = readJson<Profile[]>(PROFILE_KEY, []);
+  const hit = list.find((p) => p.id === id);
+  if (hit) {
+    hit.updated_at = now;
+    hit.name = save.player_name;
+    writeJson(PROFILE_KEY, list);
+  }
+}
+
+/**
+ * 把 v1 时代那个单一存档搬进档位系统，只在还没有任何档位时做一次。
+ * 旧档的现金是按「整袋价当每份成本」的错误算法攒出来的，几乎必然见底，
+ * 所以顺手补到开局值，否则搬过来也是个走不动的死档。
+ */
+export function migrateLegacySave(now = Date.now()): Profile | null {
+  const legacy = readJson<PlayerSave | null>('yuwen-cafe-save-v1', null);
+  if (!legacy || listProfiles().length) return null;
+  const profile = createProfile(legacy.player_name || '旧存档', now);
+  legacy.menu ??= [];
+  legacy.today ??= emptyLedger();
+  legacy.today.drinks_served ??= {};
+  legacy.money = Math.max(legacy.money, numeric.money.init);
+  persistSave(profile.id, legacy, now);
+  try {
+    store()?.removeItem('yuwen-cafe-save-v1');
+  } catch {
+    // 同上
+  }
+  return profile;
 }

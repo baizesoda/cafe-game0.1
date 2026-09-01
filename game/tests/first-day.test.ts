@@ -1,15 +1,22 @@
 // 走一遍完整的「第一天营业」，对照方案 §12 的验收标准。
 // 这里测的是数值逻辑与关卡串联，不测界面渲染。
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { beans, drinks, getStage, stages } from '../src/data/loader';
 import {
   UPGRADES,
+  activeProfileId,
   applyEffects,
   brewableWith,
   buyUpgrade,
   closeDay,
+  createProfile,
   createSave,
   cupCost,
+  deleteProfile,
+  listProfiles,
+  loadSave,
+  migrateLegacySave,
+  persistSave,
   serveDrink,
   settleStage,
 } from '../src/state';
@@ -177,5 +184,81 @@ describe('收工', () => {
     expect(next.energy).toBe(5);
     expect(next.today.revenue).toBe(0);
     expect(next.reputation).toBe(35); // 口碑是长期数值，不重置
+  });
+});
+
+/**
+ * 存档位。state.ts 里每次读写都现取 globalThis.localStorage，
+ * 所以装一个极简替身就能在 node 下跑，不用 jsdom。
+ */
+function stubStorage() {
+  const map = new Map<string, string>();
+  (globalThis as unknown as { localStorage: unknown }).localStorage = {
+    getItem: (k: string) => map.get(k) ?? null,
+    setItem: (k: string, v: string) => void map.set(k, String(v)),
+    removeItem: (k: string) => void map.delete(k),
+  };
+  return map;
+}
+
+describe('存档位', () => {
+  beforeEach(() => {
+    stubStorage();
+  });
+
+  it('两个人各存一份，互不覆盖', () => {
+    const a = createProfile('阿满');
+    const b = createProfile('老陈');
+    expect(a.id).not.toBe(b.id);
+
+    persistSave(a.id, { ...loadSave(a.id)!, money: 1234 });
+    persistSave(b.id, { ...loadSave(b.id)!, money: 5678 });
+
+    expect(loadSave(a.id)!.money).toBe(1234);
+    expect(loadSave(b.id)!.money).toBe(5678);
+    // 名字进了各自的存档，档位清单里也能查到
+    expect(loadSave(a.id)!.player_name).toBe('阿满');
+    expect(listProfiles().map((p) => p.name).sort()).toEqual(['老陈', '阿满'].sort());
+    // 新建时顺手切成当前档
+    expect(activeProfileId()).toBe(b.id);
+  });
+
+  it('删一个档不动另一个', () => {
+    const a = createProfile('阿满');
+    const b = createProfile('老陈');
+    deleteProfile(b.id);
+
+    expect(listProfiles().map((p) => p.id)).toEqual([a.id]);
+    expect(loadSave(b.id)).toBeNull();
+    expect(loadSave(a.id)).not.toBeNull();
+    // 删掉的正是当前档，当前档位要跟着清空，否则会读到空存档
+    expect(activeProfileId()).toBe('');
+  });
+
+  it('名字留空时给个默认名，不产生无名档', () => {
+    const p = createProfile('   ');
+    expect(p.name).toBe('学徒');
+    expect(loadSave(p.id)!.player_name).toBe('学徒');
+  });
+
+  it('localStorage 不可用时不抛异常，只是存不下', () => {
+    delete (globalThis as unknown as { localStorage?: unknown }).localStorage;
+    expect(() => createProfile('无痕')).not.toThrow();
+    expect(listProfiles()).toEqual([]);
+    expect(loadSave('whatever')).toBeNull();
+  });
+
+  it('v1 时代的旧存档搬进档位，并把见底的现金补到开局值', () => {
+    const map = stubStorage();
+    const old = { ...createSave('老板'), money: 12, current_stage: 'stage-1-3' };
+    map.set('yuwen-cafe-save-v1', JSON.stringify(old));
+
+    const migrated = migrateLegacySave();
+    expect(migrated).not.toBeNull();
+    const save = loadSave(migrated!.id)!;
+    expect(save.current_stage).toBe('stage-1-3'); // 进度保住
+    expect(save.money).toBe(3000);                 // 旧算法攒的钱不作数，补到开局值
+    expect(map.get('yuwen-cafe-save-v1')).toBeUndefined(); // 搬完就清掉，不会搬第二次
+    expect(migrateLegacySave()).toBeNull();
   });
 });
