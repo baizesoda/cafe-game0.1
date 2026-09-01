@@ -84,3 +84,10 @@ npm run validate
 - 2026-08-31 `story/characters.json` 补齐 3 个角色：`chenshu`（豆商）、`suhe`（对街连锁店长）、`guyan`（写专栏的熟客）。
   这三个 ID 早已在 `character.schema.json` 与 `state-keys.json` 的 `trust.characters` 白名单里，
   但角色文件一直没落地，第一章又已经在写 `trust.chenshu`——补上前校验器抓不到这个洞。
+- 2026-09-01 调经营难度：`numeric.money.init` 从 200 提到 3000，并新增 `economy.bean_portions_per_bag = 20`。
+  起因是每杯都在亏钱：豆子的 `purchase_price` 是书里抄来的整袋价（15~200），
+  但轨道 3 把它当成每份成本乘 `bean_cost`，饮品售价却只有 16~22，
+  最便宜的豆子做手冲净赚 −8，用蓝山做手冲净赚 −218，只加开局现金只是推迟破产。
+  现在出杯成本 = `purchase_price / bean_portions_per_bag × bean_cost` 向上取整，每款饮品都有正毛利。
+  轨道 1、2 无需改动（豆子价格与关卡 `effects` 照原样写）；轨道 3 读新键，
+  换算集中在 `game/src/state.ts` 的 `cupCost()`，以后调难度只改 `bean_portions_per_bag` 一个数。

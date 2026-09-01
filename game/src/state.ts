@@ -9,6 +9,16 @@ type NumericKey = 'money' | 'reputation' | 'satisfaction_today' | 'energy';
 
 const numeric = stateKeys.numeric as Record<NumericKey, { label: string; init: number; min: number; max: number | null }>;
 
+const PORTIONS_PER_BAG = stateKeys.economy.bean_portions_per_bag;
+
+/**
+ * 出一杯的原料成本。豆子的 purchase_price 是整袋价，出杯只用其中一份，
+ * 所以要先按 contracts/state-keys.json 里的 bean_portions_per_bag 摊到份上。
+ */
+export function cupCost(bean: CoffeeBean, drink: Drink) {
+  return Math.ceil((bean.purchase_price / PORTIONS_PER_BAG) * drink.bean_cost);
+}
+
 export const numericLabels = Object.entries(numeric).map(([key, cfg]) => ({
   key: key as NumericKey,
   label: cfg.label,
@@ -142,16 +152,15 @@ export function serveDrink(save: PlayerSave, drink: Drink, beanId: string) {
     return { save, ok: false as const, reason: `${bean.name}只剩 ${stock} 份，做${drink.name}要 ${drink.bean_cost} 份` };
   }
 
+  const cost = cupCost(bean, drink);
   // 现金按净额过 applyEffects（走统一的夹取与变化文案）
-  const { save: next, changes } = applyEffects(save, {
-    money: drink.price - bean.purchase_price * drink.bean_cost,
-  });
+  const { save: next, changes } = applyEffects(save, { money: drink.price - cost });
   // 库存自己扣：applyEffects 会把库存减少记成 wasted，但卖出去的不是浪费
   next.inventory[beanId] = Math.max(stateKeys.inventory.min, stock - drink.bean_cost);
   changes.push(`${bean.name} 库存 -${drink.bean_cost}`);
   // 收入与原料成本分开记，结算页才拆得开
   next.today.revenue = save.today.revenue + drink.price;
-  next.today.cost = save.today.cost + bean.purchase_price * drink.bean_cost;
+  next.today.cost = save.today.cost + cost;
   next.today.drinks_served[drink.id] = (next.today.drinks_served[drink.id] ?? 0) + 1;
 
   return {

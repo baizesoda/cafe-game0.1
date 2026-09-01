@@ -9,6 +9,7 @@ import {
   buyUpgrade,
   closeDay,
   createSave,
+  cupCost,
   serveDrink,
   settleStage,
 } from '../src/state';
@@ -29,7 +30,7 @@ describe('第一天营业闭环', () => {
 
   it('从开局走到本章结束，数值与解锁都按预期变化', () => {
     let save = createSave('测试学徒');
-    expect(save.money).toBe(200);
+    expect(save.money).toBe(3000);
     expect(save.current_stage).toBe('stage-1-1');
 
     // 第一章末尾已经接到第二章，所以走到章节号变化就停，别把后面几章也走完
@@ -128,7 +129,9 @@ describe('出杯', () => {
   it('出一杯：扣库存、记收入与原料成本，不算浪费', () => {
     const { save, bean, drink } = atCounter();
     const before = save.inventory[bean.id];
-    const cost = bean.purchase_price * drink.bean_cost;
+    const cost = cupCost(bean, drink);
+    // 整袋价摊到份上之后，每杯都该是赚的，否则经营根本跑不起来
+    expect(cost).toBeLessThan(drink.price);
 
     const r = serveDrink(save, drink, bean.id);
     expect(r.ok).toBe(true);

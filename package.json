@@ -9,7 +9,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host",
     "test": "vitest run",
-    "validate": "node tools/validate.mjs"
+    "validate": "node tools/validate.mjs",
+    "kb": "node tools/export-knowledge-html.mjs"
   },
   "dependencies": {
     "react": "18.3.1",
