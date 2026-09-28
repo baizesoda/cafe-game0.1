@@ -46,11 +46,16 @@
 
 * { box-sizing: border-box; }
 
+/* 横向不溢出（U15）：长词、宽图都不给页面拽出横向滚动条 */
+html, body { overflow-x: hidden; }
+
 body {
   margin: 0;
   font-family: 'Kaiti SC', 'STKaiti', 'Songti SC', 'Noto Serif CJK SC', Georgia, serif;
   font-size: 16px; line-height: 1.85;
   color: var(--ink);
+  /* 手机横竖屏切换时不让系统自行放大字号 */
+  -webkit-text-size-adjust: 100%; text-size-adjust: 100%;
   /* 木桌面：年轮走向 + 同色系微渐变 */
   background:
     repeating-linear-gradient(178deg, rgba(116, 89, 56, .07) 0 2px, transparent 2px 9px),
@@ -80,7 +85,7 @@ body::after {
 
 .app {
   position: relative;
-  max-width: 860px; margin: 0 auto; padding: 0 20px 96px;
+  max-width: 860px; margin: 0 auto; padding: 0 20px calc(96px + env(safe-area-inset-bottom));
 }
 
 /* 渐变定义用的隐形 svg，不占位 */
@@ -110,8 +115,9 @@ body::after {
 .topbar::before { left: 12px; }
 .topbar::after { right: 12px; }
 
+/* U15：顶栏这几枚也按 44px 触摸靶下限（原来是 auto，手指点不准） */
 .brand {
-  min-height: auto; padding: 2px 6px;
+  min-height: 44px; padding: 2px 6px;
   font-family: 'Songti SC', 'STSong', Georgia, serif;
   font-size: 21px; font-weight: 700; letter-spacing: .06em;
   color: var(--coffee-d);
@@ -149,7 +155,7 @@ body::after {
 
 /* 顶栏最右的「谁在玩」，点一下回存档列表 */
 .who {
-  min-height: auto; margin-left: 4px; padding: 5px 12px;
+  min-height: 44px; margin-left: 4px; padding: 5px 12px;
   font-size: 12.5px; color: var(--ink-soft);
   border-radius: 999px;
   box-shadow: var(--sh1);
@@ -164,18 +170,18 @@ body::after {
   font-size: 16px; color: var(--coffee-d);
 }
 .profiles .slot span { font-size: 12.5px; color: var(--muted); }
-.slot-del { min-height: auto; padding: 8px 12px; font-size: 12.5px; color: var(--muted); }
+.slot-del { min-height: 44px; padding: 8px 12px; font-size: 12.5px; color: var(--muted); }
 .slot-danger { display: flex; gap: 6px; }
-.slot-danger button { min-height: auto; padding: 8px 12px; font-size: 12.5px; }
+.slot-danger button { min-height: 44px; padding: 8px 12px; font-size: 12.5px; }
 button.danger {
   color: #fdf6e6;
   background-image: var(--grain), linear-gradient(174deg, var(--clay-l), var(--clay-d));
   border-color: var(--clay-d);
 }
 
-/* 起名字开新店 */
+/* 起名字开新店 / 配方编辑器：都是纸上的手写行 */
 .new-profile { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; }
-.new-profile input {
+.new-profile input, .recipe-form input, .recipe-form select {
   flex: 1; min-width: 180px; min-height: 46px; padding: 13px 16px;
   font: inherit; color: var(--ink);
   background-image: linear-gradient(176deg, #fffaf0, var(--paper-l));
@@ -183,7 +189,11 @@ button.danger {
   border-radius: var(--r-sm);
   box-shadow: inset 0 2px 3px rgba(107, 74, 50, .12);
 }
-.new-profile input:focus-visible { outline: 2px dashed var(--brass-d); outline-offset: 2px; }
+.recipe-form input, .recipe-form select { min-height: 46px; }
+.new-profile input:focus-visible,
+.recipe-form input:focus-visible, .recipe-form select:focus-visible {
+  outline: 2px dashed var(--brass-d); outline-offset: 2px;
+}
 
 /* 一屏内容：整张纸飘进来 */
 .content { position: relative; animation: drift-in .34s var(--ease-soft) both; }
@@ -586,9 +596,9 @@ button:disabled {
   50% { transform: rotate(.6deg) translateX(3px); }
 }
 
-/* 库存 / 升级：一行行贴在纸上的小条 */
+/* 库存 / 升级 / 配方墙 / 反馈：一行行贴在纸上的小条（同一张纸的几种用法） */
 .beanlist, .upgradelist { margin: 16px 0; padding: 0; list-style: none; display: grid; gap: 12px; }
-.beanlist li, .upgradelist li {
+.beanlist li, .upgradelist li, .recipelist li, .feedbacklist li, .recipecard {
   display: grid; gap: 3px;
   padding: 13px 15px;
   background-image: var(--grain), linear-gradient(175deg, #fbf3e2, var(--paper-d));
@@ -597,8 +607,8 @@ button:disabled {
   border-radius: var(--r-sm);
   box-shadow: var(--sh1), var(--sh2), 0 14px 20px -14px rgba(107, 74, 50, .16);
 }
-.beanlist li:nth-child(odd) { transform: rotate(-.5deg); }
-.beanlist li:nth-child(even) { transform: rotate(.5deg); }
+.beanlist li:nth-child(odd), .recipelist li:nth-child(odd), .feedbacklist li:nth-child(odd) { transform: rotate(-.5deg); }
+.beanlist li:nth-child(even), .recipelist li:nth-child(even), .feedbacklist li:nth-child(even) { transform: rotate(.5deg); }
 .beanlist .count { font-size: 13px; color: var(--coffee); font-weight: 700; }
 
 .upgradelist li { grid-template-columns: 1fr auto; align-items: center; gap: 14px; }
@@ -643,6 +653,8 @@ button:disabled {
 .bottombar {
   display: flex; gap: 12px; flex-wrap: wrap;
   margin-top: 26px;
+  /* 全面屏手势条下面留出安全区（U15） */
+  padding-bottom: env(safe-area-inset-bottom);
 }
 .bottombar button { flex: 1 1 160px; text-align: center; min-height: 44px; }
 .bottombar button:first-child { transform: rotate(-.8deg); }
@@ -656,6 +668,9 @@ button:disabled {
 .scene-storage { --accent-l: #c3a37a; --accent-d: #7c5f3a; }
 .scene-clues { --accent-l: #b39ab8; --accent-d: #6d5476; }
 .scene-map { --accent-l: #9db4c0; --accent-d: #4f6b7a; }
+.scene-purchase { --accent-l: #cda86b; --accent-d: #8a5f2c; }
+.scene-business { --accent-l: #d0a184; --accent-d: #8f5f42; }
+.scene-recipes { --accent-l: #c0a3b0; --accent-d: #7a5462; }
 
 /* 杯口的热气：三缕，慢慢升上去散掉 */
 .art-cup .steam { animation: steam 3.6s ease-in-out infinite; transform-origin: 50% 100%; }
@@ -800,7 +815,7 @@ button:disabled {
 
 @media (max-width: 768px) {
   body { font-size: 15.5px; }
-  .app { padding: 0 13px 80px; }
+  .app { padding: 0 13px calc(80px + env(safe-area-inset-bottom)); }
   .panel { padding: 20px 18px 30px; }
   h1 { font-size: 25px; }
   h2 { font-size: 20px; }
@@ -831,3 +846,216 @@ button:disabled {
   button:hover { transform: none; }
   .art-cup .steam { opacity: .6; }
 }
+
+/* ==========================================================
+   v0.02 新增：新屏与新控件（M1–M8 / U1–U16）
+   同一套纸质规矩：同色系微渐变 + 三层投影 + 手裁圆角；
+   凡是能点的，触摸靶一律 44px 起（U15）。
+   ========================================================== */
+
+/* ---- 顶栏的反馈入口（U1）：跟「换档」是一对布签小牌 ---- */
+.ghost {
+  margin-left: auto; min-height: 44px; padding: 10px 16px;
+  font-size: 12.5px; color: var(--ink-soft);
+  border-radius: 999px; box-shadow: var(--sh1);
+}
+/* 有「换档」在它左边时，两块牌挨着站，不留空档 */
+.stats + .ghost { margin-left: 0; }
+
+/* ---- 更新条（U14）：顶栏下面压一条黄铜横条，点一下换新 ---- */
+.updatebar {
+  width: 100%; margin: 0 0 16px; padding: 12px 18px;
+  font-size: 14px; font-weight: 700; letter-spacing: .06em; text-align: center;
+  color: #fdf6e6;
+  background-image: var(--grain), linear-gradient(174deg, var(--brass-l), var(--brass-d));
+  background-blend-mode: multiply, normal;
+  border-color: var(--brass-d);
+  text-shadow: 0 1px 1px rgba(58, 78, 52, .45);
+  box-shadow: var(--sh1), var(--sh2), 0 16px 22px -14px rgba(107, 74, 50, .2);
+  animation: slap .3s var(--ease-bounce) both;
+}
+
+/* ---- 反馈浮层（U13）：整屏压一层暮色玻璃，面板还是那张纸 ---- */
+.overlay {
+  position: fixed; inset: 0; z-index: 40;
+  display: grid; justify-items: center; align-content: start;
+  padding: max(16px, env(safe-area-inset-top)) 14px calc(24px + env(safe-area-inset-bottom));
+  overflow-y: auto;
+  background: rgba(74, 54, 38, .58);
+  backdrop-filter: blur(2px);
+  animation: dusk .22s var(--ease-soft) both;
+}
+.overlay .panel { width: min(620px, 100%); margin: 0; }
+@keyframes dusk {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ---- 首页：导出 / 导入（M5 / U11 / U12） ---- */
+.slot-export { flex: 0 0 auto; min-height: 44px; padding: 8px 12px; font-size: 12.5px; color: var(--ink-soft); }
+.exportbox, .importbox {
+  margin: 10px 0 20px; padding: 14px 16px 16px;
+  background-image: var(--grain), linear-gradient(176deg, #fbf4e5, var(--linen));
+  background-blend-mode: multiply, normal;
+  border: 1px solid var(--line); border-radius: var(--r-card);
+  box-shadow: inset 0 2px 4px rgba(107, 74, 50, .12);
+}
+/* 导入预览：一张虚线框的试样纸 */
+.preview {
+  margin: 14px 0 0; padding: 12px 14px 14px;
+  background-image: var(--grain), linear-gradient(176deg, #fdf6e6, var(--paper));
+  background-blend-mode: multiply, normal;
+  border: 1px dashed rgba(154, 101, 70, .45); border-radius: var(--r-sm);
+}
+
+/* 输入区：一条贴在纸上的手写行（存档码 / 反馈 / 配方共用） */
+textarea {
+  display: block; width: 100%; margin: 8px 0 0; padding: 12px 14px;
+  font: inherit; font-size: 13.5px; line-height: 1.75; color: var(--ink);
+  background-image: linear-gradient(176deg, #fffaf0, var(--paper-l));
+  border: 1px solid var(--line); border-radius: var(--r-sm);
+  box-shadow: inset 0 2px 3px rgba(107, 74, 50, .14);
+  resize: vertical;
+}
+textarea:focus-visible { outline: 2px dashed var(--brass-d); outline-offset: 2px; }
+/* 交给机器读的存档码：等宽，长串断行不撑破版面（U15） */
+textarea.code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12.5px; overflow-wrap: anywhere;
+}
+
+/* ---- 店务栏（U3）：四个入口一屏内可达 ---- */
+.deskbar { display: grid; grid-template-columns: repeat(auto-fit, minmax(148px, 1fr)); gap: 10px; margin-top: 2px; }
+.deskbar button { padding: 12px 10px; text-align: center; font-size: 14.5px; }
+
+/* ---- 嵌在关卡里的吧台（U5）：一层内凹的纸垫，不再套一张大纸 ---- */
+.servedesk {
+  margin: 20px 0; padding: 18px 18px 8px;
+  background-image: var(--grain), linear-gradient(176deg, rgba(255, 250, 240, .92), var(--linen-l));
+  background-blend-mode: multiply, normal;
+  border: 1px solid var(--line); border-radius: var(--r-sm);
+  box-shadow: inset 0 2px 4px rgba(107, 74, 50, .12);
+}
+
+/* ---- 应急豆提示（M1.3）：一张别在墙上的便条 ---- */
+.emergency {
+  display: grid; gap: 4px;
+  margin: 16px 0; padding: 13px 16px;
+  background-image: var(--grain), linear-gradient(175deg, #f6dfc2, #ecceaa);
+  background-blend-mode: multiply, normal;
+  border: 1px solid rgba(154, 101, 70, .35); border-radius: var(--r-sm);
+  transform: rotate(-.7deg);
+  box-shadow: var(--sh1), var(--sh2), 0 18px 24px -18px rgba(107, 74, 50, .22);
+}
+.emergency strong { color: #6a3f22; }
+
+/* ---- 客人订单（M3）：一张别在吧台前的小票，纸上有横格 ---- */
+.ordercard {
+  display: grid; gap: 4px;
+  margin: 18px 0; padding: 16px 18px 18px;
+  background-image:
+    var(--grain),
+    repeating-linear-gradient(0deg, transparent 0 26px, rgba(107, 74, 50, .09) 26px 27px),
+    linear-gradient(176deg, #fffaf0, var(--paper-l));
+  background-blend-mode: multiply, normal, normal;
+  border: 1px solid var(--line);
+  border-radius: 3px 3px 8px 8px;
+  box-shadow: var(--sh1), var(--sh2), var(--sh3);
+  transform: rotate(-.5deg);
+}
+.ordercard strong {
+  font-family: 'Songti SC', 'STSong', Georgia, serif;
+  font-size: 18px; color: var(--coffee-d);
+}
+
+/* 营业页的当日：一行行摊开，不挤在框里 */
+.bizstats {
+  display: flex; flex-wrap: wrap; gap: 4px 18px;
+  margin: 12px 0 6px; padding: 0; list-style: none;
+  font-size: 13.5px; color: var(--ink-soft);
+}
+.bizstats strong { color: var(--coffee-d); }
+
+/* ---- 冲煮交互（M8 / U7 / U8） ---- */
+.brew { margin: 18px 0 0; }
+.brew-head h3 { margin-bottom: 6px; }
+.brew-notes {
+  margin: 12px 0 16px; padding-left: 20px;
+  font-size: 13.5px; line-height: 1.8; color: var(--ink-soft);
+}
+.brew-notes li { margin-bottom: 2px; }
+.brew-static { margin-top: 10px; }
+
+/* 量程条：木槽里一条叶子色的水线，中间那道浅色就是好评带 */
+.brew-stage { margin: 14px 0 0; }
+.brew-gauge {
+  position: relative; height: 24px; margin: 8px 0 10px; overflow: hidden;
+  background-image: linear-gradient(176deg, rgba(107, 74, 50, .18), rgba(107, 74, 50, .28));
+  border: 1px solid var(--line); border-radius: var(--r-sm);
+  box-shadow: inset 0 2px 4px rgba(107, 74, 50, .3);
+}
+.brew-fill {
+  display: block; height: 100%;
+  background-image: linear-gradient(176deg, var(--leaf-l), var(--leaf));
+  box-shadow: inset 0 -2px 3px rgba(63, 82, 56, .3);
+}
+.brew-target {
+  position: absolute; top: 0; bottom: 0;
+  border-left: 2px dashed rgba(255, 250, 240, .8);
+  border-right: 2px dashed rgba(255, 250, 240, .8);
+  background: rgba(255, 250, 240, .18);
+}
+
+/* 按住区：一整块木牌，手指压上去有分量（U7） */
+.brew-pad {
+  width: 100%; min-height: 104px; margin: 12px 0 8px; padding: 18px 12px;
+  font-size: 20px; font-weight: 700; letter-spacing: .18em; text-align: center;
+  color: #fdf6e6;
+  background-image: var(--grain), linear-gradient(174deg, var(--clay-l), var(--clay-d));
+  background-blend-mode: multiply, normal;
+  border-color: var(--clay-d);
+  text-shadow: 0 1px 1px rgba(84, 48, 32, .5);
+  box-shadow: var(--sh1), var(--sh2), var(--sh3);
+  /* 按住时不牵动页面滚动，也不触发长按选中 */
+  touch-action: none; user-select: none; -webkit-user-select: none;
+}
+.brew-pad.pressing {
+  transform: translateY(3px) scale(.99); filter: brightness(.95);
+  box-shadow: inset 0 3px 6px rgba(74, 44, 28, .38);
+}
+
+/* 评级印章：跟出杯按钮并排，印章只占自己那一格 */
+.brew-verdict { justify-self: start; margin: 0 0 4px; }
+.brew-verdict.grade-好 { color: var(--leaf-d); background: rgba(140, 164, 127, .16); }
+.brew-verdict.grade-一般 { color: var(--brass-d); background: rgba(201, 172, 116, .18); }
+.brew-verdict.grade-失误 { color: #9a4f34; background: rgba(192, 135, 103, .18); }
+
+/* ---- 吧台：配方预选的那杯要看得出来（M7.5） ---- */
+.drinkcard.primary { outline: 2px dashed var(--leaf-d); outline-offset: -4px; }
+
+/* ---- 进货（M1.2）：买得起 / 还差多少都写在牌子上 ---- */
+.beanlist.buy li { gap: 4px; }
+.beanlist.buy button { text-align: center; }
+
+/* ---- 配方编辑器与配方墙（M7.5 / U13） ---- */
+.recipe-form {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px 16px; margin: 12px 0 6px;
+}
+.recipe-form label { display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
+.recipe-form label.wide { grid-column: 1 / -1; }
+/* 水温区间：两个数字框夹一个破折号 */
+.recipe-form .range { display: flex; align-items: center; gap: 6px; }
+.recipe-form .range span { color: var(--muted); }
+
+/* 配方卡与反馈列表：都用「贴在纸上的小条」那张纸（见上方共用规则） */
+.recipecard strong, .recipelist li strong {
+  font-family: 'Songti SC', 'STSong', Georgia, serif;
+  font-size: 16px; color: var(--coffee-d);
+}
+.recipelist, .feedbacklist { margin: 14px 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+.recipelist .actions, .feedbacklist .actions {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  margin-top: 10px;
+}
+

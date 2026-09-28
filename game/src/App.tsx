@@ -1,19 +1,56 @@
 import { Fragment, useEffect, useState } from 'react';
 import type { Choice, Drink, KnowledgeCard, PlayerSave, Stage, UpgradeId } from '../../contracts/types';
 import { ArtDefs, CafeScene, ViewDetail, ZoneArt } from './art';
-import { beans, getCard, getCharacterName, getDrink, getStage, knowledgeCards, stages } from './data/loader';
-import { cafeGallery, charImage, coverImage, drinkGallery, drinkImage, gearGallery, kbImage, sceneImage } from './pictures';
+import BusinessView from './BusinessView';
 import {
+  type BusinessRecord,
+  type Order,
+  applyServe,
+  freshRecord,
+  loadBusiness,
+  nextDay,
+  persistBusiness,
+  planDay,
+  rateOrder,
+  recordUsedBean,
+} from './business';
+import { type BrewGrade, type BrewParams, GRADE_SATISFACTION } from './brew';
+import { beans, getCard, getCharacterName, getDrink, getStage, knowledgeCards, stages } from './data/loader';
+import FeedbackPanel from './FeedbackPanel';
+import {
+  type FeedbackItem,
+  type FeedbackKind,
+  type SnapshotInput,
+  describeOf,
+  installErrorCapture,
+  lastErrorOf,
+  loadFeedback,
+  makeFeedback,
+  persistFeedback,
+  recentActions,
+  recordAction,
+} from './feedback';
+import { cafeGallery, charImage, coverImage, drinkGallery, gearGallery, kbImage, sceneImage } from './pictures';
+import { applyPwaUpdate, onPwaUpdate } from './pwa';
+import Purchase from './Purchase';
+import RecipesPanel, { type LastBrew } from './RecipesPanel';
+import { type Recipe, type RecipeDraft, addRecipe, loadRecipes, persistRecipes, removeRecipe, validateRecipe } from './recipes';
+import ServeDesk, { type ServePreset } from './ServeDesk';
+import { type Settings, loadSettings, saveSettings, withRelaxedEconomy } from './settings';
+import { buildSaveCode, copyText, downloadText, planImport, profileProgressLabel, shareText } from './share';
+import {
+  EMERGENCY_BEAN,
   UPGRADES,
   activeProfileId,
   applyEffects,
-  availableDrinks,
-  brewableWith,
+  buyBean,
   buyUpgrade,
   closeDay,
   createProfile,
   createSave,
   deleteProfile,
+  displayMoney,
+  isStoryComplete,
   listProfiles,
   loadSave,
   migrateLegacySave,
@@ -25,7 +62,20 @@ import {
 } from './state';
 import './styles.css';
 
-type View = 'home' | 'cafe' | 'map' | 'stage' | 'serve' | 'archive' | 'storage' | 'upgrade' | 'clues' | 'settlement';
+type View =
+  | 'home'
+  | 'cafe'
+  | 'map'
+  | 'stage'
+  | 'serve'
+  | 'archive'
+  | 'storage'
+  | 'upgrade'
+  | 'clues'
+  | 'settlement'
+  | 'purchase'
+  | 'business'
+  | 'recipes';
 
 interface Outcome {
   choice: Choice;
@@ -61,6 +111,7 @@ const ZONES: { view: View; name: string; hint: string }[] = [
   { view: 'storage', name: '仓库', hint: '查看咖啡豆库存' },
   { view: 'clues', name: '桌面', hint: '摊着林叔留下的东西' },
   { view: 'map', name: '后门', hint: '进入章节地图' },
+  { view: 'business', name: '门店', hint: '开门做生意，接一天的客人' },
 ];
 
 
@@ -77,18 +128,72 @@ export default function App() {
   const [toast, setToast] = useState('');
   /** 当前关卡是否已经端出过一杯。客人关卡要先出杯才能做决定。 */
   const [servedStage, setServedStage] = useState<string | null>(null);
+  /** 体验期设置（M2）、配方库（M7）、反馈（M6）各有自己的键，与存档解耦 */
+  const [settings, setSettings] = useState<Settings>(() => loadSettings());
+  const [recipes, setRecipes] = useState<Recipe[]>(() => loadRecipes());
+  const [feedbackList, setFeedbackList] = useState<FeedbackItem[]>(() => loadFeedback());
+  /** 自由营业档案（M3）：按档位存，没开过业就是 null */
+  const [bizRec, setBizRec] = useState<BusinessRecord | null>(() => (profileId ? loadBusiness(profileId) : null));
+  /** 「按这配方来一杯」带进吧台的预设 */
+  const [servePreset, setServePreset] = useState<ServePreset | null>(null);
+  /** 正在为哪一单出杯：只有从营业页「做这一杯」进来才有，避免别的入口误判星级 */
+  const [brewingOrder, setBrewingOrder] = useState<Order | null>(null);
+  /** 刚做的那杯，本局内存、刷新即失效（D15），给配方墙当草稿 */
+  const [lastBrew, setLastBrew] = useState<LastBrew | null>(null);
+  /** 进货屏从哪儿进来的，返回就回哪儿 */
+  const [purchaseBack, setPurchaseBack] = useState<View>('cafe');
+  /** 结算页的营业日副标题（U10）；也兼作「这次结算来自营业」的标志 */
+  const [dayLabel, setDayLabel] = useState<string | null>(null);
+  const [updateReady, setUpdateReady] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
+
+  const unlimited = settings.relaxedEconomy;
+  const eco = { unlimited };
 
   useEffect(() => {
     if (save && profileId) persistSave(profileId, save);
   }, [save, profileId]);
 
+  // 新版就绪才亮更新条（U14）
+  useEffect(() => onPwaUpdate(() => setUpdateReady(true)), []);
+
+  // 错误捕获（M6.2）：快照存最近一次；环形缓冲另记一条操作（M6.1）
+  useEffect(() => {
+    const stop = installErrorCapture(window);
+    const onError = (e: ErrorEvent) => recordAction('error', e.message || '未知错误');
+    const onRejection = (e: PromiseRejectionEvent) => {
+      const reason = (e as { reason?: unknown }).reason;
+      const message = typeof reason === 'string' ? reason : ((reason as { message?: string })?.message ?? '未处理的 Promise 拒绝');
+      recordAction('error', message);
+    };
+    window.addEventListener('error', onError);
+    window.addEventListener('unhandledrejection', onRejection);
+    return () => {
+      stop();
+      window.removeEventListener('error', onError);
+      window.removeEventListener('unhandledrejection', onRejection);
+    };
+  }, []);
+
   const stage = save ? getStage(save.current_stage) : undefined;
 
-  /** 进入某一档：切当前档位，读它自己的存档 */
+  // 最近操作（M6.1）：切屏与选关各记一条
+  useEffect(() => {
+    recordAction('view', view);
+  }, [view]);
+  useEffect(() => {
+    if (view === 'stage' && stage) recordAction('stage', `${stage.id} ${stage.title}`);
+  }, [view, stage]);
+
+  /** 进入某一档：切当前档位，读它自己的存档与营业档案 */
   function open(id: string) {
     setActiveProfile(id);
     setProfileId(id);
     setSave(loadSave(id));
+    setBizRec(loadBusiness(id));
+    setServePreset(null);
+    setBrewingOrder(null);
+    setDayLabel(null);
     setToast('');
     setView('cafe');
   }
@@ -101,6 +206,10 @@ export default function App() {
   function switchProfile() {
     setProfileId('');
     setSave(null);
+    setBizRec(null);
+    setServePreset(null);
+    setBrewingOrder(null);
+    setDayLabel(null);
     setOutcome(null);
     setView('home');
   }
@@ -111,10 +220,16 @@ export default function App() {
     else setToast('存档已删除。');
   }
 
-  /** 同一个档从头再来，名字保留 */
+  /** 同一个档从头再来，名字保留；营业档案也回到第 1 天 */
   function restart() {
     if (!save) return;
+    const rec = freshRecord();
     setSave(createSave(save.player_name));
+    setBizRec(rec);
+    if (profileId) persistBusiness(profileId, rec);
+    setServePreset(null);
+    setBrewingOrder(null);
+    setDayLabel(null);
     setOutcome(null);
     setServedStage(null);
     setToast('店重新开张了。');
@@ -131,36 +246,245 @@ export default function App() {
   function advance() {
     if (!save || !outcome) return;
     const { save: next } = settleStage(save, outcome.stage, outcome.choice);
+    recordAction('stage', `${outcome.stage.id} → ${next.current_stage || '收工'}`);
     setSave(next);
     setOutcome(null);
     setServedStage(null);
     setView(next.current_stage ? 'stage' : 'settlement');
   }
 
-  function serve(drink: Drink, beanId: string) {
+  /**
+   * 出杯（M8 结果 → 存档）。两条路：从营业页进来赌那一单按订单判星级（M3.5），
+   * 其余（吧台随手一杯、配方墙按配方来一杯）按主线记满意度（M8.2）。
+   * 判定在进这里之前就做完了（手势/静态题的评级 = `grade`，题面与提示由 `params` 派生，
+   * 见 `BrewInteraction`）；到这一步 `params` 只用于配方墙的「刚做的那杯」草稿。
+   */
+  function serve(drink: Drink, beanId: string, grade: BrewGrade, params: BrewParams) {
     if (!save) return;
-    const { save: next, ok, reason } = serveDrink(save, drink, beanId);
+    const current = bizRec;
+    const order = brewingOrder;
+    const pending =
+      order && current && current.phase === 'serving' && current.orders[current.served]?.id === order.id ? order : undefined;
+    const bean = beans.find((b) => b.id === beanId) ?? (beanId === EMERGENCY_BEAN.id ? EMERGENCY_BEAN : undefined);
+
+    if (pending && current && bean) {
+      const rated = rateOrder(pending, drink, bean, grade);
+      if (!rated.ok) {
+        setToast(rated.reason);
+        return;
+      }
+      const { save: next, ok, reason } = serveDrink(save, drink, beanId, {
+        eco,
+        incomeOverride: rated.income,
+        // 一位客人耗 1 点精力（M3.3）：精力见底就当日收工，余下的客人「改天再来」
+        extraEffects: { ...rated.extraEffects, energy: (rated.extraEffects.energy ?? 0) - 1 },
+      });
+      if (!ok) {
+        setToast(reason);
+        return;
+      }
+      const rec = applyServe(current, { stars: rated.stars, income: rated.income, beanId, energyLeft: next.energy });
+      setSave(next);
+      setBizRec(rec);
+      persistBusiness(profileId, rec);
+      setLastBrew({ beanId, drinkId: drink.id, params });
+      setServePreset(null);
+      setBrewingOrder(null);
+      setView('business');
+      recordAction('business', `${pending.guestName} ${drink.name} ${rated.stars}★`);
+      setToast([`${rated.stars}★`, ...rated.lines].join(' · '));
+      return;
+    }
+
+    const { save: next, ok, reason } = serveDrink(save, drink, beanId, {
+      eco,
+      extraEffects: { satisfaction_today: GRADE_SATISFACTION[grade] },
+    });
     if (ok) {
       setSave(next);
       setServedStage(save.current_stage);
+      setLastBrew({ beanId, drinkId: drink.id, params });
+      // 豆种图鉴（M3.8）：主线出杯也记一笔，与营业日共用同一份 usedBeans
+      const rec = recordUsedBean(bizRec ?? freshRecord(), beanId);
+      setBizRec(rec);
+      if (profileId) persistBusiness(profileId, rec);
+      recordAction('serve', `${drink.name}·${beanId}·${grade}`);
     }
     setToast(reason);
   }
 
   function purchase(id: UpgradeId) {
     if (!save) return;
-    const { save: next, ok, reason } = buyUpgrade(save, id);
-    if (ok) setSave(next);
+    const { save: next, ok, reason } = buyUpgrade(save, id, eco);
+    if (ok) {
+      setSave(next);
+      recordAction('upgrade', id);
+    }
     setToast(reason);
+  }
+
+  /** 进一袋豆（M1.2）：进货屏与吧台空态两个入口都走它 */
+  function purchaseBean(beanId: string) {
+    if (!save) return;
+    const { save: next, ok, reason } = buyBean(save, beanId, eco);
+    if (ok) {
+      setSave(next);
+      recordAction('buy', beanId);
+    }
+    setToast(reason);
+  }
+
+  /** 宽松模式开关（M2.5 / U16）：体验期设置，随时可关，不写入存档 */
+  function toggleRelaxed() {
+    const next = withRelaxedEconomy(settings, !settings.relaxedEconomy);
+    setSettings(next);
+    saveSettings(next);
+    setToast(next.relaxedEconomy ? '宽松模式开着：体验期设置，随时可关。' : '宽松模式关掉了：现金按真实收支算。');
+  }
+
+  /** 开门：日计划这一刻固化并落盘（M3.2），同一天怎么玩都一致 */
+  function openBusinessDay() {
+    if (!save || !profileId) return;
+    const planned = planDay(bizRec ?? freshRecord(), save);
+    setBizRec(planned);
+    persistBusiness(profileId, planned);
+    recordAction('business', `第 ${planned.day} 天开门`);
+    setToast(`第 ${planned.day} 天：${planned.orders.length} 位客人。`);
+  }
+
+  /** 营业页「做这一杯」：带上订单想去吧台，出杯后按订单判星级 */
+  function brewForOrder(order: Order) {
+    setServePreset({ drinkId: order.drinkId });
+    setBrewingOrder(order);
+    setToast('');
+    setView('serve');
+  }
+
+  /** 营业页收工：记一条流水，交给结算页（U10） */
+  function settleBusinessDay() {
+    if (!bizRec) return;
+    setDayLabel(`营业第 ${bizRec.day} 天`);
+    recordAction('business', `第 ${bizRec.day} 天收工`);
+    setToast('');
+    setView('settlement');
   }
 
   function finishDay() {
     if (!save) return;
+    if (dayLabel) {
+      // 自由营业收工（M3.7）：翻到下一日，不碰剧情标记
+      if (bizRec && profileId) {
+        const rec = nextDay(bizRec);
+        setBizRec(rec);
+        persistBusiness(profileId, rec);
+      }
+      setSave(closeDay(save));
+      setDayLabel(null);
+      setToast('新的一天，店门重新打开。');
+      setView('business');
+      return;
+    }
     // 收工时给当前章节打通关标记，章节号从存档取，不写死第一章
     const cleared = `${save.current_chapter.replace('-', '_')}_cleared`;
     setSave({ ...closeDay(save), flags: { ...save.flags, [cleared]: true } });
     setToast('新的一天，店门重新打开。');
     setView('cafe');
+  }
+
+  /** 导出这一档的存档码（M5.2）：存档 + 营业档案一起带走 */
+  function exportCode(id: string) {
+    const s = loadSave(id);
+    if (!s) return '';
+    const profile = listProfiles().find((p) => p.id === id);
+    recordAction('share', `导出 ${profile?.name ?? id}`);
+    return buildSaveCode(s, profile?.name ?? s.player_name, loadBusiness(id));
+  }
+
+  /** 导入存档码（M5.3）：永远新建档位，不覆盖现有的 */
+  function importProfile(planned: { name: string; save: PlayerSave; business: BusinessRecord | null }) {
+    const created = createProfile(planned.name);
+    persistSave(created.id, planned.save);
+    if (planned.business) persistBusiness(created.id, planned.business);
+    recordAction('share', `导入 ${planned.name}`);
+    open(created.id);
+    setToast(`「${planned.name}」已经导入，接着往下玩。`);
+  }
+
+  /** 收录一条配方：面板先过一遍好即时反馈，落库仍以这里的校验为单源 */
+  function addDraft(draft: RecipeDraft) {
+    const checked = validateRecipe(draft);
+    if (!checked.ok) {
+      setToast(checked.reason);
+      return;
+    }
+    const added = addRecipe(recipes, checked.recipe);
+    if (!added.ok) {
+      setToast(added.reason);
+      return;
+    }
+    persistRecipes(added.list);
+    setRecipes(added.list);
+    setToast(`「${checked.recipe.name}」收进配方墙了。`);
+  }
+
+  function removeOne(id: string) {
+    const list = removeRecipe(recipes, id);
+    persistRecipes(list);
+    setRecipes(list);
+  }
+
+  /** 提交一条反馈（M6.4）：快照在提交这一刻现做，时间就是本地时钟 */
+  function submitFeedback(kind: FeedbackKind, text: string) {
+    const item = makeFeedback(kind, describeOf(text), text);
+    setFeedbackList(persistFeedback([item, ...feedbackList]));
+  }
+
+  /** 反馈快照的现场（M6.3）：没开局的字段一律 null / 空 */
+  function snapshotInput(): SnapshotInput {
+    return {
+      now: Date.now(),
+      ua: typeof navigator !== 'undefined' ? navigator.userAgent : '',
+      language: typeof navigator !== 'undefined' ? navigator.language : '',
+      screen: typeof window !== 'undefined' ? `${window.innerWidth}×${window.innerHeight}` : '',
+      profileName: save?.player_name ?? null,
+      chapter: save?.current_chapter ?? null,
+      stageId: stage?.id ?? null,
+      stageTitle: stage?.title ?? null,
+      completedStages: save?.completed_stages.length ?? 0,
+      totalStages: stages.length,
+      money: save?.money ?? null,
+      energy: save?.energy ?? null,
+      reputation: save?.reputation ?? null,
+      satisfactionToday: save?.satisfaction_today ?? null,
+      inventory: save
+        ? beans
+            .filter((b) => (save.inventory[b.id] ?? 0) > 0)
+            .map((b) => ({ beanId: b.id, name: b.name, portions: save.inventory[b.id] }))
+        : [],
+      businessDay: bizRec?.day ?? null,
+      recipeCount: recipes.length,
+      recentActions: recentActions(),
+      lastError: lastErrorOf(),
+    };
+  }
+
+  /** 配方墙「按这配方来一杯」（M7.5）：参数带进吧台预设，判定照走，不占营业订单 */
+  function brewWithRecipe(recipe: Recipe) {
+    setBrewingOrder(null);
+    setServePreset({
+      drinkId: recipe.drinkId,
+      beanId: recipe.beanId || undefined,
+      params: recipe.params,
+    });
+    setToast(`按「${recipe.name}」来一杯。`);
+    setView('serve');
+  }
+
+  /** 去另一屏并记住回程：进货屏从店务栏 / 仓库 / 吧台 / 营业页四处都能进（U6） */
+  function openDesk(to: View, back: View) {
+    setToast('');
+    setPurchaseBack(back);
+    setView(to);
   }
 
   return (
@@ -173,7 +497,11 @@ export default function App() {
             {numericLabels.map(({ key, label, max }) => (
               <li key={key} className={max ? 'gauge' : 'counter'}>
                 <span>{label}</span>
-                <strong>{save[key]}{max ? <em>/{max}</em> : null}</strong>
+                <strong>
+                  {/* 现金位在宽松模式显示 ∞（U2 / M2.4） */}
+                  {key === 'money' ? displayMoney(save, unlimited) : save[key]}
+                  {max ? <em>/{max}</em> : null}
+                </strong>
                 {max ? (
                   <span className={`bar ${key}`}>
                     <i style={{ width: `${Math.min(100, Math.round((save[key] / max) * 100))}%` }} />
@@ -183,12 +511,19 @@ export default function App() {
             ))}
           </ul>
         )}
+        {/* 反馈入口（U1）：无档也能点，任意界面一下就到 */}
+        <button className="ghost" onClick={() => setShowFeedback(true)}>反馈</button>
         {save && (
           <button className="who" onClick={switchProfile} title="回到存档列表，换一个人玩">
             {save.player_name} · 换档
           </button>
         )}
       </header>
+
+      {/* 新版本就绪（U14）：点一下让 waiting 的 SW 接管，接管完自动刷新 */}
+      {updateReady && (
+        <button className="updatebar" onClick={() => applyPwaUpdate()}>有新版本，点这里更新</button>
+      )}
 
       {toast && <p className="toast" role="status">{toast}</p>}
 
@@ -197,29 +532,103 @@ export default function App() {
         {/* 这一屏的场景横幅。图缺了就不渲染，页面退回纯手绘 */}
         {sceneImage(view) && <img className="scene-band" src={sceneImage(view)} alt="" aria-hidden="true" />}
         <ViewDetail view={view} />
-        {view === 'home' && <Home onOpen={open} onCreate={newProfile} onDelete={removeProfile} onArchive={() => setView('archive')} />}
-        {view === 'cafe' && save && <Cafe save={save} stage={stage} onGo={(v) => { setToast(''); setView(v); }} />}
+        {view === 'home' && (
+          <Home
+            onOpen={open}
+            onCreate={newProfile}
+            onDelete={removeProfile}
+            onExport={exportCode}
+            onImport={importProfile}
+            onArchive={() => setView('archive')}
+          />
+        )}
+        {view === 'cafe' && save && (
+          <Cafe
+            save={save}
+            stage={stage}
+            unlocked={isStoryComplete(save)}
+            unlimited={unlimited}
+            onGo={(v) => { setToast(''); setView(v); }}
+            onPurchase={() => openDesk('purchase', 'cafe')}
+            onRecipes={() => { setToast(''); setView('recipes'); }}
+            onToggleRelaxed={toggleRelaxed}
+            onFeedback={() => setShowFeedback(true)}
+          />
+        )}
         {view === 'map' && save && <ChapterMap save={save} />}
-        {view === 'storage' && save && <Storage save={save} />}
+        {view === 'storage' && save && <Storage save={save} onPurchase={() => openDesk('purchase', 'storage')} />}
         {view === 'clues' && save && <Clues save={save} />}
-        {view === 'upgrade' && save && <Upgrades save={save} onBuy={purchase} />}
+        {view === 'upgrade' && save && <Upgrades save={save} unlimited={unlimited} onBuy={purchase} />}
         {view === 'archive' && <Archive save={save} />}
-        {view === 'settlement' && save && <Settlement save={save} onFinish={finishDay} onRestart={restart} />}
-        {view === 'serve' && save && <ServeDesk save={save} onServe={serve} />}
+        {view === 'settlement' && save && (
+          <Settlement save={save} unlimited={unlimited} dayLabel={dayLabel} onFinish={finishDay} onRestart={restart} />
+        )}
+        {view === 'serve' && save && (
+          <ServeDesk
+            save={save}
+            preset={servePreset ?? undefined}
+            onServe={serve}
+            onGoPurchase={() => openDesk('purchase', 'serve')}
+            onCancel={
+              servePreset || brewingOrder
+                ? () => {
+                    setToast('');
+                    setServePreset(null);
+                    setBrewingOrder(null);
+                    setView('cafe');
+                  }
+                : undefined
+            }
+          />
+        )}
+        {view === 'purchase' && save && (
+          <Purchase
+            save={save}
+            unlimited={unlimited}
+            onBuy={purchaseBean}
+            onBack={() => { setToast(''); setView(purchaseBack); }}
+          />
+        )}
+        {view === 'business' && save && (
+          <BusinessView
+            save={save}
+            rec={bizRec ?? freshRecord()}
+            onStartDay={openBusinessDay}
+            onBrew={brewForOrder}
+            onSettle={settleBusinessDay}
+            onGoPurchase={() => openDesk('purchase', 'business')}
+            onBack={() => setView('cafe')}
+          />
+        )}
+        {view === 'recipes' && (
+          <RecipesPanel
+            recipes={recipes}
+            lastBrew={lastBrew}
+            onAdd={addDraft}
+            onRemove={removeOne}
+            onBrewWith={brewWithRecipe}
+            onBack={() => setView('cafe')}
+          />
+        )}
         {view === 'stage' && stage && save && !outcome && (
           <StageView
             stage={stage}
             save={save}
             served={servedStage === stage.id}
             onServe={serve}
+            onGoPurchase={() => openDesk('purchase', 'stage')}
             onChoose={choose}
           />
         )}
         {view === 'stage' && outcome && <Result outcome={outcome} onNext={advance} />}
         {view === 'stage' && !stage && (
+          // 末关之后的落点（设计 §1 M3.1）：不再摆「等新章节」的死文案，直接把人送去自由营业
           <section className="panel">
-            <p className="empty">今天没有待办的关卡了。剧情轨道产出新章节后会自动接上。</p>
-            <div className="actions"><button onClick={() => setView('cafe')}>回到店里</button></div>
+            <p className="empty">故事走完了，店还开着。</p>
+            <div className="actions">
+              <button className="primary" onClick={() => setView('business')}>开门营业</button>
+              <button onClick={() => setView('cafe')}>回到店里</button>
+            </div>
           </section>
         )}
 
@@ -232,6 +641,18 @@ export default function App() {
           <button onClick={() => setView('cafe')}>回到店里</button>
           <button onClick={() => setView('archive')}>知识档案</button>
         </nav>
+      )}
+
+      {/* 反馈面板（U13）：盖在整屏之上，关上就回到原来的位置 */}
+      {showFeedback && (
+        <div className="overlay">
+          <FeedbackPanel
+            snapshotInput={snapshotInput()}
+            items={feedbackList}
+            onSubmit={submitFeedback}
+            onClose={() => setShowFeedback(false)}
+          />
+        </div>
       )}
     </div>
   );
@@ -260,16 +681,28 @@ function Home({
   onOpen,
   onCreate,
   onDelete,
+  onExport,
+  onImport,
   onArchive,
 }: {
   onOpen: (id: string) => void;
   onCreate: (name: string) => void;
   onDelete: (id: string) => void;
+  onExport: (id: string) => string;
+  onImport: (planned: { name: string; save: PlayerSave; business: BusinessRecord | null }) => void;
   onArchive: () => void;
 }) {
   const [name, setName] = useState('');
   /** 删档要二次确认，记住待确认的是哪一个 */
   const [confirming, setConfirming] = useState('');
+  /** 导出：码只算一次摆出来，复制 / 分享 / 下载都读它（U12） */
+  const [exported, setExported] = useState<{ name: string; code: string } | null>(null);
+  /** 导入：粘贴的码与预览结果，确认了才建档（U12） */
+  const [importCode, setImportCode] = useState('');
+  const [preview, setPreview] = useState<
+    { ok: true; name: string; save: PlayerSave; business: BusinessRecord | null } | { ok: false; reason: string } | null
+  >(null);
+  const [notice, setNotice] = useState('');
   // 列表在本组件内自己重算：删档/建档都会让 App 换 view 或重渲染
   const profiles = listProfiles();
 
@@ -287,9 +720,19 @@ function Home({
             <li key={p.id}>
               <button className="slot" onClick={() => onOpen(p.id)}>
                 <strong>{p.name}</strong>
-                <span>
-                  {s ? `${getStage(s.current_stage)?.chapter.replace('chapter-0', '第') ?? '第'}章 · 现金 ${s.money} · 知识卡 ${s.unlocked_knowledge.length} 张` : '存档读不出来'}
-                </span>
+                {/* 档位行文案（U11）：未通关报章节与进度，通关后改报自由营业天数 */}
+                <span>{s ? profileProgressLabel(s, loadBusiness(p.id)?.day) : '存档读不出来'}</span>
+              </button>
+              <button
+                className="slot-export"
+                disabled={!s}
+                onClick={() => {
+                  if (!s) return;
+                  setExported({ name: p.name, code: onExport(p.id) });
+                  setNotice('');
+                }}
+              >
+                导出
               </button>
               {confirming === p.id ? (
                 <span className="slot-danger">
@@ -325,6 +768,87 @@ function Home({
       <div className="actions">
         <button onClick={onArchive}>知识档案</button>
       </div>
+
+      {/* 导出（M5.2）：码就在页面上，复制 / 分享 / 存文件三条路都给（U12） */}
+      {exported && (
+        <div className="exportbox">
+          <p className="crumb">「{exported.name}」的存档码</p>
+          <textarea readOnly rows={4} value={exported.code} aria-label="存档码" />
+          <div className="actions">
+            <button
+              className="primary"
+              onClick={async () => {
+                setNotice((await copyText(exported.code)) ? '码已经复制走了。' : '这台设备不让自动复制，手动选中再拷吧。');
+              }}
+            >
+              复制
+            </button>
+            <button
+              onClick={async () => {
+                const r = await shareText('余温咖啡馆·存档码', exported.code);
+                setNotice(r === 'shared' ? '已经发出去了。' : r === 'copied' ? '这台设备没有系统分享，已经换成复制。' : '没分享成，试试复制或下载。');
+              }}
+            >
+              分享
+            </button>
+            <button onClick={() => { downloadText(`${exported.name}-存档码.txt`, exported.code); setNotice('存成文件了。'); }}>存成文件</button>
+            <button onClick={() => { setExported(null); setNotice(''); }}>收起来</button>
+          </div>
+        </div>
+      )}
+
+      {/* 导入（M5.3）：粘贴 → 预览 → 确认，永远新建档，不覆盖现有存档（U12） */}
+      <p className="crumb">导入存档码</p>
+      <div className="importbox">
+        <textarea
+          rows={3}
+          value={importCode}
+          placeholder="把存档码整段粘在这里"
+          aria-label="导入的存档码"
+          onChange={(e) => {
+            setImportCode(e.target.value);
+            setPreview(null);
+            setNotice('');
+          }}
+        />
+        <div className="actions">
+          <button
+            disabled={!importCode.trim()}
+            onClick={() => setPreview(planImport(importCode, profiles.map((p) => p.name)))}
+          >
+            先看一眼
+          </button>
+        </div>
+        {preview &&
+          (preview.ok ? (
+            <div className="preview">
+              <p className="crumb">码里是这些</p>
+              <p>
+                名字 <strong>{preview.name}</strong> · {profileProgressLabel(preview.save, preview.business?.day)}
+              </p>
+              {/* 未通关的码也带着营业档案（主线出杯会建一份），营业天数单独报一行（M5.3） */}
+              {preview.business && !isStoryComplete(preview.save) && (
+                <p className="meta">带着营业档案：第 {preview.business.day} 天</p>
+              )}
+              <div className="actions">
+                <button
+                  className="primary"
+                  onClick={() => {
+                    onImport(preview);
+                    setImportCode('');
+                    setPreview(null);
+                  }}
+                >
+                  就用这个，开一份
+                </button>
+                <button onClick={() => { setPreview(null); setNotice('那就先放着。'); }}>算了</button>
+              </div>
+            </div>
+          ) : (
+            <p className="recovery">这个码读不出来：{preview.reason}</p>
+          ))}
+        {notice && <p className="meta">{notice}</p>}
+      </div>
       <p className="meta">
         已接入：关卡 {stages.length} 个 · 知识卡 {knowledgeCards.length} 张 · 咖啡豆 {beans.length} 种
       </p>
@@ -354,7 +878,27 @@ function Plates({ title, items }: { title: string; items: { key: string; name: s
   );
 }
 
-function Cafe({ save, stage, onGo }: { save: PlayerSave; stage?: Stage; onGo: (v: View) => void }) {
+function Cafe({
+  save,
+  stage,
+  unlocked,
+  unlimited,
+  onGo,
+  onPurchase,
+  onRecipes,
+  onToggleRelaxed,
+  onFeedback,
+}: {
+  save: PlayerSave;
+  stage?: Stage;
+  unlocked: boolean;
+  unlimited: boolean;
+  onGo: (v: View) => void;
+  onPurchase: () => void;
+  onRecipes: () => void;
+  onToggleRelaxed: () => void;
+  onFeedback: () => void;
+}) {
   return (
     <section className="panel">
       <p className="crumb">{save.current_chapter}</p>
@@ -366,14 +910,35 @@ function Cafe({ save, stage, onGo }: { save: PlayerSave; stage?: Stage; onGo: (v
       <p className="goal">{stage ? `今日目标：${stage.goal}` : '今天的活儿干完了，去后门看看章节地图。'}</p>
 
       <div className="zones">
-        {ZONES.map((z) => (
-          <button key={z.name} onClick={() => onGo(z.view)}>
-            <ZoneArt kind={z.view} />
-            <strong>{z.name}</strong>
-            <span>{z.hint}</span>
-          </button>
-        ))}
+        {ZONES.map((z) => {
+          // 门店要通关才开（U4）：没通关就禁用，理由直接写在原位
+          const locked = z.view === 'business' && !unlocked;
+          return (
+            <button key={z.name} disabled={locked} onClick={() => onGo(z.view)}>
+              <ZoneArt kind={z.view} />
+              <strong>{z.name}</strong>
+              <span>{locked ? '走完第五章开门营业' : z.hint}</span>
+            </button>
+          );
+        })}
       </div>
+
+      {/* 店务栏（U3）：进货 / 配方墙 / 宽松模式 / 反馈，四个入口一屏内可达 */}
+      <p className="crumb">店务</p>
+      <div className="deskbar">
+        <button onClick={onPurchase}>进货</button>
+        <button onClick={onRecipes}>配方墙</button>
+        <button
+          role="switch"
+          aria-checked={unlimited}
+          className={unlimited ? 'primary' : ''}
+          onClick={onToggleRelaxed}
+        >
+          宽松模式{unlimited ? '：开' : '：关'}
+        </button>
+        <button onClick={onFeedback}>反馈</button>
+      </div>
+      <p className="meta">宽松模式是体验期设置，随时可关；开着的时候花钱不掉现金，流水照记。</p>
 
       {/* 店里店外的样子。跟玩法无关，是这一屏的空气 */}
       <Plates title="店里店外" items={cafeGallery()} />
@@ -420,14 +985,20 @@ function ChapterMap({ save }: { save: PlayerSave }) {
 /** 处理法 → 晒床/水槽配图。豆子数据里的处理法是中文，这里做一层映射 */
 const PROCESS_ART: Record<string, string> = { 日晒: 'natural', 水洗: 'washed', 蜜处理: 'honey' };
 
-function Storage({ save }: { save: PlayerSave }) {
+function Storage({ save, onPurchase }: { save: PlayerSave; onPurchase: () => void }) {
   const owned = beans.filter((b) => (save.inventory[b.id] ?? 0) > 0);
   // 库存里出现过的处理法，各配一张晒床/水槽的图，让仓库这屏不只是列表
   const processes = [...new Set(owned.map((b) => b.process))].filter((p) => PROCESS_ART[p]);
   return (
     <section className="panel">
       <h2>仓库</h2>
-      {owned.length === 0 && <p className="empty">豆子见底了。</p>}
+      {/* 进货入口（U6）：仓库是玩家发现「空了」的地方，出路就摆在这里 */}
+      <div className="actions">
+        <button className="primary" onClick={onPurchase}>去进货</button>
+      </div>
+      {owned.length === 0 && (
+        <p className="empty">豆子见底了。吧台还有店里常备的应急豆——先出杯攒钱，再来进一整袋。</p>
+      )}
 
       {processes.length > 0 && (
         <div className="figures">
@@ -471,11 +1042,11 @@ function Clues({ save }: { save: PlayerSave }) {
 /** 升级项 → 器具配图，只有画了图的才配 */
 const UPGRADE_ART: Record<string, string> = { grinder: 'grinder', brewer: 'siphon' };
 
-function Upgrades({ save, onBuy }: { save: PlayerSave; onBuy: (id: UpgradeId) => void }) {
+function Upgrades({ save, unlimited, onBuy }: { save: PlayerSave; unlimited: boolean; onBuy: (id: UpgradeId) => void }) {
   return (
     <section className="panel">
       <h2>菜单黑板</h2>
-      <p className="meta">现金 {save.money}。升级一次性生效，买不起会明确告诉你还差多少。</p>
+      <p className="meta">现金 {displayMoney(save, unlimited)}。升级一次性生效，买不起会明确告诉你还差多少。</p>
       <ul className="upgradelist">
         {UPGRADES.map((u) => {
           const owned = save.upgrades.includes(u.id);
@@ -500,71 +1071,19 @@ function Upgrades({ save, onBuy }: { save: PlayerSave; onBuy: (id: UpgradeId) =>
     </section>
   );
 }
-/**
- * 吧台：选豆 → 选饮品 → 出杯。
- * 只列有库存的豆子；饮品按菜单、升级条件和库存够不够过滤（state.brewableWith）。
- */
-function ServeDesk({ save, onServe }: { save: PlayerSave; onServe: (drink: Drink, beanId: string) => void }) {
-  const owned = beans.filter((b) => (save.inventory[b.id] ?? 0) > 0);
-  const [picked, setPicked] = useState('');
-  const beanId = owned.some((b) => b.id === picked) ? picked : owned[0]?.id ?? '';
-  const bean = owned.find((b) => b.id === beanId);
-  const options = bean ? brewableWith(save, bean) : [];
-  const menuSize = availableDrinks(save).length;
-
-  if (!bean) {
-    return (
-      <section className="panel">
-        <h2>吧台</h2>
-        <p className="empty">豆子见底了，今天出不了杯。</p>
-      </section>
-    );
-  }
-
-  return (
-    <section className="panel">
-      <h2>吧台</h2>
-      <p className="meta">菜单上有 {menuSize} 款饮品。先选豆，再选要做的那杯。</p>
-
-      <p className="crumb">选豆</p>
-      <div className="choices">
-        {owned.map((b) => (
-          <button key={b.id} className={b.id === beanId ? 'primary' : ''} onClick={() => setPicked(b.id)}>
-            {b.name}（剩 {save.inventory[b.id]} 份 · 进价 {b.purchase_price}）
-          </button>
-        ))}
-      </div>
-
-      <p className="crumb">选饮品</p>
-      {options.length === 0 ? (
-        <p className="empty">{bean.name}现在做不出东西：菜单上没有它能做的饮品，或者库存不够一杯的用量。</p>
-      ) : (
-        <div className="drinkcards">
-          {options.map((d) => (
-            <button key={d.id} className="drinkcard" onClick={() => onServe(d, beanId)}>
-              {drinkImage(d.id) && <img src={drinkImage(d.id)} alt="" aria-hidden="true" />}
-              <strong>{d.name}</strong>
-              <span className="meta">{d.method} · 卖 {d.price} · 用 {d.bean_cost} 份 · {d.speed}</span>
-            </button>
-          ))}
-        </div>
-      )}
-      <p className="meta">{bean.name}：{bean.origin} · {bean.roast_level} · {bean.flavor_tags.join('／')}</p>
-    </section>
-  );
-}
-
 function StageView({
   stage,
   save,
   served,
   onServe,
+  onGoPurchase,
   onChoose,
 }: {
   stage: Stage;
   save: PlayerSave;
   served: boolean;
-  onServe: (drink: Drink, beanId: string) => void;
+  onServe: (drink: Drink, beanId: string, grade: BrewGrade, params: BrewParams) => void;
+  onGoPurchase: () => void;
   onChoose: (stage: Stage, choice: Choice) => void;
 }) {
   // 有客人上门的关卡先得端出一杯，才能做决定
@@ -593,7 +1112,8 @@ function StageView({
         })}
       </ol>
 
-      {needsCup && !served && <ServeDesk save={save} onServe={onServe} />}
+      {/* 客人关的吧台：嵌在关卡里，没豆子时同样亮应急豆与进货口（U5） */}
+      {needsCup && !served && <ServeDesk save={save} embedded onServe={onServe} onGoPurchase={onGoPurchase} />}
 
       {needsCup && !served ? (
         <p className="recovery">客人还等着，先在吧台做一杯再决定怎么答。</p>
@@ -724,7 +1244,19 @@ function Archive({ save }: { save: PlayerSave | null }) {
   );
 }
 
-function Settlement({ save, onFinish, onRestart }: { save: PlayerSave; onFinish: () => void; onRestart: () => void }) {
+function Settlement({
+  save,
+  unlimited,
+  dayLabel,
+  onFinish,
+  onRestart,
+}: {
+  save: PlayerSave;
+  unlimited: boolean;
+  dayLabel: string | null;
+  onFinish: () => void;
+  onRestart: () => void;
+}) {
   const t = save.today;
   const net = t.revenue - t.cost;
   const cups = Object.entries(t.drinks_served ?? {}).filter(([, n]) => n > 0);
@@ -732,6 +1264,7 @@ function Settlement({ save, onFinish, onRestart }: { save: PlayerSave; onFinish:
     ['今日收入', String(t.revenue)],
     ['原料成本', String(t.cost)],
     ['净收益', String(net)],
+    ['当前现金', displayMoney(save, unlimited)],
     ['接待客人', `${t.customers} 位`],
     ['满意客人', `${t.satisfied} 位`],
     ['今日出杯', cups.length ? cups.map(([id, n]) => `${getDrink(id).name} ${n} 杯`).join('、') : '一杯没出'],
@@ -745,12 +1278,18 @@ function Settlement({ save, onFinish, onRestart }: { save: PlayerSave; onFinish:
   return (
     <section className="panel">
       <h2>今日结算</h2>
+      {/* 营业日结算多一行天数（U10）；主线结算不传就保持原样 */}
+      {dayLabel && <p className="crumb">{dayLabel}</p>}
       <ul className="ledger">
         {rows.map(([k, v]) => (
           <li key={k}><span>{k}</span><strong>{v}</strong></li>
         ))}
       </ul>
-      <p className="meta">下一章内容由剧情轨道产出后会自动接上，界面代码无需改动。</p>
+      <p className="meta">
+        {dayLabel
+          ? '今天的账记在这里。明天店门照常开，客人还会来。'
+          : '下一章内容由剧情轨道产出后会自动接上，界面代码无需改动。'}
+      </p>
       <div className="actions">
         <button className="primary" onClick={onFinish}>收工，明天见</button>
         <button onClick={onRestart}>清档重来</button>

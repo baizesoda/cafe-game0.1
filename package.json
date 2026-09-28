@@ -1,6 +1,6 @@
 {
   "name": "yuwen-cafe",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "description": "《余温咖啡馆》—— 三轨并发开发骨架",
