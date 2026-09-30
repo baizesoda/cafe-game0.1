@@ -93,9 +93,13 @@ body::after {
 
 .art { display: block; width: 100%; height: auto; overflow: visible; }
 
-/* 顶栏：一条钉在墙上的亚麻布签，微微歪着 */
+/* 吸顶容器（U18）：顶栏 + 更新条 + 提示条一起钉在视口顶上。
+   三件同容器 ⇒ 提示条的位置由结构决定，不再靠「顶栏高度 + 边距」的魔数去顶 */
+.topbar-sticky { position: sticky; top: 0; z-index: 8; }
+
+/* 顶栏：一条钉在墙上的亚麻布签，微微歪着（吸顶交给上面那个容器） */
 .topbar {
-  position: sticky; top: 0; z-index: 8;
+  position: relative;
   display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;
   margin: 18px 0 22px; padding: 12px 20px;
   transform: rotate(-.7deg);
@@ -631,9 +635,9 @@ button:disabled {
   font-size: 15.5px; color: var(--coffee-d); text-align: right;
 }
 
-/* 提示条：一张刚拍上去的便签，落下时过冲一点 */
+/* 提示条：一张刚拍上去的便签，落下时过冲一点；
+   位置由吸顶容器保证（U18）—— 不再自己 sticky + 顶栏高度魔数 */
 .toast {
-  position: sticky; top: 78px; z-index: 7;
   margin: 0 0 18px; padding: 12px 18px;
   font-size: 14.5px; font-weight: 700; color: #6a3f22;
   background-image: var(--grain), linear-gradient(175deg, #f7e3c0, #ecd0a4);
@@ -862,6 +866,10 @@ button:disabled {
 /* 有「换档」在它左边时，两块牌挨着站，不留空档 */
 .stats + .ghost { margin-left: 0; }
 
+/* ---- 目录栏（U17 / M9.1）：顶栏右边两块明示布签，跟反馈/换档同一套布签口径 ---- */
+.navmenu { display: flex; align-items: center; gap: 8px; margin-left: 4px; }
+.navmenu .ghost { margin-left: 0; }
+
 /* ---- 更新条（U14）：顶栏下面压一条黄铜横条，点一下换新 ---- */
 .updatebar {
   width: 100%; margin: 0 0 16px; padding: 12px 18px;
@@ -1059,3 +1067,14 @@ textarea.code {
   margin-top: 10px;
 }
 
+/* M9.1 窄屏顶栏排布（追加在 styles.css 末尾，位于 `.stats + .ghost` 与 `.navmenu` 规则之后） */
+/* 密集回填（dense）：不压字号、不缩标签，行数由格位唯一决定 —— 有档 3 行 / 无档 archive 2 行 / 无档 home 1 行 */
+@media (max-width: 768px) {
+  .topbar { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-auto-flow: dense; gap: 10px 12px; }
+  .brand { grid-column: 1; justify-self: start; }
+  .topbar > .ghost { grid-column: 2; margin-left: 0; justify-self: end; }
+  .stats { grid-column: 1 / -1; }
+  .who { grid-column: 1; justify-self: start; margin-left: 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .navmenu { grid-column: 2; margin-left: 0; justify-self: end; }
+  .navmenu .ghost { white-space: nowrap; }
+}

@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useLayoutEffect, useState } from 'react';
 import type { Choice, Drink, KnowledgeCard, PlayerSave, Stage, UpgradeId } from '../../contracts/types';
 import { ArtDefs, CafeScene, ViewDetail, ZoneArt } from './art';
 import BusinessView from './BusinessView';
@@ -30,6 +30,8 @@ import {
   recentActions,
   recordAction,
 } from './feedback';
+import { type View, screenKeyOf } from './nav';
+import NavMenu from './NavMenu';
 import { cafeGallery, charImage, coverImage, drinkGallery, gearGallery, kbImage, sceneImage } from './pictures';
 import { applyPwaUpdate, onPwaUpdate } from './pwa';
 import Purchase from './Purchase';
@@ -61,21 +63,6 @@ import {
   settleStage,
 } from './state';
 import './styles.css';
-
-type View =
-  | 'home'
-  | 'cafe'
-  | 'map'
-  | 'stage'
-  | 'serve'
-  | 'archive'
-  | 'storage'
-  | 'upgrade'
-  | 'clues'
-  | 'settlement'
-  | 'purchase'
-  | 'business'
-  | 'recipes';
 
 interface Outcome {
   choice: Choice;
@@ -176,6 +163,14 @@ export default function App() {
   }, []);
 
   const stage = save ? getStage(save.current_stage) : undefined;
+
+  /** 屏幕键（M9.2）：换屏即变——比 `main` 的 key 多带 `stage.id`（下一关切换要置顶，见 `nav.ts`）；同屏浮层与提示条不参与 */
+  const screenKey = screenKeyOf(view, !!outcome, stage?.id);
+
+  // 每次换屏回到页首（M9.2）：滚动承载面就是视口本身
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, [screenKey]);
 
   // 最近操作（M6.1）：切屏与选关各记一条
   useEffect(() => {
@@ -490,42 +485,55 @@ export default function App() {
   return (
     <div className="app">
       <ArtDefs />
-      <header className="topbar">
-        <button className="brand" onClick={() => setView(save ? 'cafe' : 'home')}>余温咖啡馆</button>
-        {save && (
-          <ul className="stats">
-            {numericLabels.map(({ key, label, max }) => (
-              <li key={key} className={max ? 'gauge' : 'counter'}>
-                <span>{label}</span>
-                <strong>
-                  {/* 现金位在宽松模式显示 ∞（U2 / M2.4） */}
-                  {key === 'money' ? displayMoney(save, unlimited) : save[key]}
-                  {max ? <em>/{max}</em> : null}
-                </strong>
-                {max ? (
-                  <span className={`bar ${key}`}>
-                    <i style={{ width: `${Math.min(100, Math.round((save[key] / max) * 100))}%` }} />
-                  </span>
-                ) : null}
-              </li>
-            ))}
-          </ul>
-        )}
-        {/* 反馈入口（U1）：无档也能点，任意界面一下就到 */}
-        <button className="ghost" onClick={() => setShowFeedback(true)}>反馈</button>
-        {save && (
-          <button className="who" onClick={switchProfile} title="回到存档列表，换一个人玩">
-            {save.player_name} · 换档
-          </button>
-        )}
-      </header>
+      {/* 顶栏 + 更新条 + 提示条同容器吸顶（U18）：提示条的位置由结构保证，不再靠顶栏高度魔数 */}
+      <div className="topbar-sticky">
+        <header className="topbar">
+          <button className="brand" onClick={() => setView(save ? 'cafe' : 'home')}>余温咖啡馆</button>
+          {save && (
+            <ul className="stats">
+              {numericLabels.map(({ key, label, max }) => (
+                <li key={key} className={max ? 'gauge' : 'counter'}>
+                  <span>{label}</span>
+                  <strong>
+                    {/* 现金位在宽松模式显示 ∞（U2 / M2.4） */}
+                    {key === 'money' ? displayMoney(save, unlimited) : save[key]}
+                    {max ? <em>/{max}</em> : null}
+                  </strong>
+                  {max ? (
+                    <span className={`bar ${key}`}>
+                      <i style={{ width: `${Math.min(100, Math.round((save[key] / max) * 100))}%` }} />
+                    </span>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          )}
+          {/* 反馈入口（U1）：无档也能点，任意界面一下就到 */}
+          <button className="ghost" onClick={() => setShowFeedback(true)}>反馈</button>
+          {save && (
+            <button className="who" onClick={switchProfile} title="回到存档列表，换一个人玩">
+              {save.player_name} · 换档
+            </button>
+          )}
+          {/* 目录栏（U17 / M9.1）：深屏一下回首页 / 店内；无档时也留着「首页」签 */}
+          <NavMenu
+            view={view}
+            hasSave={!!save}
+            onGo={(to) => {
+              setToast('');
+              if (to === 'home') switchProfile();
+              else setView('cafe');
+            }}
+          />
+        </header>
 
-      {/* 新版本就绪（U14）：点一下让 waiting 的 SW 接管，接管完自动刷新 */}
-      {updateReady && (
-        <button className="updatebar" onClick={() => applyPwaUpdate()}>有新版本，点这里更新</button>
-      )}
+        {/* 新版本就绪（U14）：点一下让 waiting 的 SW 接管，接管完自动刷新 */}
+        {updateReady && (
+          <button className="updatebar" onClick={() => applyPwaUpdate()}>有新版本，点这里更新</button>
+        )}
 
-      {toast && <p className="toast" role="status">{toast}</p>}
+        {toast && <p className="toast" role="status">{toast}</p>}
+      </div>
 
       {/* key 让每次换场重放入场动效；scene-* 决定这一屏的环境色 */}
       <main className={`content scene-${view}`} key={`${view}${outcome ? '-result' : ''}`}>
