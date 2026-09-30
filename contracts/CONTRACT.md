@@ -91,3 +91,4 @@ npm run validate
   现在出杯成本 = `purchase_price / bean_portions_per_bag × bean_cost` 向上取整，每款饮品都有正毛利。
   轨道 1、2 无需改动（豆子价格与关卡 `effects` 照原样写）；轨道 3 读新键，
   换算集中在 `game/src/state.ts` 的 `cupCost()`，以后调难度只改 `bean_portions_per_bag` 一个数。
+- 2026-09-30 新增书 2 知识卡分片 `content/knowledge/b2-b1-46.json`（号段 knowledge-200~239，本批写 200、201）；书 4 续号在既有分片 `content/knowledge/b4-p1-235.json` 内追加 knowledge-448~450（续最大号 447）；五卡挂在 chapter-04.json 的 stage-4-5、4-6、4-9，对照.md 与 HTML 经命令同步。

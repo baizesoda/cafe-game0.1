@@ -227,7 +227,7 @@
     ],
     "reward": {
       "money": 18,
-      "unlock_knowledge": ["knowledge-400", "knowledge-403", "knowledge-404", "knowledge-408", "knowledge-409"]
+      "unlock_knowledge": ["knowledge-400", "knowledge-403", "knowledge-404", "knowledge-408", "knowledge-409", "knowledge-450"]
     },
     "next_stage": "stage-4-6",
     "recovery": "重做一杯只赔一份奶。林叔的话：奶壶摸着烫手就已经过头了，宁可早一点停火。"
@@ -272,7 +272,7 @@
       }
     ],
     "reward": {
-      "unlock_knowledge": ["knowledge-405", "knowledge-406", "knowledge-407", "knowledge-423", "knowledge-433"]
+      "unlock_knowledge": ["knowledge-405", "knowledge-406", "knowledge-407", "knowledge-423", "knowledge-433", "knowledge-200", "knowledge-201"]
     },
     "next_stage": "stage-4-7",
     "recovery": "两样都不贵，下个月还能补齐。林叔的账本上写着：先修最影响入口那一步。"
@@ -412,7 +412,7 @@
       }
     ],
     "reward": {
-      "unlock_knowledge": ["knowledge-386", "knowledge-413", "knowledge-415", "knowledge-416", "knowledge-428"]
+      "unlock_knowledge": ["knowledge-386", "knowledge-413", "knowledge-415", "knowledge-416", "knowledge-428", "knowledge-448", "knowledge-449"]
     },
     "next_stage": "stage-4-10",
     "recovery": "四把壶都在柜子里，随时能再试。林叔的规矩只有一句：泡得越久，粉磨得越粗。"

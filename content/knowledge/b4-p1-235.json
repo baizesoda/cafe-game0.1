@@ -574,5 +574,41 @@
     "confidence": "high",
     "related_stages": [],
     "source_locator": "p.109 ~ p.110"
+  },
+  {
+    "id": "knowledge-448",
+    "title": "美式壶为什么是滴滤式",
+    "category": "器具",
+    "plain_explanation": "美式壶的原理和滴漏壶一样，可以说是一台电动的滴漏壶：内部容箱是漏斗式，壶内的喷嘴以辐射状向四周的咖啡粉喷洒热水，过滤出的就是美式咖啡。",
+    "source_book": "咖啡原來是這樣的啊",
+    "source_chapter": "下篇 第三章 第一节 五、卫生委员：美式壶",
+    "source_quote": "美式壶的原理和滴漏壶是一样的，可以说是电动的滴漏壶，内部容箱为漏斗式，壶内的喷嘴以辐射状向四周的咖啡粉喷洒热水，由此过滤而成的咖啡液即是美式咖啡。",
+    "confidence": "high",
+    "related_stages": [],
+    "source_locator": "p.139"
+  },
+  {
+    "id": "knowledge-449",
+    "title": "摩卡这个名字的三处来路",
+    "category": "产地",
+    "plain_explanation": "中文里的「摩卡」是三样东西共用一个名字：壶拼作 Moka Express，豆是 Mocha，可可写作 Mocha Coco。拼法本来不同，只是译成中文后读音一样才混在一起。",
+    "source_book": "咖啡原來是這樣的啊",
+    "source_chapter": "下篇 第三章 第一节 二、副班长：摩卡壶",
+    "source_quote": "摩卡壶： Moka Express 摩卡豆： Mocha 摩卡可可： Mocha Coco 大家看清楚了，其实拼法是不一样的，只不过翻译到中文，读法一样，就用一样的文字了，结果引起了不少误会，这也不知道是哪个翻译干的。",
+    "confidence": "high",
+    "related_stages": [],
+    "source_locator": "p.129"
+  },
+  {
+    "id": "knowledge-450",
+    "title": "卡布奇诺什么时候喝",
+    "category": "冲煮",
+    "plain_explanation": "意大利人按时间段点咖啡：意式浓缩一天 24 小时都合适，卡布奇诺则适合上午 10 点半以前——在此之后并非不能点，但那不是意大利人的习惯。",
+    "source_book": "咖啡原來是這樣的啊",
+    "source_chapter": "上篇 第一章 第一节 意大利",
+    "source_quote": "如同在中国北方，面条一般不作为早餐，豆腐脑不作为晚餐，意大利的咖啡也有相应的饮用时间段。意式浓缩咖啡适合一天 24 小时饮用，而卡布奇诺则适合于上午 10点半以前 —— 当然，在此之后并非不能点，但那绝不是意大利人的习惯，如果不想被意大利人取笑的话，那还是乖乖地遵守他们的规矩吧。",
+    "confidence": "high",
+    "related_stages": [],
+    "source_locator": "p.13"
   }
 ]
