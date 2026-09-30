@@ -203,6 +203,30 @@ describe('M5 存档码', () => {
     );
     expect(profileProgressLabel(done, 5)).toContain('自由营业[第 5 天]');
   });
+
+  it('档位行：解析失败不出现「第 0 章」，输出核定的省略章号段形态', () => {
+    const broken = ['', '   ', '第一章', 'abc', '0', 'chapter-00', '-1', 'chapter--1', '1.5', 'chapter-1.5', 'chapter-99999999999999999999', 'chapter-9007199254740993'];
+    for (const current_chapter of broken) {
+      const label = profileProgressLabel({ ...chineseSave(), current_chapter });
+      expect(label, `current_chapter = ${JSON.stringify(current_chapter)}`).toBe(`进度 0/${stages.length} · 现金 321 · 知识卡 1 张`);
+      expect(label).not.toContain('第 0 章');
+    }
+  });
+
+  it('档位行：超范围规范式按号原样展示；合法 / 通关态逐字不变；非法章号不吞真实进度', () => {
+    expect(profileProgressLabel({ ...chineseSave(), current_chapter: 'chapter-06' })).toBe(
+      `第 6 章 · 进度 0/${stages.length} · 现金 321 · 知识卡 1 张`,
+    );
+    expect(profileProgressLabel(chineseSave())).toBe(`第 1 章 · 进度 0/${stages.length} · 现金 321 · 知识卡 1 张`);
+    expect(profileProgressLabel(completedSave())).toBe(`已通关 · 自由营业[第 1 天] · 现金 321 · 知识卡 1 张`);
+    const broken = { ...chineseSave(), current_chapter: '第一章', completed_stages: stages.slice(0, 12).map((s) => s.id) };
+    const label = profileProgressLabel(broken);
+    expect(label).toBe(`进度 12/${stages.length} · 现金 321 · 知识卡 1 张`);
+    expect(label).toContain(`进度 12/${stages.length}`);
+    expect(label).toContain('现金 321');
+    expect(label).toContain('知识卡 1 张');
+    expect(label).not.toContain('未开始');
+  });
 });
 
 describe('M7 配方码', () => {

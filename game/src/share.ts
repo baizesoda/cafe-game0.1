@@ -155,12 +155,20 @@ export function planImport(
   };
 }
 
+function chapterNumberOf(raw: unknown): number | null {
+  const m = /^chapter-(\d+)$/.exec(String(raw ?? '').trim());
+  if (!m) return null;
+  const n = Number(m[1]);
+  return Number.isSafeInteger(n) && n > 0 ? n : null;
+}
+
 /** 档位行文案（U11）：未通关报章节与关卡进度，通关后改报自由营业天数。 */
 export function profileProgressLabel(save: PlayerSave, businessDay?: number): string {
   const tail = `现金 ${save.money} · 知识卡 ${save.unlocked_knowledge.length} 张`;
   if (isStoryComplete(save)) return `已通关 · 自由营业[第 ${businessDay ?? 1} 天] · ${tail}`;
-  const chapter = Number(String(save.current_chapter).replace(/\D/g, '')) || 0;
-  return `第 ${chapter} 章 · 进度 ${save.completed_stages.length}/${stages.length} · ${tail}`;
+  const chapter = chapterNumberOf(save.current_chapter);
+  const progress = `进度 ${save.completed_stages.length}/${stages.length}`;
+  return chapter === null ? `${progress} · ${tail}` : `第 ${chapter} 章 · ${progress} · ${tail}`;
 }
 
 export async function copyText(text: string): Promise<boolean> {
