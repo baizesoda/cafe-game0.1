@@ -38,7 +38,7 @@ export default function BrewInteraction({
   const spec = interactionFor(drink.method);
   const [reduced] = useState(prefersStatic);
   const [round, setRound] = useState(0);
-  const [value, setValue] = useState(0);
+  const fillRef = useRef<HTMLSpanElement | null>(null);
   const [pressed, setPressed] = useState(false);
   const [marks, setMarks] = useState<BrewGrade[]>([]);
   const [pick, setPick] = useState<0 | 1 | 2 | null>(null);
@@ -62,7 +62,7 @@ export default function BrewInteraction({
     settledRef.current = true;
     cancelAnimationFrame(rafRef.current);
     setPressed(false);
-    setValue(clamp01(v));
+    if (fillRef.current) fillRef.current.style.width = `${clamp01(v) * 100}%`;
     setMarks((prev) => [...prev, gradeRound(v, spec.band)]);
     roundRef.current = index + 1;
     setRound(index + 1);
@@ -87,7 +87,7 @@ export default function BrewInteraction({
     setPressed(true);
     const tick = () => {
       const v = (performance.now() - startRef.current) / spec.valueMs;
-      setValue(clamp01(v));
+      if (fillRef.current) fillRef.current.style.width = `${clamp01(v) * 100}%`;
       rafRef.current = requestAnimationFrame(tick);
     };
     rafRef.current = requestAnimationFrame(tick);
@@ -145,7 +145,7 @@ export default function BrewInteraction({
             {spec.kind === 'taps' ? `第 ${Math.min(round + 1, spec.rounds)}／${spec.rounds} 拍` : `一轮到底`}
           </p>
           <div className="brew-gauge" aria-hidden="true">
-            <span className="brew-fill" style={{ width: `${value * 100}%` }} />
+            <span className="brew-fill" ref={fillRef} />
             {/* 好评带：位置与判定口径同源——带宽取自 brew.ts 的 spec.band */}
             <span
               className="brew-target"

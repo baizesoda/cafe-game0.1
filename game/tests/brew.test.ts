@@ -1,6 +1,7 @@
 /* M8 冲煮交互：参数派生 / 交互映射 / 评级（纯函数，见设计档 §1 M8 与 §6 案例表）。
  * 数据现有 3 种 method（浓缩 / 手冲 / 奶咖），滴滤为第 4 种预留映射。
  */
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import type { CoffeeBean, Drink, DrinkMethod } from '../../contracts/types';
 import {
@@ -199,5 +200,17 @@ describe('M8 评级', () => {
       [79, 81],
       [78, 80],
     ]);
+  });
+});
+
+/* M12 结构机检（设计档 §1 M12 机检点 1）：量程条走 ref 直写、帧级更新不进 React 渲染路径；.brew-fill 补初始宽度（去内联后不补即满槽假量程）。读法先例 navigation.test.ts。 */
+describe('M12 长按响应：量程条 ref 直写（结构机检）', () => {
+  it('组件源无 setValue、量程条挂 ref 直写；.brew-fill 含初始宽度 0', () => {
+    const brew = readFileSync('game/src/BrewInteraction.tsx', 'utf8');
+    expect(brew).not.toContain('setValue');
+    expect(brew).toContain('ref={fillRef}');
+    expect(brew).toContain('fillRef.current.style.width');
+    const css = readFileSync('game/src/styles.css', 'utf8');
+    expect(css).toMatch(/\.brew-fill\s*\{[^}]*width:\s*0/);
   });
 });

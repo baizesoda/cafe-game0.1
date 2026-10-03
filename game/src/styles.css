@@ -1004,6 +1004,7 @@ textarea.code {
 }
 .brew-fill {
   display: block; height: 100%;
+  width: 0;
   background-image: linear-gradient(176deg, var(--leaf-l), var(--leaf));
   box-shadow: inset 0 -2px 3px rgba(63, 82, 56, .3);
 }

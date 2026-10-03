@@ -552,7 +552,6 @@ export default function App() {
         )}
         {view === 'cafe' && save && (
           <Cafe
-            save={save}
             stage={stage}
             unlocked={isStoryComplete(save)}
             unlimited={unlimited}
@@ -675,7 +674,7 @@ function SceneBreak({ chapter, view, stage }: { chapter?: string; view: string; 
   return (
     <div className="scene-break" aria-hidden="true">
       <img src={src} alt="" loading="lazy" />
-      {stage && <span className="mark">{stage.chapter} · {stage.title}</span>}
+      {stage && <span className="mark">{stage.title}</span>}
     </div>
   );
 }
@@ -887,7 +886,6 @@ function Plates({ title, items }: { title: string; items: { key: string; name: s
 }
 
 function Cafe({
-  save,
   stage,
   unlocked,
   unlimited,
@@ -897,7 +895,6 @@ function Cafe({
   onToggleRelaxed,
   onFeedback,
 }: {
-  save: PlayerSave;
   stage?: Stage;
   unlocked: boolean;
   unlimited: boolean;
@@ -909,8 +906,6 @@ function Cafe({
 }) {
   return (
     <section className="panel">
-      <p className="crumb">{save.current_chapter}</p>
-
       {/* 店里的那一格画面：墙上、吧台上都有各自的生活痕迹 */}
       <CafeScene />
 
@@ -968,7 +963,7 @@ function ChapterMap({ save }: { save: PlayerSave }) {
         return (
           <div key={ch} className={`chapter-block ${reached ? '' : 'sealed'}`}>
             {cover && <img className="chapter-cover" src={cover} alt="" aria-hidden="true" />}
-            <p className="crumb">{ch} · 共 {own.length} 关</p>
+            <p className="crumb">共 {own.length} 关</p>
             <ol className="mapline">
               {own.map((s) => {
                 const done = save.completed_stages.includes(s.id);
@@ -1098,7 +1093,7 @@ function StageView({
   const needsCup = stage.characters.includes('customer');
   return (
     <section className="panel">
-      <p className="crumb">{stage.chapter} · {stage.title}</p>
+      <p className="crumb">{stage.title}</p>
       <p className="goal">今日目标：{stage.goal}</p>
 
       <ol className="dialogue">

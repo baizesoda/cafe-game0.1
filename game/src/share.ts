@@ -162,7 +162,7 @@ function chapterNumberOf(raw: unknown): number | null {
   return Number.isSafeInteger(n) && n > 0 ? n : null;
 }
 
-/** 档位行文案（U11）：未通关报章节与关卡进度，通关后改报自由营业天数。 */
+/** 档位行文案（U11）：未通关报章节与关卡进度（章号读不出时省略章号段），通关后改报自由营业天数。 */
 export function profileProgressLabel(save: PlayerSave, businessDay?: number): string {
   const tail = `现金 ${save.money} · 知识卡 ${save.unlocked_knowledge.length} 张`;
   if (isStoryComplete(save)) return `已通关 · 自由营业[第 ${businessDay ?? 1} 天] · ${tail}`;
